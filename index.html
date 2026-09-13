@@ -3,518 +3,599 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Bilan UMHP / PSIS</title>
+  <title>Bilan SMUR / PSIS</title>
   <style>
     :root {
-      --bg: #090d16;
-      --card: #151f30;
-      --border: #23354e;
-      --accent: #38bdf8;
-      --accent-dark: #0284c7;
-      --danger: #ef4444;
-      --danger-bg: #451010;
-      --success: #22c55e;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #cbd5e1;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --tag-bg: #e2e8f0;
+      --radius: 10px;
     }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
 
     body {
       background: var(--bg);
       color: var(--text);
-      padding-bottom: 90px;
+      padding: 16px;
+      font-size: 16px;
     }
 
-    header {
-      background: #0f172a;
-      padding: 16px 14px;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 50;
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* SWITCH TOGGLE P0 */
+    .header-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
     }
-    header h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.5px; color: var(--accent); }
-    .badge-p0 {
-      background: var(--border);
+    .header-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .toggle-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .toggle-label {
+      font-weight: 800;
+      font-size: 0.95rem;
       color: var(--text-muted);
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 0.9rem;
-      font-weight: bold;
-      border: 1px solid var(--border);
     }
-    .badge-p0.active { background: var(--danger); color: #fff; border-color: var(--danger); }
-
-    /* CONTENEUR ONGLETS */
-    .tab-content { display: none; padding: 14px; }
-    .tab-content.active { display: block; animation: fadeIn 0.15s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-    .section-title {
-      font-size: 1rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin: 18px 0 10px 0;
-      letter-spacing: 0.5px;
+    .toggle-label.active {
+      color: var(--danger);
     }
-    .section-title:first-child { margin-top: 0; }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 56px;
+      height: 30px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #cbd5e1;
+      transition: 0.3s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    input:checked + .slider {
+      background-color: var(--danger);
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
 
+    /* PAGES */
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+      animation: fadeIn 0.15s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* FORMULAIRES */
     .card {
-      background: var(--card);
+      background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 14px;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .field {
       margin-bottom: 14px;
     }
-
-    .form-group { margin-bottom: 12px; }
-    .form-group:last-child { margin-bottom: 0; }
-    label { display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
-
-    input, textarea, select {
+    .field:last-child {
+      margin-bottom: 0;
+    }
+    label {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    input[type="text"], input[type="date"], select {
       width: 100%;
-      background: #0a101d;
+      background: #ffffff;
       border: 1.5px solid var(--border);
       border-radius: 8px;
       color: var(--text);
-      padding: 12px 14px;
+      padding: 12px;
       font-size: 1.05rem;
       outline: none;
+      -webkit-appearance: none;
+      appearance: none;
     }
-    input:focus, textarea:focus { border-color: var(--accent); }
+    select {
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 18px;
+      padding-right: 40px;
+    }
+    input:focus, select:focus {
+      border-color: var(--primary);
+    }
 
-    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
 
-    /* BOUTONS TACTILES LARGES */
-    .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-    .tag {
-      background: #1c2b42;
-      border: 1.5px solid var(--border);
-      color: #e2e8f0;
-      padding: 10px 14px;
+    /* Saisie avec bouton Ajouter */
+    .input-btn-group {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-add {
+      background: var(--primary);
+      color: white;
+      border: none;
       border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
+      padding: 0 18px;
+      font-weight: 700;
+      font-size: 1rem;
       cursor: pointer;
     }
-    .tag.active {
-      background: var(--accent-dark);
-      border-color: var(--accent);
-      color: white;
-    }
-    .tag.danger.active {
-      background: var(--danger);
-      border-color: #b91c1c;
-      color: white;
-    }
 
-    /* MATRICE CONSTANTES */
-    .const-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-    .const-table th { color: var(--text-muted); font-size: 0.85rem; padding: 4px; text-align: center; }
-    .const-table td { padding: 4px; }
-    .const-table td:first-child { font-weight: bold; color: var(--accent); width: 60px; font-size: 0.95rem; }
-    .const-table input { padding: 10px 6px; text-align: center; font-size: 1rem; }
-
-    /* NAVIGATION BAS DE PAGE */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 64px;
-      background: #0f172a;
-      border-top: 1px solid var(--border);
+    /* TAGS LIST */
+    .tag-container {
       display: flex;
-      z-index: 100;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
     }
-    .nav-btn {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      font-weight: 700;
-      gap: 3px;
-    }
-    .nav-btn.active { color: var(--accent); }
-    .nav-icon { font-size: 1.25rem; }
-
-    /* TEXTE CR */
-    #report-output {
-      width: 100%;
-      height: 280px;
-      background: #050811;
-      color: #7dd3fc;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      font-family: monospace;
+    .tag {
+      background: var(--tag-bg);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 6px;
       font-size: 0.9rem;
-      line-height: 1.4;
-      white-space: pre-wrap;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tag-remove {
+      cursor: pointer;
+      color: var(--danger);
+      font-weight: 800;
+      font-size: 1.1rem;
+      line-height: 1;
     }
 
-    .btn-action {
-      display: block;
-      width: 100%;
-      background: var(--accent-dark);
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-bottom: 12px;
+    /* NAVIGATION BUTTONS */
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
     }
-    .btn-action.copy { background: var(--success); }
-    .btn-action:active { filter: brightness(0.9); }
+    .btn-nav {
+      flex: 1;
+      padding: 16px;
+      border-radius: var(--radius);
+      border: none;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(2,132,199,0.2);
+    }
+    .btn-nav.secondary {
+      background: #e2e8f0;
+      color: var(--text);
+      box-shadow: none;
+    }
+    .btn-nav:active {
+      filter: brightness(0.92);
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>UMHP / PSIS</h1>
-    <button type="button" class="badge-p0" id="btn-p0" onclick="toggleP0()">P0 : NON</button>
-  </header>
-
-  <!-- TAB 1 : IDENTITÉ & MOTIF -->
-  <div id="tab-patient" class="tab-content active">
-    <div class="section-title">Mission & Patient</div>
-    <div class="card">
-      <div class="row-2 form-group">
-        <div>
-          <label>N° UMHP</label>
-          <input type="text" id="umhp" placeholder="ex: 1234">
-        </div>
-        <div>
-          <label>T2IH / Code</label>
-          <input type="text" id="t2ih">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Patient (Nom / Prénom)</label>
-        <input type="text" id="patient" placeholder="ex: M. DUPONT Jean">
-      </div>
-      <div class="row-2 form-group">
-        <div>
-          <label>Âge / Date Naiss.</label>
-          <input type="text" id="age" placeholder="ex: 54a (04/02/72)">
-        </div>
-        <div>
-          <label>Poids (kg)</label>
-          <input type="number" id="poids" placeholder="ex: 80">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Destination / Vecteur</label>
-        <input type="text" id="destination" placeholder="ex: Hôpital Nord / PSIS">
+  <div class="container">
+    <!-- BARRE FIXE HAUT : TITRE + SWITCH P0 -->
+    <div class="header-bar">
+      <div class="header-title" id="page-indicator">1. Identité</div>
+      <div class="toggle-wrapper">
+        <span class="toggle-label" id="p0-status">P0 : NON</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle-p0" onchange="onP0Change()">
+          <span class="slider"></span>
+        </label>
       </div>
     </div>
 
-    <div class="section-title">Motif & Anamnèse</div>
-    <div class="card">
-      <div class="form-group">
-        <label>Motif de prise en charge</label>
-        <input type="text" id="motif" placeholder="ex: Douleur thoracique constrictive">
-      </div>
-      <div class="form-group">
-        <label>Délai d'apparition</label>
-        <input type="text" id="delai" placeholder="ex: depuis 1h, subit au repos">
-      </div>
-      <div class="form-group">
-        <label>Antécédents (Maladies)</label>
-        <input type="text" id="atcd" placeholder="HTA, Diabète, Infarctus...">
-      </div>
-      <div class="form-group">
-        <label>Traitements habituels</label>
-        <input type="text" id="ttt" placeholder="Kardegic, Bisoprolol...">
-      </div>
-      <div class="row-2 form-group">
-        <div>
-          <label>Allergies</label>
-          <input type="text" id="allergies" placeholder="ex: Aucune / Péni">
+    <!-- ================= PAGE 1 : IDENTITÉ ================= -->
+    <div id="page-1" class="page active">
+      <div class="card">
+        <div class="field">
+          <label for="patient-nom">Nom et Prénom</label>
+          <input type="text" id="patient-nom" placeholder="ex: DUPONT Jean">
         </div>
-        <div>
-          <label>Hospit. récente</label>
-          <input type="text" id="hospit" placeholder="Non / Détail...">
+
+        <div class="field">
+          <label for="patient-ddn">Date de naissance</label>
+          <input type="date" id="patient-ddn">
         </div>
+
+        <div class="field">
+          <label for="patient-poids">Poids (kg)</label>
+          <select id="patient-poids"></select>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav" onclick="goToPage(2)">Anamnèse ➔</button>
       </div>
     </div>
+
+    <!-- ================= PAGE 2 : ANAMNÈSE ================= -->
+    <div id="page-2" class="page">
+      <div class="card">
+        
+        <!-- MOTIF CONDITIONNEL SELON P0 -->
+        <div class="field">
+          <label for="motif-select">Motif de prise en charge</label>
+          <select id="motif-select"></select>
+        </div>
+
+        <!-- DÉLAI D'APPARITION -->
+        <div class="field">
+          <label>Délai d'apparition</label>
+          <div class="row-2">
+            <select id="delai-valeur"></select>
+            <select id="delai-unite">
+              <option value="minutes">Minutes</option>
+              <option value="heures">Heures</option>
+              <option value="jours">Jours</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ANTÉCÉDENTS -->
+        <div class="field">
+          <label for="atcd-select">Antécédents</label>
+          <select id="atcd-select" onchange="addAtcd(this)">
+            <option value="" disabled selected>Ajouter un antécédent...</option>
+            
+            <optgroup label="Cardiovasculaire et vasculaire">
+              <option value="HTA">Hypertension artérielle (HTA)</option>
+              <option value="Maladie coronarienne">Maladie coronarienne (angor, IDM, stents)</option>
+              <option value="Fibrillation atriale">Fibrillation atriale (FA)</option>
+              <option value="Insuffisance cardiaque">Insuffisance cardiaque chronique</option>
+              <option value="AOMI">AOMI</option>
+              <option value="Maladie thromboembolique">Maladie veineuse thromboembolique (TVP/EP)</option>
+            </optgroup>
+
+            <optgroup label="Pneumologie">
+              <option value="Asthme">Asthme</option>
+              <option value="BPCO">BPCO</option>
+              <option value="SAOS">Syndrome d'apnées du sommeil (SAOS)</option>
+            </optgroup>
+
+            <optgroup label="Métabolisme et endocrinologie">
+              <option value="Diabète">Diabète</option>
+              <option value="Dyslipidémie">Dyslipidémie / Hypercholestérolémie</option>
+              <option value="Hypothyroïdie">Hypothyroïdie</option>
+              <option value="Goutte">Goutte / Hyperuricémie</option>
+            </optgroup>
+
+            <optgroup label="Neurologie et psychiatrie">
+              <option value="AVC / AIT">AVC ou AIT</option>
+              <option value="Épilepsie">Épilepsie</option>
+              <option value="Parkinson">Maladie de Parkinson</option>
+              <option value="Migraine chronique">Migraine chronique</option>
+              <option value="Troubles cognitifs">Troubles cognitifs / Démence</option>
+              <option value="Dépression / Anxiété">Dépression / Troubles anxieux</option>
+            </optgroup>
+
+            <optgroup label="Gastro-entérologie et hépatologie">
+              <option value="RGO">Reflux gastro-œsophagien (RGO)</option>
+              <option value="Ulcère / Gastrite">Ulcère gastro-duodénal / Gastrite</option>
+              <option value="Lithiase biliaire">Lithiase biliaire</option>
+              <option value="Hépatopathie chronique">Hépatopathie chronique / Cirrhose</option>
+            </optgroup>
+
+            <optgroup label="Néphrologie et urologie">
+              <option value="Insuffisance rénale">Insuffisance rénale chronique</option>
+              <option value="Lithiase urinaire">Lithiase urinaire</option>
+              <option value="HBP">Hypertrophie bénigne prostate (HBP)</option>
+            </optgroup>
+
+            <optgroup label="Appareil locomoteur">
+              <option value="Arthrose">Arthrose</option>
+              <option value="Ostéoporose">Ostéoporose</option>
+            </optgroup>
+
+            <optgroup label="Oncologie et immuno-allergie">
+              <option value="Cancer rémission/traité">Cancer traité ou en rémission</option>
+              <option value="Terrain allergique">Terrain allergique documenté</option>
+            </optgroup>
+          </select>
+          <div class="tag-container" id="atcd-tags"></div>
+        </div>
+
+        <!-- TRAITEMENTS -->
+        <div class="field">
+          <label for="ttt-input">Traitements en cours</label>
+          <div class="input-btn-group">
+            <input type="text" id="ttt-input" placeholder="ex: Kardegic 75, Bisoprolol 2.5">
+            <button type="button" class="btn-add" onclick="addTagFromInput('ttt-input', 'ttt-tags')">Ajouter</button>
+          </div>
+          <div class="tag-container" id="ttt-tags"></div>
+        </div>
+
+        <!-- ALLERGIES -->
+        <div class="field">
+          <label for="allergies-input">Allergies</label>
+          <div class="input-btn-group">
+            <input type="text" id="allergies-input" placeholder="ex: Pénicilline, Morphine">
+            <button type="button" class="btn-add" onclick="addTagFromInput('allergies-input', 'allergies-tags')">Ajouter</button>
+          </div>
+          <div class="tag-container" id="allergies-tags"></div>
+        </div>
+
+        <!-- HOSPITALISATION RÉCENTE -->
+        <div class="field">
+          <label>Hospitalisation récente</label>
+          <div class="row-2" style="margin-bottom: 8px;">
+            <select id="hospit-mois"></select>
+            <select id="hospit-annee"></select>
+          </div>
+          <select id="hospit-service">
+            <option value="Aucune">Aucune hospitalisation récente</option>
+            
+            <optgroup label="Soins critiques et urgences">
+              <option value="Urgences / UHCD">Urgences / UHCD</option>
+              <option value="Réanimation">Réanimation polyvalente / médicale / chirurgicale</option>
+              <option value="Soins intensifs (USIC/USINV)">Soins intensifs polyvalents / USIC / USINV</option>
+              <option value="Surveillance continue (USC)">Surveillance continue (USC)</option>
+            </optgroup>
+
+            <optgroup label="Médecine de spécialité">
+              <option value="Cardiologie">Cardiologie</option>
+              <option value="Pneumologie">Pneumologie</option>
+              <option value="Gastro-entérologie">Gastro-entérologie et hépatologie</option>
+              <option value="Neurologie">Neurologie</option>
+              <option value="Médecine interne">Médecine interne</option>
+              <option value="Maladies infectieuses">Maladies infectieuses et tropicales (MIT)</option>
+              <option value="Oncologie médicale">Oncologie médicale</option>
+              <option value="Hématologie clinique">Hématologie clinique</option>
+              <option value="Néphrologie">Néphrologie</option>
+              <option value="Endocrinologie">Endocrinologie-diabétologie</option>
+              <option value="Rhumatologie">Rhumatologie</option>
+              <option value="Dermatologie">Dermatologie</option>
+              <option value="Gériatrie aiguë (UGA)">Gériatrie aiguë (UGA)</option>
+            </optgroup>
+
+            <optgroup label="Chirurgie">
+              <option value="Chirurgie orthopédique">Chirurgie orthopédique et traumatologique</option>
+              <option value="Chirurgie viscérale">Chirurgie viscérale et digestive</option>
+              <option value="Chirurgie vasculaire">Chirurgie vasculaire</option>
+              <option value="Urologie">Urologie</option>
+              <option value="Neurochirurgie">Neurochirurgie</option>
+              <option value="ORL">ORL et chirurgie cervico-faciale</option>
+              <option value="Chirurgie thoracique">Chirurgie thoracique</option>
+            </optgroup>
+
+            <optgroup label="Femme, mère, enfant">
+              <option value="Maternité">Maternité / Suites de couches</option>
+              <option value="Gynécologie">Gynécologie médicale et chirurgicale</option>
+              <option value="Pédiatrie générale">Pédiatrie générale</option>
+              <option value="Néonatologie">Néonatologie</option>
+            </optgroup>
+
+            <optgroup label="Santé mentale et post-aigu">
+              <option value="Psychiatrie générale">Psychiatrie générale (adulte)</option>
+              <option value="SMR / SSR">Soins médicaux et de réadaptation (SMR, ex-SSR)</option>
+            </optgroup>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- BOUTONS BAS DE PAGE 2 -->
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage(1)">⬅ Identité</button>
+        <button type="button" class="btn-nav" onclick="goToPage(3)">XABCDE ➔</button>
+      </div>
+    </div>
+
+    <!-- PAGE 3 (EN ATTENTE DE TES CONSIGNES) -->
+    <div id="page-3" class="page">
+      <div class="card" style="text-align: center; padding: 40px 16px;">
+        <h3 style="margin-bottom: 12px;">Page 3 : XABCDE</h3>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">En attente de tes instructions pour la construction de cette page.</p>
+        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Revenir à l'Anamnèse</button>
+      </div>
+    </div>
+
   </div>
-
-  <!-- TAB 2 : XABCDE -->
-  <div id="tab-xabcde" class="tab-content">
-    <div class="section-title">Bilan Primaire & Gestes</div>
-
-    <!-- X -->
-    <div class="card">
-      <label>X - Hémorragies critiques</label>
-      <input type="text" id="desc_x" placeholder="Détail hémorragie / geste...">
-      <div class="tag-cloud">
-        <button type="button" class="tag" onclick="toggleTag(this, 'desc_x', 'Pas d\'hémorragie critique')">RAS</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_x', 'PST Compressif')">PST Hémos</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_x', 'Garrot posé')">Garrot</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_x', 'Celox')">Celox</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_x', 'Ceinture pelvienne')">C. Pelvienne</button>
-      </div>
-    </div>
-
-    <!-- A -->
-    <div class="card">
-      <label>A - Voies Aériennes & Rachis</label>
-      <input type="text" id="desc_a" placeholder="État des VA / rachis...">
-      <div class="tag-cloud">
-        <button type="button" class="tag" onclick="toggleTag(this, 'desc_a', 'VA libres')">Libres</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_a', 'VA menacées')">Menacées</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_a', 'VA obstruées')">Obstruées</button>
-        <button type="button" class="tag" onclick="toggleTag(this, 'desc_a', 'Collier cervical')">Collier Cerv.</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_a', 'Canule Guedel')">Guedel</button>
-      </div>
-    </div>
-
-    <!-- B -->
-    <div class="card">
-      <label>B - Respiration</label>
-      <input type="text" id="desc_b" placeholder="Fréquence, auscultation...">
-      <div class="tag-cloud">
-        <button type="button" class="tag" onclick="toggleTag(this, 'desc_b', 'Eupnéique')">Eupnéique</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Polypnée')">Polypnée</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Tirage')">Tirage</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Balancement')">Balancement</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Cyanose')">Cyanose</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Sueurs')">Sueurs</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Parole difficile')">Parole diff.</button>
-        <button type="button" class="tag" onclick="toggleTag(this, 'desc_b', 'MV libre bilatéral')">MV libre bilat.</button>
-      </div>
-    </div>
-
-    <!-- C -->
-    <div class="card">
-      <label>C - Circulation</label>
-      <input type="text" id="desc_c" placeholder="Pouls, perfusion, TRC...">
-      <div class="tag-cloud">
-        <button type="button" class="tag" onclick="toggleTag(this, 'desc_c', 'Radial bien perçu')">Radial perçu</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_c', 'Radial impalpable')">Radial impalpable</button>
-        <button type="button" class="tag" onclick="toggleTag(this, 'desc_c', 'Régulier')">Régulier</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_c', 'Irrégulier')">Irrégulier</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_c', 'Filant')">Filant</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_c', 'TRC > 2s')">TRC > 2s</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_c', 'Marbrures')">Marbrures</button>
-      </div>
-    </div>
-
-    <!-- D -->
-    <div class="card">
-      <label>D - Neurologie</label>
-      <input type="text" id="desc_d" placeholder="AVPU, motricité, pupilles...">
-      <div class="tag-cloud">
-        <button type="button" class="tag" onclick="toggleTag(this, 'desc_d', 'A (Alerte)')">A (Alerte)</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_d', 'V (Réactif voix)')">V (Voix)</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_d', 'P (Réactif douleur)')">P (Douleur)</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_d', 'U (Inconscient)')">U (Coma)</button>
-        <button type="button" class="tag" onclick="toggleTag(this, 'desc_d', 'Pupilles ISO-RÉACT')">Pupilles ISO</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_d', 'Anisocorie')">Anisocorie</button>
-        <button type="button" class="tag" onclick="toggleTag(this, 'desc_d', 'Pas de déficit moteur')">Sans déficit</button>
-        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_d', 'Déficit moteur')">Déficit moteur</button>
-      </div>
-    </div>
-
-    <!-- E -->
-    <div class="card">
-      <label>E - Exposition & Traumatologie</label>
-      <input type="text" id="desc_e" placeholder="Hypo/hyperthermie, déformations, plaies...">
-    </div>
-  </div>
-
-  <!-- TAB 3 : CONSTANTES -->
-  <div id="tab-constantes" class="tab-content">
-    <div class="section-title">Évolution des Constantes</div>
-    <div class="card">
-      <table class="const-table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>T0</th>
-            <th>T1 (+15m)</th>
-            <th>T2 (Fin)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>PA</td>
-            <td><input type="text" id="ta_0" placeholder="ex: 13/8"></td>
-            <td><input type="text" id="ta_1" placeholder="PA T1"></td>
-            <td><input type="text" id="ta_2" placeholder="PA T2"></td>
-          </tr>
-          <tr>
-            <td>FC</td>
-            <td><input type="number" id="fc_0" placeholder="bpm"></td>
-            <td><input type="number" id="fc_1" placeholder="bpm"></td>
-            <td><input type="number" id="fc_2" placeholder="bpm"></td>
-          </tr>
-          <tr>
-            <td>SpO2</td>
-            <td><input type="text" id="sat_0" placeholder="ex: 97%"></td>
-            <td><input type="text" id="sat_1" placeholder="%"></td>
-            <td><input type="text" id="sat_2" placeholder="%"></td>
-          </tr>
-          <tr>
-            <td>FR</td>
-            <td><input type="number" id="fr_0" placeholder="/min"></td>
-            <td><input type="number" id="fr_1" placeholder="/min"></td>
-            <td><input type="number" id="fr_2" placeholder="/min"></td>
-          </tr>
-          <tr>
-            <td>HGT</td>
-            <td><input type="text" id="hgt_0" placeholder="g/L"></td>
-            <td><input type="text" id="hgt_1" placeholder="g/L"></td>
-            <td><input type="text" id="hgt_2" placeholder="g/L"></td>
-          </tr>
-          <tr>
-            <td>EN / EVA</td>
-            <td><input type="number" id="en_0" placeholder="/10"></td>
-            <td><input type="number" id="en_1" placeholder="/10"></td>
-            <td><input type="number" id="en_2" placeholder="/10"></td>
-          </tr>
-          <tr>
-            <td>T° / HGB</td>
-            <td><input type="text" id="autre_0" placeholder="°C / Hgb"></td>
-            <td><input type="text" id="autre_1" placeholder="°C"></td>
-            <td><input type="text" id="autre_2" placeholder="°C"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- TAB 4 : RÉGULATION & CR FINAL -->
-  <div id="tab-cr" class="tab-content">
-    <div class="section-title">Régulation & Décisions (SAED)</div>
-    <div class="card">
-      <div class="form-group">
-        <label>Actions / Accord Médecin Régulateur</label>
-        <textarea id="saed_actions" rows="3" placeholder="Pose VVP 18G, Analgésie selon protocole, accord transport direct hôpital..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>Réévaluation XABCDE & Évolution</label>
-        <textarea id="reeval" rows="2" placeholder="Diminution de la douleur, hémodynamique stable pendant le transport..."></textarea>
-      </div>
-    </div>
-
-    <button type="button" class="btn-action" onclick="buildReport()">📝 Générer le Compte Rendu</button>
-    <button type="button" class="btn-action copy" onclick="copyReport()">📋 Copier le Compte Rendu</button>
-
-    <div class="card" style="padding: 10px; margin-top: 10px;">
-      <textarea id="report-output" readonly placeholder="Le texte formaté apparaîtra ici..."></textarea>
-    </div>
-  </div>
-
-  <!-- BARRE DE NAVIGATION EN BAS -->
-  <nav class="bottom-nav">
-    <button type="button" class="nav-btn active" onclick="switchTab('tab-patient', this)">
-      <span class="nav-icon">👤</span>
-      Patient
-    </button>
-    <button type="button" class="nav-btn" onclick="switchTab('tab-xabcde', this)">
-      <span class="nav-icon">🚨</span>
-      XABCDE
-    </button>
-    <button type="button" class="nav-btn" onclick="switchTab('tab-constantes', this)">
-      <span class="nav-icon">📈</span>
-      Constantes
-    </button>
-    <button type="button" class="nav-btn" onclick="switchTab('tab-cr', this)">
-      <span class="nav-icon">📄</span>
-      Bilan / CR
-    </button>
-  </nav>
 
   <script>
-    let isP0 = false;
-    function toggleP0() {
-      isP0 = !isP0;
-      const btn = document.getElementById('btn-p0');
-      btn.textContent = isP0 ? 'P0 : OUI' : 'P0 : NON';
-      btn.classList.toggle('active', isP0);
+    // INITIALISATION DES ROULETTES (SELECTS)
+    window.addEventListener('DOMContentLoaded', () => {
+      // Poids 30 à 180 kg (70 par défaut)
+      const poidsSelect = document.getElementById('patient-poids');
+      for (let i = 20; i <= 200; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `${i} kg`;
+        if (i === 70) opt.selected = true;
+        poidsSelect.appendChild(opt);
+      }
+
+      // Délai 1 à 15
+      const delaiSelect = document.getElementById('delai-valeur');
+      for (let i = 1; i <= 15; i++) {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = i;
+        delaiSelect.appendChild(opt);
+      }
+
+      // Mois hospit
+      const moisSelect = document.getElementById('hospit-mois');
+      const mois = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+      mois.forEach((m, idx) => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        if (idx === new Date().getMonth()) opt.selected = true;
+        moisSelect.appendChild(opt);
+      });
+
+      // Années hospit
+      const anneeSelect = document.getElementById('hospit-annee');
+      const currentYear = new Date().getFullYear();
+      for (let y = currentYear; y >= currentYear - 5; y--) {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        anneeSelect.appendChild(opt);
+      }
+
+      // Motifs initiaux (P0 = non)
+      updateMotifs(false);
+    });
+
+    // GESTION P0 SWITCH & MOTIFS
+    const motifsP0Non = [
+      "Allergie",
+      "Antalgie",
+      "Brûlure",
+      "Dyspnée",
+      "Hypoglycémie"
+    ];
+
+    const motifsP0Oui = [
+      "ACR adulte",
+      "ACR enfant",
+      "Accouchement",
+      "Détresse respiratoire",
+      "Électrisé",
+      "Noyé"
+    ];
+
+    function onP0Change() {
+      const isChecked = document.getElementById('toggle-p0').checked;
+      const statusLabel = document.getElementById('p0-status');
+      statusLabel.textContent = isChecked ? 'P0 : OUI' : 'P0 : NON';
+      statusLabel.classList.toggle('active', isChecked);
+      updateMotifs(isChecked);
     }
 
-    function switchTab(tabId, btn) {
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      btn.classList.add('active');
+    function updateMotifs(isP0) {
+      const select = document.getElementById('motif-select');
+      select.innerHTML = '';
+      const list = isP0 ? motifsP0Oui : motifsP0Non;
+      list.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item;
+        opt.textContent = item;
+        select.appendChild(opt);
+      });
+    }
+
+    // NAVIGATION ENTRE PAGES
+    function goToPage(pageNumber) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(`page-${pageNumber}`).classList.add('active');
+      
+      const indicator = document.getElementById('page-indicator');
+      if (pageNumber === 1) indicator.textContent = '1. Identité';
+      if (pageNumber === 2) indicator.textContent = '2. Anamnèse';
+      if (pageNumber === 3) indicator.textContent = '3. XABCDE';
+
       window.scrollTo(0, 0);
     }
 
-    function toggleTag(btn, inputId, label) {
-      btn.classList.toggle('active');
+    // GESTION DES TAGS (ANTÉCÉDENTS, TRAITEMENTS, ALLERGIES)
+    function addAtcd(selectElem) {
+      const val = selectElem.value;
+      if (!val) return;
+      createTagBadge(val, 'atcd-tags');
+      selectElem.selectedIndex = 0; // reset select
+    }
+
+    function addTagFromInput(inputId, containerId) {
       const input = document.getElementById(inputId);
-      let list = input.value ? input.value.split(', ').filter(Boolean) : [];
-      if (btn.classList.contains('active')) {
-        if (!list.includes(label)) list.push(label);
-      } else {
-        list = list.filter(item => item !== label);
-      }
-      input.value = list.join(', ');
+      const val = input.value.trim();
+      if (!val) return;
+      createTagBadge(val, containerId);
+      input.value = '';
+      input.focus();
     }
 
-    function getVal(id, fallback = '-') {
-      const v = document.getElementById(id).value.trim();
-      return v || fallback;
+    function createTagBadge(text, containerId) {
+      const container = document.getElementById(containerId);
+      
+      // Empêcher les doublons stricts
+      const existing = Array.from(container.querySelectorAll('.tag-text')).map(el => el.textContent);
+      if (existing.includes(text)) return;
+
+      const badge = document.createElement('div');
+      badge.className = 'tag';
+      badge.innerHTML = `
+        <span class="tag-text">${text}</span>
+        <span class="tag-remove" onclick="this.parentElement.remove()">×</span>
+      `;
+      container.appendChild(badge);
     }
-
-    function buildReport() {
-      const p0State = isP0 ? 'OUI' : 'NON';
-      const text = 
-`=== TRANSMISSION UMHP / PSIS ===
-DOSSIER : ${getVal('umhp')} | P0 : ${p0State} | CODE/T2IH : ${getVal('t2ih')}
-PATIENT : ${getVal('patient')} | ÂGE : ${getVal('age')} | POIDS : ${getVal('poids')} kg
-DESTINATION : ${getVal('destination')}
-
-[MOTIF DE PRISE EN CHARGE]
-- Motif : ${getVal('motif')}
-- Délais : ${getVal('delai')}
-
-[TERRAIN & SAMPLER]
-- ATCD : ${getVal('atcd')}
-- Traitement : ${getVal('ttt')}
-- Allergies : ${getVal('allergies')}
-- Hospit récente : ${getVal('hospit')}
-
-[BILAN PRIMAIRE INITIAL XABCDE]
-- X (Hémorragies) : ${getVal('desc_x')}
-- A (Voies Aériennes) : ${getVal('desc_a')}
-- B (Respiration) : ${getVal('desc_b')}
-- C (Circulation) : ${getVal('desc_c')}
-- D (Neurologie) : ${getVal('desc_d')}
-- E (Exposition/Trauma) : ${getVal('desc_e')}
-
-[SÉRIE DES CONSTANTES]
-- T0 (Arrivée) : PA: ${getVal('ta_0')} | FC: ${getVal('fc_0')} | SpO2: ${getVal('sat_0')} | FR: ${getVal('fr_0')} | HGT: ${getVal('hgt_0')} | EN: ${getVal('en_0')}/10 | T°/Autre: ${getVal('autre_0')}
-- T1 (+15 min) : PA: ${getVal('ta_1')} | FC: ${getVal('fc_1')} | SpO2: ${getVal('sat_1')} | FR: ${getVal('fr_1')} | HGT: ${getVal('hgt_1')} | EN: ${getVal('en_1')}/10 | T°/Autre: ${getVal('autre_1')}
-- T2 (Fin/Transp) : PA: ${getVal('ta_2')} | FC: ${getVal('fc_2')} | SpO2: ${getVal('sat_2')} | FR: ${getVal('fr_2')} | HGT: ${getVal('hgt_2')} | EN: ${getVal('en_2')}/10 | T°/Autre: ${getVal('autre_2')}
-
-[DÉCISION RÉGULATION / ACTIONS / SAED]
-${getVal('saed_actions')}
-
-[RÉÉVALUATION SECONDAIRE]
-${getVal('reeval')}`;
-
-      document.getElementById('report-output').value = text;
-      document.getElementById('report-output').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function copyReport() {
-      const out = document.getElementById('report-output');
-      if (!out.value) buildReport();
-      navigator.clipboar
+  </script>
+</body>
+</html>
