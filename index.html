@@ -2,325 +2,519 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bilan SMUR / PSIS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Bilan UMHP / PSIS</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --accent: #0284c7;
-      --accent-hover: #0369a1;
-      --danger: #dc2626;
+      --bg: #090d16;
+      --card: #151f30;
+      --border: #23354e;
+      --accent: #38bdf8;
+      --accent-dark: #0284c7;
+      --danger: #ef4444;
+      --danger-bg: #451010;
+      --success: #22c55e;
       --text: #f8fafc;
-      --muted: #94a3b8;
-      --border: #334155;
+      --text-muted: #94a3b8;
     }
-    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); margin: 0; padding: 12px; }
-    h1 { font-size: 1.2rem; text-align: center; color: var(--accent); margin-bottom: 12px; text-transform: uppercase; }
-    fieldset { border: 1px solid var(--border); border-radius: 8px; background: var(--card); margin-bottom: 12px; padding: 10px; }
-    legend { font-weight: 700; color: var(--accent); padding: 0 6px; font-size: 0.9rem; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-    .field { display: flex; flex-direction: column; margin-bottom: 6px; }
-    label { font-size: 0.75rem; color: var(--muted); margin-bottom: 2px; }
-    input, select, textarea {
-      background: #0b1120; border: 1px solid var(--border); border-radius: 6px;
-      color: var(--text); padding: 8px; font-size: 0.85rem; width: 100%;
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 90px;
     }
-    input:focus, textarea:focus, select:focus { outline: 1px solid var(--accent); }
-    .tag-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
-    .tag-btn {
-      background: #334155; border: none; border-radius: 4px; color: var(--text);
-      font-size: 0.7rem; padding: 5px 8px; cursor: pointer;
+
+    header {
+      background: #0f172a;
+      padding: 16px 14px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .tag-btn.active { background: var(--accent); font-weight: bold; }
-    .tag-btn.danger.active { background: var(--danger); }
-    .actions { position: sticky; bottom: 10px; z-index: 100; margin-top: 15px; display: flex; gap: 8px; }
-    button.main-btn {
-      flex: 1; padding: 12px; border-radius: 8px; border: none;
-      font-weight: 700; font-size: 0.95rem; cursor: pointer; background: var(--accent); color: white;
+    header h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: 0.5px; color: var(--accent); }
+    .badge-p0 {
+      background: var(--border);
+      color: var(--text-muted);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      border: 1px solid var(--border);
     }
-    button.main-btn:active { background: var(--accent-hover); }
-    #output {
-      width: 100%; height: 260px; background: #000; color: #38bdf8;
-      font-family: monospace; font-size: 0.8rem; padding: 10px;
-      border-radius: 8px; border: 1px solid var(--border); margin-top: 10px; white-space: pre-wrap;
+    .badge-p0.active { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+    /* CONTENEUR ONGLETS */
+    .tab-content { display: none; padding: 14px; }
+    .tab-content.active { display: block; animation: fadeIn 0.15s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 18px 0 10px 0;
+      letter-spacing: 0.5px;
     }
+    .section-title:first-child { margin-top: 0; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .form-group { margin-bottom: 12px; }
+    .form-group:last-child { margin-bottom: 0; }
+    label { display: block; font-size: 0.95rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+
+    input, textarea, select {
+      width: 100%;
+      background: #0a101d;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 1.05rem;
+      outline: none;
+    }
+    input:focus, textarea:focus { border-color: var(--accent); }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+    /* BOUTONS TACTILES LARGES */
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .tag {
+      background: #1c2b42;
+      border: 1.5px solid var(--border);
+      color: #e2e8f0;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tag.active {
+      background: var(--accent-dark);
+      border-color: var(--accent);
+      color: white;
+    }
+    .tag.danger.active {
+      background: var(--danger);
+      border-color: #b91c1c;
+      color: white;
+    }
+
+    /* MATRICE CONSTANTES */
+    .const-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+    .const-table th { color: var(--text-muted); font-size: 0.85rem; padding: 4px; text-align: center; }
+    .const-table td { padding: 4px; }
+    .const-table td:first-child { font-weight: bold; color: var(--accent); width: 60px; font-size: 0.95rem; }
+    .const-table input { padding: 10px 6px; text-align: center; font-size: 1rem; }
+
+    /* NAVIGATION BAS DE PAGE */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: #0f172a;
+      border-top: 1px solid var(--border);
+      display: flex;
+      z-index: 100;
+    }
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      gap: 3px;
+    }
+    .nav-btn.active { color: var(--accent); }
+    .nav-icon { font-size: 1.25rem; }
+
+    /* TEXTE CR */
+    #report-output {
+      width: 100%;
+      height: 280px;
+      background: #050811;
+      color: #7dd3fc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+
+    .btn-action {
+      display: block;
+      width: 100%;
+      background: var(--accent-dark);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+    .btn-action.copy { background: var(--success); }
+    .btn-action:active { filter: brightness(0.9); }
   </style>
 </head>
 <body>
 
-  <h1>Saisie Bilan Intervention SMUR / PSIS</h1>
+  <header>
+    <h1>UMHP / PSIS</h1>
+    <button type="button" class="badge-p0" id="btn-p0" onclick="toggleP0()">P0 : NON</button>
+  </header>
 
-  <!-- MISSION & IDENTITÉ -->
-  <fieldset>
-    <legend>Mission & Identité</legend>
-    <div class="grid-3">
-      <div class="field">
-        <label>UMHP / N° Dossier</label>
-        <input type="text" id="umhp">
+  <!-- TAB 1 : IDENTITÉ & MOTIF -->
+  <div id="tab-patient" class="tab-content active">
+    <div class="section-title">Mission & Patient</div>
+    <div class="card">
+      <div class="row-2 form-group">
+        <div>
+          <label>N° UMHP</label>
+          <input type="text" id="umhp" placeholder="ex: 1234">
+        </div>
+        <div>
+          <label>T2IH / Code</label>
+          <input type="text" id="t2ih">
+        </div>
       </div>
-      <div class="field">
-        <label>Urgence (P0)</label>
-        <select id="p0"><option value="Non">Non</option><option value="Oui">Oui</option></select>
+      <div class="form-group">
+        <label>Patient (Nom / Prénom)</label>
+        <input type="text" id="patient" placeholder="ex: M. DUPONT Jean">
       </div>
-      <div class="field">
-        <label>Code Mission / T2IH</label>
-        <input type="text" id="t2ih">
+      <div class="row-2 form-group">
+        <div>
+          <label>Âge / Date Naiss.</label>
+          <input type="text" id="age" placeholder="ex: 54a (04/02/72)">
+        </div>
+        <div>
+          <label>Poids (kg)</label>
+          <input type="number" id="poids" placeholder="ex: 80">
+        </div>
       </div>
-    </div>
-    <div class="grid-2">
-      <div class="field">
-        <label>Patient (Nom / Prénom / Sexe)</label>
-        <input type="text" id="patient" placeholder="M./Mme...">
-      </div>
-      <div class="field">
-        <label>Âge / Né(e) le</label>
-        <input type="text" id="age" placeholder="ex: 45 ans (12/03/81)">
-      </div>
-    </div>
-    <div class="grid-2">
-      <div class="field">
-        <label>Poids (kg)</label>
-        <input type="number" id="poids" placeholder="ex: 75">
-      </div>
-      <div class="field">
-        <label>Vecteur / Dest.</label>
-        <input type="text" id="vecteur" placeholder="PSIS / Hôpital Nord...">
+      <div class="form-group">
+        <label>Destination / Vecteur</label>
+        <input type="text" id="destination" placeholder="ex: Hôpital Nord / PSIS">
       </div>
     </div>
-  </fieldset>
 
-  <!-- MOTIF & ANAMNÈSE -->
-  <fieldset>
-    <legend>Motif d'intervention & SAMPLER</legend>
-    <div class="grid-2">
-      <div class="field">
-        <label>Pour / Symptômes</label>
-        <input type="text" id="motif" placeholder="Douleur tho, détresse resp...">
+    <div class="section-title">Motif & Anamnèse</div>
+    <div class="card">
+      <div class="form-group">
+        <label>Motif de prise en charge</label>
+        <input type="text" id="motif" placeholder="ex: Douleur thoracique constrictive">
       </div>
-      <div class="field">
-        <label>Évoluant depuis</label>
-        <input type="text" id="delai" placeholder="ex: 45 min, ce matin...">
+      <div class="form-group">
+        <label>Délai d'apparition</label>
+        <input type="text" id="delai" placeholder="ex: depuis 1h, subit au repos">
       </div>
-    </div>
-    <div class="field">
-      <label>Maladies / ATCD</label>
-      <input type="text" id="atcd" placeholder="HTA, Diabète, Coronaropathie...">
-    </div>
-    <div class="grid-2">
-      <div class="field">
+      <div class="form-group">
+        <label>Antécédents (Maladies)</label>
+        <input type="text" id="atcd" placeholder="HTA, Diabète, Infarctus...">
+      </div>
+      <div class="form-group">
         <label>Traitements habituels</label>
-        <input type="text" id="ttt">
+        <input type="text" id="ttt" placeholder="Kardegic, Bisoprolol...">
       </div>
-      <div class="field">
-        <label>Allergies</label>
-        <input type="text" id="allergies" placeholder="ex: Pénicilline, RAS...">
-      </div>
-    </div>
-    <div class="field">
-      <label>Hospitalisation récente</label>
-      <input type="text" id="hospit">
-    </div>
-  </fieldset>
-
-  <!-- BILAN XABCDE -->
-  <fieldset>
-    <legend>Bilan Primaire XABCDE & Gestes</legend>
-    
-    <div class="field">
-      <label>X - Hémorragies critiques & Gestes</label>
-      <input type="text" id="desc_x" placeholder="Détail hémorragie...">
-      <div class="tag-grid" data-target="desc_x">
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_x', 'PST Hémos')">PST Hémos</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_x', 'Garrot')">Garrot</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_x', 'Celox')">Celox</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_x', 'Ceinture Pelvienne')">C. Pelvienne</button>
-        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_x', 'RAS')">RAS</button>
+      <div class="row-2 form-group">
+        <div>
+          <label>Allergies</label>
+          <input type="text" id="allergies" placeholder="ex: Aucune / Péni">
+        </div>
+        <div>
+          <label>Hospit. récente</label>
+          <input type="text" id="hospit" placeholder="Non / Détail...">
+        </div>
       </div>
     </div>
-
-    <div class="field">
-      <label>A - Voies Aériennes & Rachis</label>
-      <input type="text" id="desc_a" placeholder="Libres, risque, geste...">
-      <div class="tag-grid" data-target="desc_a">
-        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_a', 'VA Libres')">Libres</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_a', 'VA à risque')">À risque</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_a', 'VA Obstruées')">Obstruées</button>
-        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_a', 'Collier cervical')">Collier cerv.</button>
-        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_a', 'Guedel')">Guedel</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>B - Respiration & Signes de lutte</label>
-      <input type="text" id="desc_b" placeholder="Fréquence, auscultation...">
-      <div class="tag-grid">
-        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_b', 'Eupnéique')">Eupnéique</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Polypnée')">Polypnée</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Tirage')">Tirage</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Balancement')">Balancement</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Cyanose')">Cyanose</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Sueurs')">Sueurs</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Parole difficile')">Parole diff.</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>C - Circulation & Perfusion</label>
-      <input type="text" id="desc_c" placeholder="Pouls, TRC, marbrures...">
-      <div class="tag-grid">
-        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_c', 'Radial perçu')">Radial perçu</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_c', 'Radial non perçu')">Radial impalpable</button>
-        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_c', 'Régulier')">Régulier</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_c', 'Irrégulier')">Irrégulier</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_c', 'Filant')">Filant</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_c', 'TRC > 3s')">TRC > 3s</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_c', 'Marbrures')">Marbrures</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>D - Neurologie</label>
-      <input type="text" id="desc_d" placeholder="AVPU, motricité, pupilles...">
-      <div class="tag-grid">
-        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_d', 'A (Alerte)')">A</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_d', 'V (Voix)')">V</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_d', 'P (Douleur)')">P</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_d', 'U (Inconscient)')">U</button>
-        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_d', 'Pupilles ISO-RÉACT')">Pupilles ISO</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_d', 'Anisocorie')">Anisocorie</button>
-        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_d', 'Déficit neuro: NON')">Sans déficit</button>
-        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_d', 'Déficit moteur')">Déficit moteur</button>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>E - Exposition & Lésions</label>
-      <input type="text" id="desc_e" placeholder="Hypo/hyperthermie, dermabrasions, fractures...">
-    </div>
-  </fieldset>
-
-  <!-- CONSTANTES -->
-  <fieldset>
-    <legend>Séries de Constantes</legend>
-    <div class="grid-3" style="font-size:0.75rem; font-weight:bold; color:var(--muted); text-align:center;">
-      <div>T0 (Arrivée)</div>
-      <div>T1 (+15m)</div>
-      <div>T2 (Sortie)</div>
-    </div>
-    <!-- TA -->
-    <div class="grid-3">
-      <input type="text" id="ta_0" placeholder="PA T0 (ex: 130/80)">
-      <input type="text" id="ta_1" placeholder="PA T1">
-      <input type="text" id="ta_2" placeholder="PA T2">
-    </div>
-    <!-- FC & SAT -->
-    <div class="grid-3">
-      <input type="text" id="fc_sat_0" placeholder="FC/Sat T0 (ex: 85 / 98%)">
-      <input type="text" id="fc_sat_1" placeholder="FC/Sat T1">
-      <input type="text" id="fc_sat_2" placeholder="FC/Sat T2">
-    </div>
-    <!-- FR & HGT -->
-    <div class="grid-3">
-      <input type="text" id="fr_hgt_0" placeholder="FR / HGT (ex: 18 / 1,10)">
-      <input type="text" id="fr_hgt_1" placeholder="FR / HGT T1">
-      <input type="text" id="fr_hgt_2" placeholder="FR / HGT T2">
-    </div>
-    <!-- EVA / T° / HGB -->
-    <div class="grid-3">
-      <input type="text" id="autre_0" placeholder="EN / T° / HGB">
-      <input type="text" id="autre_1" placeholder="EN / T° T1">
-      <input type="text" id="autre_2" placeholder="EN / T° T2">
-    </div>
-  </fieldset>
-
-  <!-- ACTIONS, SAED & TRANSMISSION -->
-  <fieldset>
-    <legend>SAED & Thérapeutique</legend>
-    <div class="field">
-      <label>Accord Régulation / Actions entreprises</label>
-      <textarea id="saed_actions" rows="2" placeholder="Pose VVP, analgésie selon protocole, accord régul..."></textarea>
-    </div>
-    <div class="field">
-      <label>Réévaluation XABCDE / Évolution</label>
-      <textarea id="reeval" rows="2" placeholder="Diminution douleur, stabilité hémodynamique..."></textarea>
-    </div>
-  </fieldset>
-
-  <div class="actions">
-    <button class="main-btn" onclick="generateReport()">Générer le CR</button>
-    <button class="main-btn" style="background: #16a34a;" onclick="copyReport()">Copier</button>
   </div>
 
-  <textarea id="output" readonly placeholder="Le compte rendu apparaîtra ici..."></textarea>
+  <!-- TAB 2 : XABCDE -->
+  <div id="tab-xabcde" class="tab-content">
+    <div class="section-title">Bilan Primaire & Gestes</div>
+
+    <!-- X -->
+    <div class="card">
+      <label>X - Hémorragies critiques</label>
+      <input type="text" id="desc_x" placeholder="Détail hémorragie / geste...">
+      <div class="tag-cloud">
+        <button type="button" class="tag" onclick="toggleTag(this, 'desc_x', 'Pas d\'hémorragie critique')">RAS</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_x', 'PST Compressif')">PST Hémos</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_x', 'Garrot posé')">Garrot</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_x', 'Celox')">Celox</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_x', 'Ceinture pelvienne')">C. Pelvienne</button>
+      </div>
+    </div>
+
+    <!-- A -->
+    <div class="card">
+      <label>A - Voies Aériennes & Rachis</label>
+      <input type="text" id="desc_a" placeholder="État des VA / rachis...">
+      <div class="tag-cloud">
+        <button type="button" class="tag" onclick="toggleTag(this, 'desc_a', 'VA libres')">Libres</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_a', 'VA menacées')">Menacées</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_a', 'VA obstruées')">Obstruées</button>
+        <button type="button" class="tag" onclick="toggleTag(this, 'desc_a', 'Collier cervical')">Collier Cerv.</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_a', 'Canule Guedel')">Guedel</button>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="card">
+      <label>B - Respiration</label>
+      <input type="text" id="desc_b" placeholder="Fréquence, auscultation...">
+      <div class="tag-cloud">
+        <button type="button" class="tag" onclick="toggleTag(this, 'desc_b', 'Eupnéique')">Eupnéique</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Polypnée')">Polypnée</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Tirage')">Tirage</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Balancement')">Balancement</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Cyanose')">Cyanose</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Sueurs')">Sueurs</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_b', 'Parole difficile')">Parole diff.</button>
+        <button type="button" class="tag" onclick="toggleTag(this, 'desc_b', 'MV libre bilatéral')">MV libre bilat.</button>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="card">
+      <label>C - Circulation</label>
+      <input type="text" id="desc_c" placeholder="Pouls, perfusion, TRC...">
+      <div class="tag-cloud">
+        <button type="button" class="tag" onclick="toggleTag(this, 'desc_c', 'Radial bien perçu')">Radial perçu</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_c', 'Radial impalpable')">Radial impalpable</button>
+        <button type="button" class="tag" onclick="toggleTag(this, 'desc_c', 'Régulier')">Régulier</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_c', 'Irrégulier')">Irrégulier</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_c', 'Filant')">Filant</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_c', 'TRC > 2s')">TRC > 2s</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_c', 'Marbrures')">Marbrures</button>
+      </div>
+    </div>
+
+    <!-- D -->
+    <div class="card">
+      <label>D - Neurologie</label>
+      <input type="text" id="desc_d" placeholder="AVPU, motricité, pupilles...">
+      <div class="tag-cloud">
+        <button type="button" class="tag" onclick="toggleTag(this, 'desc_d', 'A (Alerte)')">A (Alerte)</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_d', 'V (Réactif voix)')">V (Voix)</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_d', 'P (Réactif douleur)')">P (Douleur)</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_d', 'U (Inconscient)')">U (Coma)</button>
+        <button type="button" class="tag" onclick="toggleTag(this, 'desc_d', 'Pupilles ISO-RÉACT')">Pupilles ISO</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_d', 'Anisocorie')">Anisocorie</button>
+        <button type="button" class="tag" onclick="toggleTag(this, 'desc_d', 'Pas de déficit moteur')">Sans déficit</button>
+        <button type="button" class="tag danger" onclick="toggleTag(this, 'desc_d', 'Déficit moteur')">Déficit moteur</button>
+      </div>
+    </div>
+
+    <!-- E -->
+    <div class="card">
+      <label>E - Exposition & Traumatologie</label>
+      <input type="text" id="desc_e" placeholder="Hypo/hyperthermie, déformations, plaies...">
+    </div>
+  </div>
+
+  <!-- TAB 3 : CONSTANTES -->
+  <div id="tab-constantes" class="tab-content">
+    <div class="section-title">Évolution des Constantes</div>
+    <div class="card">
+      <table class="const-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>T0</th>
+            <th>T1 (+15m)</th>
+            <th>T2 (Fin)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PA</td>
+            <td><input type="text" id="ta_0" placeholder="ex: 13/8"></td>
+            <td><input type="text" id="ta_1" placeholder="PA T1"></td>
+            <td><input type="text" id="ta_2" placeholder="PA T2"></td>
+          </tr>
+          <tr>
+            <td>FC</td>
+            <td><input type="number" id="fc_0" placeholder="bpm"></td>
+            <td><input type="number" id="fc_1" placeholder="bpm"></td>
+            <td><input type="number" id="fc_2" placeholder="bpm"></td>
+          </tr>
+          <tr>
+            <td>SpO2</td>
+            <td><input type="text" id="sat_0" placeholder="ex: 97%"></td>
+            <td><input type="text" id="sat_1" placeholder="%"></td>
+            <td><input type="text" id="sat_2" placeholder="%"></td>
+          </tr>
+          <tr>
+            <td>FR</td>
+            <td><input type="number" id="fr_0" placeholder="/min"></td>
+            <td><input type="number" id="fr_1" placeholder="/min"></td>
+            <td><input type="number" id="fr_2" placeholder="/min"></td>
+          </tr>
+          <tr>
+            <td>HGT</td>
+            <td><input type="text" id="hgt_0" placeholder="g/L"></td>
+            <td><input type="text" id="hgt_1" placeholder="g/L"></td>
+            <td><input type="text" id="hgt_2" placeholder="g/L"></td>
+          </tr>
+          <tr>
+            <td>EN / EVA</td>
+            <td><input type="number" id="en_0" placeholder="/10"></td>
+            <td><input type="number" id="en_1" placeholder="/10"></td>
+            <td><input type="number" id="en_2" placeholder="/10"></td>
+          </tr>
+          <tr>
+            <td>T° / HGB</td>
+            <td><input type="text" id="autre_0" placeholder="°C / Hgb"></td>
+            <td><input type="text" id="autre_1" placeholder="°C"></td>
+            <td><input type="text" id="autre_2" placeholder="°C"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB 4 : RÉGULATION & CR FINAL -->
+  <div id="tab-cr" class="tab-content">
+    <div class="section-title">Régulation & Décisions (SAED)</div>
+    <div class="card">
+      <div class="form-group">
+        <label>Actions / Accord Médecin Régulateur</label>
+        <textarea id="saed_actions" rows="3" placeholder="Pose VVP 18G, Analgésie selon protocole, accord transport direct hôpital..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Réévaluation XABCDE & Évolution</label>
+        <textarea id="reeval" rows="2" placeholder="Diminution de la douleur, hémodynamique stable pendant le transport..."></textarea>
+      </div>
+    </div>
+
+    <button type="button" class="btn-action" onclick="buildReport()">📝 Générer le Compte Rendu</button>
+    <button type="button" class="btn-action copy" onclick="copyReport()">📋 Copier le Compte Rendu</button>
+
+    <div class="card" style="padding: 10px; margin-top: 10px;">
+      <textarea id="report-output" readonly placeholder="Le texte formaté apparaîtra ici..."></textarea>
+    </div>
+  </div>
+
+  <!-- BARRE DE NAVIGATION EN BAS -->
+  <nav class="bottom-nav">
+    <button type="button" class="nav-btn active" onclick="switchTab('tab-patient', this)">
+      <span class="nav-icon">👤</span>
+      Patient
+    </button>
+    <button type="button" class="nav-btn" onclick="switchTab('tab-xabcde', this)">
+      <span class="nav-icon">🚨</span>
+      XABCDE
+    </button>
+    <button type="button" class="nav-btn" onclick="switchTab('tab-constantes', this)">
+      <span class="nav-icon">📈</span>
+      Constantes
+    </button>
+    <button type="button" class="nav-btn" onclick="switchTab('tab-cr', this)">
+      <span class="nav-icon">📄</span>
+      Bilan / CR
+    </button>
+  </nav>
 
   <script>
-    function toggleTag(btn, inputId, text) {
+    let isP0 = false;
+    function toggleP0() {
+      isP0 = !isP0;
+      const btn = document.getElementById('btn-p0');
+      btn.textContent = isP0 ? 'P0 : OUI' : 'P0 : NON';
+      btn.classList.toggle('active', isP0);
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function toggleTag(btn, inputId, label) {
       btn.classList.toggle('active');
       const input = document.getElementById(inputId);
-      let values = input.value ? input.value.split(', ').filter(Boolean) : [];
-      
+      let list = input.value ? input.value.split(', ').filter(Boolean) : [];
       if (btn.classList.contains('active')) {
-        if (!values.includes(text)) values.push(text);
+        if (!list.includes(label)) list.push(label);
       } else {
-        values = values.filter(v => v !== text);
+        list = list.filter(item => item !== label);
       }
-      input.value = values.join(', ');
+      input.value = list.join(', ');
     }
 
-    function val(id) {
-      return document.getElementById(id).value.trim() || 'Non renseigné';
+    function getVal(id, fallback = '-') {
+      const v = document.getElementById(id).value.trim();
+      return v || fallback;
     }
 
-    function generateReport() {
-      const cr = 
-`=== TRANSMISSION SMUR / PSIS ===
-DOSSIER : ${val('umhp')} | P0 : ${val('p0')} | T2IH : ${val('t2ih')}
-PATIENT : ${val('patient')} | Âge : ${val('age')} | Poids : ${val('poids')} kg
-VECTEUR / DEST : ${val('vecteur')}
+    function buildReport() {
+      const p0State = isP0 ? 'OUI' : 'NON';
+      const text = 
+`=== TRANSMISSION UMHP / PSIS ===
+DOSSIER : ${getVal('umhp')} | P0 : ${p0State} | CODE/T2IH : ${getVal('t2ih')}
+PATIENT : ${getVal('patient')} | ÂGE : ${getVal('age')} | POIDS : ${getVal('poids')} kg
+DESTINATION : ${getVal('destination')}
 
-MOTIF DE PRISE EN CHARGE :
-- Motif : ${val('motif')} (Depuis : ${val('delai')})
+[MOTIF DE PRISE EN CHARGE]
+- Motif : ${getVal('motif')}
+- Délais : ${getVal('delai')}
 
-TERRAIN & SAMPLER :
-- ATCD : ${val('atcd')}
-- Traitement : ${val('ttt')}
-- Allergies : ${val('allergies')}
-- Hospit récente : ${val('hospit')}
+[TERRAIN & SAMPLER]
+- ATCD : ${getVal('atcd')}
+- Traitement : ${getVal('ttt')}
+- Allergies : ${getVal('allergies')}
+- Hospit récente : ${getVal('hospit')}
 
-BILAN PRIMAIRE INITIAL (XABCDE) :
-- X (Hémorragies) : ${val('desc_x')}
-- A (Voies Aériennes) : ${val('desc_a')}
-- B (Respiration) : ${val('desc_b')}
-- C (Circulation) : ${val('desc_c')}
-- D (Neurologie) : ${val('desc_d')}
-- E (Exposition) : ${val('desc_e')}
+[BILAN PRIMAIRE INITIAL XABCDE]
+- X (Hémorragies) : ${getVal('desc_x')}
+- A (Voies Aériennes) : ${getVal('desc_a')}
+- B (Respiration) : ${getVal('desc_b')}
+- C (Circulation) : ${getVal('desc_c')}
+- D (Neurologie) : ${getVal('desc_d')}
+- E (Exposition/Trauma) : ${getVal('desc_e')}
 
-CONSTANTES & ÉVOLUTION :
-- T0 (Arrivée) : PA: ${val('ta_0')} | FC/SpO2: ${val('fc_sat_0')} | FR/HGT: ${val('fr_hgt_0')} | ${val('autre_0')}
-- T1 (Intermédiaire) : PA: ${val('ta_1')} | FC/SpO2: ${val('fc_sat_1')} | FR/HGT: ${val('fr_hgt_1')} | ${val('autre_1')}
-- T2 (Transport/Fin) : PA: ${val('ta_2')} | FC/SpO2: ${val('fc_sat_2')} | FR/HGT: ${val('fr_hgt_2')} | ${val('autre_2')}
+[SÉRIE DES CONSTANTES]
+- T0 (Arrivée) : PA: ${getVal('ta_0')} | FC: ${getVal('fc_0')} | SpO2: ${getVal('sat_0')} | FR: ${getVal('fr_0')} | HGT: ${getVal('hgt_0')} | EN: ${getVal('en_0')}/10 | T°/Autre: ${getVal('autre_0')}
+- T1 (+15 min) : PA: ${getVal('ta_1')} | FC: ${getVal('fc_1')} | SpO2: ${getVal('sat_1')} | FR: ${getVal('fr_1')} | HGT: ${getVal('hgt_1')} | EN: ${getVal('en_1')}/10 | T°/Autre: ${getVal('autre_1')}
+- T2 (Fin/Transp) : PA: ${getVal('ta_2')} | FC: ${getVal('fc_2')} | SpO2: ${getVal('sat_2')} | FR: ${getVal('fr_2')} | HGT: ${getVal('hgt_2')} | EN: ${getVal('en_2')}/10 | T°/Autre: ${getVal('autre_2')}
 
-DÉCISION RÉGULATION / ACTIONS / SAED :
-${val('saed_actions')}
+[DÉCISION RÉGULATION / ACTIONS / SAED]
+${getVal('saed_actions')}
 
-RÉÉVALUATION SECONDAIRE :
-${val('reeval')}`;
+[RÉÉVALUATION SECONDAIRE]
+${getVal('reeval')}`;
 
-      document.getElementById('output').value = cr;
-      document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('report-output').value = text;
+      document.getElementById('report-output').scrollIntoView({ behavior: 'smooth' });
     }
 
     function copyReport() {
-      const output = document.getElementById('output');
-      if (!output.value) generateReport();
-      navigator.clipboard.writeText(output.value).then(() => {
-        alert('Compte rendu copié dans le presse-papiers !');
-      });
-    }
-  </script>
-</body>
-</html>
-
+      const out = document.getElementById('report-output');
+      if (!out.value) buildReport();
+      navigator.clipboar
