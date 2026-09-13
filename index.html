@@ -117,7 +117,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* FORMULAIRES */
+    /* CARTES & FORMULAIRES */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -139,7 +139,7 @@
       color: var(--text);
       margin-bottom: 6px;
     }
-    input[type="text"], input[type="date"], select {
+    input[type="text"], select {
       width: 100%;
       background: #ffffff;
       border: 1.5px solid var(--border);
@@ -156,7 +156,7 @@
       background-repeat: no-repeat;
       background-position: right 12px center;
       background-size: 18px;
-      padding-right: 40px;
+      padding-right: 36px;
     }
     input:focus, select:focus {
       border-color: var(--primary);
@@ -169,11 +169,27 @@
     }
     .row-3 {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
+      grid-template-columns: 1.1fr 2fr 1.4fr;
+      gap: 6px;
     }
 
-    /* Saisie avec bouton Ajouter */
+    /* OPTGROUP CATÉGORIES EN ROUGE ET GRAS */
+    select optgroup {
+      font-weight: 800;
+      color: var(--danger);
+      background-color: #fef2f2;
+      padding: 10px 4px 6px 4px;
+      margin-top: 10px;
+      border-top: 2px solid #fecaca;
+    }
+    select optgroup option {
+      font-weight: normal;
+      color: var(--text);
+      background-color: #ffffff;
+      padding: 6px 8px;
+    }
+
+    /* SAISIE AVEC BOUTON */
     .input-btn-group {
       display: flex;
       gap: 8px;
@@ -183,13 +199,17 @@
       color: white;
       border: none;
       border-radius: 8px;
-      padding: 0 18px;
+      padding: 0 16px;
       font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-add:active {
+      filter: brightness(0.9);
     }
 
-    /* TAGS LIST */
+    /* TAGS */
     .tag-container {
       display: flex;
       flex-wrap: wrap;
@@ -206,6 +226,11 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+    }
+    .tag.hospit-tag {
+      background: #e0f2fe;
+      border: 1px solid #bae6fd;
+      color: #0369a1;
     }
     .tag-remove {
       cursor: pointer;
@@ -247,7 +272,7 @@
 <body>
 
   <div class="container">
-    <!-- BARRE FIXE HAUT : TITRE + SWITCH P0 -->
+    <!-- BARRE FIXE HAUT -->
     <div class="header-bar">
       <div class="header-title" id="page-indicator">1. Identité</div>
       <div class="toggle-wrapper">
@@ -267,11 +292,17 @@
           <input type="text" id="patient-nom" placeholder="ex: DUPONT Jean">
         </div>
 
+        <!-- DATE DE NAISSANCE À ROULETTES (JOUR / MOIS / ANNÉE) -->
         <div class="field">
-          <label for="patient-ddn">Date de naissance</label>
-          <input type="date" id="patient-ddn">
+          <label>Date de naissance</label>
+          <div class="row-3">
+            <select id="ddn-jour"></select>
+            <select id="ddn-mois"></select>
+            <select id="ddn-annee"></select>
+          </div>
         </div>
 
+        <!-- POIDS AVEC ROULETTE (70 PAR DÉFAUT) -->
         <div class="field">
           <label for="patient-poids">Poids (kg)</label>
           <select id="patient-poids"></select>
@@ -306,7 +337,7 @@
           </div>
         </div>
 
-        <!-- ANTÉCÉDENTS -->
+        <!-- ANTÉCÉDENTS AVEC GROUPES ROUGES & SÉPARÉS -->
         <div class="field">
           <label for="atcd-select">Antécédents</label>
           <select id="atcd-select" onchange="addAtcd(this)">
@@ -314,17 +345,17 @@
             
             <optgroup label="Cardiovasculaire et vasculaire">
               <option value="HTA">Hypertension artérielle (HTA)</option>
-              <option value="Maladie coronarienne">Maladie coronarienne (angor, IDM, stents)</option>
+              <option value="Maladie coronarienne">Maladie coronarienne (angor, IDM, stents, pontages)</option>
               <option value="Fibrillation atriale">Fibrillation atriale (FA)</option>
               <option value="Insuffisance cardiaque">Insuffisance cardiaque chronique</option>
               <option value="AOMI">AOMI</option>
-              <option value="Maladie thromboembolique">Maladie veineuse thromboembolique (TVP/EP)</option>
+              <option value="Maladie veineuse thromboembolique">Maladie veineuse thromboembolique (TVP/EP)</option>
             </optgroup>
 
             <optgroup label="Pneumologie">
               <option value="Asthme">Asthme</option>
               <option value="BPCO">BPCO</option>
-              <option value="SAOS">Syndrome d'apnées du sommeil (SAOS)</option>
+              <option value="SAOS">Syndrome d'apnées obstructives du sommeil (SAOS)</option>
             </optgroup>
 
             <optgroup label="Métabolisme et endocrinologie">
@@ -340,7 +371,7 @@
               <option value="Parkinson">Maladie de Parkinson</option>
               <option value="Migraine chronique">Migraine chronique</option>
               <option value="Troubles cognitifs">Troubles cognitifs / Démence</option>
-              <option value="Dépression / Anxiété">Dépression / Troubles anxieux</option>
+              <option value="Dépression / Troubles anxieux">Dépression et troubles anxieux</option>
             </optgroup>
 
             <optgroup label="Gastro-entérologie et hépatologie">
@@ -353,7 +384,7 @@
             <optgroup label="Néphrologie et urologie">
               <option value="Insuffisance rénale">Insuffisance rénale chronique</option>
               <option value="Lithiase urinaire">Lithiase urinaire</option>
-              <option value="HBP">Hypertrophie bénigne prostate (HBP)</option>
+              <option value="HBP">Hypertrophie bénigne de la prostate (HBP)</option>
             </optgroup>
 
             <optgroup label="Appareil locomoteur">
@@ -362,7 +393,7 @@
             </optgroup>
 
             <optgroup label="Oncologie et immuno-allergie">
-              <option value="Cancer rémission/traité">Cancer traité ou en rémission</option>
+              <option value="Cancer traité / rémission">Cancers traités ou en rémission</option>
               <option value="Terrain allergique">Terrain allergique documenté</option>
             </optgroup>
           </select>
@@ -389,73 +420,75 @@
           <div class="tag-container" id="allergies-tags"></div>
         </div>
 
-        <!-- HOSPITALISATION RÉCENTE -->
+        <!-- HOSPITALISATION RÉCENTE AVEC BOUTON AJOUTER -->
         <div class="field">
           <label>Hospitalisation récente</label>
           <div class="row-2" style="margin-bottom: 8px;">
             <select id="hospit-mois"></select>
             <select id="hospit-annee"></select>
           </div>
-          <select id="hospit-service">
-            <option value="Aucune">Aucune hospitalisation récente</option>
-            
-            <optgroup label="Soins critiques et urgences">
-              <option value="Urgences / UHCD">Urgences / UHCD</option>
-              <option value="Réanimation">Réanimation polyvalente / médicale / chirurgicale</option>
-              <option value="Soins intensifs (USIC/USINV)">Soins intensifs polyvalents / USIC / USINV</option>
-              <option value="Surveillance continue (USC)">Surveillance continue (USC)</option>
-            </optgroup>
+          <div class="input-btn-group">
+            <select id="hospit-service">
+              <optgroup label="Soins critiques et urgences">
+                <option value="Urgences / UHCD">Urgences / UHCD</option>
+                <option value="Réanimation">Réanimation polyvalente / médicale / chirurgicale</option>
+                <option value="Soins intensifs (USIC/USINV)">Soins intensifs polyvalents / USIC / USINV</option>
+                <option value="Surveillance continue (USC)">Surveillance continue (USC)</option>
+              </optgroup>
 
-            <optgroup label="Médecine de spécialité">
-              <option value="Cardiologie">Cardiologie</option>
-              <option value="Pneumologie">Pneumologie</option>
-              <option value="Gastro-entérologie">Gastro-entérologie et hépatologie</option>
-              <option value="Neurologie">Neurologie</option>
-              <option value="Médecine interne">Médecine interne</option>
-              <option value="Maladies infectieuses">Maladies infectieuses et tropicales (MIT)</option>
-              <option value="Oncologie médicale">Oncologie médicale</option>
-              <option value="Hématologie clinique">Hématologie clinique</option>
-              <option value="Néphrologie">Néphrologie</option>
-              <option value="Endocrinologie">Endocrinologie-diabétologie</option>
-              <option value="Rhumatologie">Rhumatologie</option>
-              <option value="Dermatologie">Dermatologie</option>
-              <option value="Gériatrie aiguë (UGA)">Gériatrie aiguë (UGA)</option>
-            </optgroup>
+              <optgroup label="Médecine de spécialité">
+                <option value="Cardiologie">Cardiologie</option>
+                <option value="Pneumologie">Pneumologie</option>
+                <option value="Gastro-entérologie">Gastro-entérologie et hépatologie</option>
+                <option value="Neurologie">Neurologie</option>
+                <option value="Médecine interne">Médecine interne</option>
+                <option value="Maladies infectieuses (MIT)">Maladies infectieuses et tropicales (MIT)</option>
+                <option value="Oncologie médicale">Oncologie médicale</option>
+                <option value="Hématologie clinique">Hématologie clinique</option>
+                <option value="Néphrologie">Néphrologie</option>
+                <option value="Endocrinologie-diabétologie">Endocrinologie-diabétologie</option>
+                <option value="Rhumatologie">Rhumatologie</option>
+                <option value="Dermatologie">Dermatologie</option>
+                <option value="Gériatrie aiguë (UGA)">Gériatrie aiguë (UGA)</option>
+              </optgroup>
 
-            <optgroup label="Chirurgie">
-              <option value="Chirurgie orthopédique">Chirurgie orthopédique et traumatologique</option>
-              <option value="Chirurgie viscérale">Chirurgie viscérale et digestive</option>
-              <option value="Chirurgie vasculaire">Chirurgie vasculaire</option>
-              <option value="Urologie">Urologie</option>
-              <option value="Neurochirurgie">Neurochirurgie</option>
-              <option value="ORL">ORL et chirurgie cervico-faciale</option>
-              <option value="Chirurgie thoracique">Chirurgie thoracique</option>
-            </optgroup>
+              <optgroup label="Chirurgie">
+                <option value="Chirurgie orthopédique">Chirurgie orthopédique et traumatologique</option>
+                <option value="Chirurgie viscérale">Chirurgie viscérale et digestive</option>
+                <option value="Chirurgie vasculaire">Chirurgie vasculaire</option>
+                <option value="Urologie">Urologie</option>
+                <option value="Neurochirurgie">Neurochirurgie</option>
+                <option value="ORL">ORL et chirurgie cervico-faciale</option>
+                <option value="Chirurgie thoracique">Chirurgie thoracique</option>
+              </optgroup>
 
-            <optgroup label="Femme, mère, enfant">
-              <option value="Maternité">Maternité / Suites de couches</option>
-              <option value="Gynécologie">Gynécologie médicale et chirurgicale</option>
-              <option value="Pédiatrie générale">Pédiatrie générale</option>
-              <option value="Néonatologie">Néonatologie</option>
-            </optgroup>
+              <optgroup label="Femme, mère, enfant">
+                <option value="Maternité">Maternité / Suites de couches</option>
+                <option value="Gynécologie">Gynécologie médicale et chirurgicale</option>
+                <option value="Pédiatrie générale">Pédiatrie générale</option>
+                <option value="Néonatologie">Néonatologie</option>
+              </optgroup>
 
-            <optgroup label="Santé mentale et post-aigu">
-              <option value="Psychiatrie générale">Psychiatrie générale (adulte)</option>
-              <option value="SMR / SSR">Soins médicaux et de réadaptation (SMR, ex-SSR)</option>
-            </optgroup>
-          </select>
+              <optgroup label="Santé mentale et post-aigu">
+                <option value="Psychiatrie générale">Psychiatrie générale (adulte)</option>
+                <option value="SMR / SSR">Soins médicaux et de réadaptation (SMR, ex-SSR)</option>
+              </optgroup>
+            </select>
+            <button type="button" class="btn-add" onclick="addHospit()">Ajouter</button>
+          </div>
+          <div class="tag-container" id="hospit-tags"></div>
         </div>
 
       </div>
 
-      <!-- BOUTONS BAS DE PAGE 2 -->
+      <!-- BOUTONS NAVIGATION BAS DE PAGE 2 -->
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage(1)">⬅ Identité</button>
         <button type="button" class="btn-nav" onclick="goToPage(3)">XABCDE ➔</button>
       </div>
     </div>
 
-    <!-- PAGE 3 (EN ATTENTE DE TES CONSIGNES) -->
+    <!-- PAGE 3 : EN ATTENTE DES CONSIGNES -->
     <div id="page-3" class="page">
       <div class="card" style="text-align: center; padding: 40px 16px;">
         <h3 style="margin-bottom: 12px;">Page 3 : XABCDE</h3>
@@ -467,9 +500,39 @@
   </div>
 
   <script>
-    // INITIALISATION DES ROULETTES (SELECTS)
+    const moisNoms = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+
     window.addEventListener('DOMContentLoaded', () => {
-      // Poids 30 à 180 kg (70 par défaut)
+      // 1. DATE DE NAISSANCE : JOURS (1 à 31)
+      const ddnJour = document.getElementById('ddn-jour');
+      for (let j = 1; j <= 31; j++) {
+        const opt = document.createElement('option');
+        opt.value = j < 10 ? '0' + j : j;
+        opt.textContent = j < 10 ? '0' + j : j;
+        ddnJour.appendChild(opt);
+      }
+
+      // 2. DATE DE NAISSANCE : MOIS
+      const ddnMois = document.getElementById('ddn-mois');
+      moisNoms.forEach((m, idx) => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        ddnMois.appendChild(opt);
+      });
+
+      // 3. DATE DE NAISSANCE : ANNÉES (Année actuelle à -105 ans)
+      const ddnAnnee = document.getElementById('ddn-annee');
+      const curYear = new Date().getFullYear();
+      for (let y = curYear; y >= curYear - 105; y--) {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        if (y === 1980) opt.selected = true; // repère par défaut
+        ddnAnnee.appendChild(opt);
+      }
+
+      // 4. POIDS (30 à 180 kg, défaut 70)
       const poidsSelect = document.getElementById('patient-poids');
       for (let i = 20; i <= 200; i++) {
         const opt = document.createElement('option');
@@ -479,7 +542,7 @@
         poidsSelect.appendChild(opt);
       }
 
-      // Délai 1 à 15
+      // 5. DÉLAI D'APPARITION (1 à 15)
       const delaiSelect = document.getElementById('delai-valeur');
       for (let i = 1; i <= 15; i++) {
         const opt = document.createElement('option');
@@ -488,48 +551,31 @@
         delaiSelect.appendChild(opt);
       }
 
-      // Mois hospit
-      const moisSelect = document.getElementById('hospit-mois');
-      const mois = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-      mois.forEach((m, idx) => {
+      // 6. MOIS ET ANNÉES POUR HOSPIT
+      const hospitMois = document.getElementById('hospit-mois');
+      moisNoms.forEach((m, idx) => {
         const opt = document.createElement('option');
         opt.value = m;
         opt.textContent = m;
         if (idx === new Date().getMonth()) opt.selected = true;
-        moisSelect.appendChild(opt);
+        hospitMois.appendChild(opt);
       });
 
-      // Années hospit
-      const anneeSelect = document.getElementById('hospit-annee');
-      const currentYear = new Date().getFullYear();
-      for (let y = currentYear; y >= currentYear - 5; y--) {
+      const hospitAnnee = document.getElementById('hospit-annee');
+      for (let y = curYear; y >= curYear - 5; y--) {
         const opt = document.createElement('option');
         opt.value = y;
         opt.textContent = y;
-        anneeSelect.appendChild(opt);
+        hospitAnnee.appendChild(opt);
       }
 
-      // Motifs initiaux (P0 = non)
+      // 7. MOTIFS PAR DÉFAUT (P0 = NON)
       updateMotifs(false);
     });
 
-    // GESTION P0 SWITCH & MOTIFS
-    const motifsP0Non = [
-      "Allergie",
-      "Antalgie",
-      "Brûlure",
-      "Dyspnée",
-      "Hypoglycémie"
-    ];
-
-    const motifsP0Oui = [
-      "ACR adulte",
-      "ACR enfant",
-      "Accouchement",
-      "Détresse respiratoire",
-      "Électrisé",
-      "Noyé"
-    ];
+    // GESTION DU SWITCH P0 & MOTIFS
+    const motifsP0Non = ["Allergie", "Antalgie", "Brûlure", "Dyspnée", "Hypoglycémie"];
+    const motifsP0Oui = ["ACR adulte", "ACR enfant", "Accouchement", "Détresse respiratoire", "Électrisé", "Noyé"];
 
     function onP0Change() {
       const isChecked = document.getElementById('toggle-p0').checked;
@@ -551,7 +597,7 @@
       });
     }
 
-    // NAVIGATION ENTRE PAGES
+    // NAVIGATION
     function goToPage(pageNumber) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(`page-${pageNumber}`).classList.add('active');
@@ -564,14 +610,15 @@
       window.scrollTo(0, 0);
     }
 
-    // GESTION DES TAGS (ANTÉCÉDENTS, TRAITEMENTS, ALLERGIES)
+    // AJOUT D'ANTÉCÉDENT
     function addAtcd(selectElem) {
       const val = selectElem.value;
       if (!val) return;
       createTagBadge(val, 'atcd-tags');
-      selectElem.selectedIndex = 0; // reset select
+      selectElem.selectedIndex = 0;
     }
 
+    // AJOUT DEPUIS UN CHAMP TEXTE (TTT / ALLERGIES)
     function addTagFromInput(inputId, containerId) {
       const input = document.getElementById(inputId);
       const val = input.value.trim();
@@ -581,15 +628,23 @@
       input.focus();
     }
 
-    function createTagBadge(text, containerId) {
+    // AJOUT D'UNE HOSPITALISATION RÉCENTE
+    function addHospit() {
+      const mois = document.getElementById('hospit-mois').value;
+      const annee = document.getElementById('hospit-annee').value;
+      const service = document.getElementById('hospit-service').value;
+      const label = `${service} (${mois} ${annee})`;
+      createTagBadge(label, 'hospit-tags', true);
+    }
+
+    // CRÉATION D'UN BADGE AVEC CROIX
+    function createTagBadge(text, containerId, isHospit = false) {
       const container = document.getElementById(containerId);
-      
-      // Empêcher les doublons stricts
       const existing = Array.from(container.querySelectorAll('.tag-text')).map(el => el.textContent);
       if (existing.includes(text)) return;
 
       const badge = document.createElement('div');
-      badge.className = 'tag';
+      badge.className = isHospit ? 'tag hospit-tag' : 'tag';
       badge.innerHTML = `
         <span class="tag-text">${text}</span>
         <span class="tag-remove" onclick="this.parentElement.remove()">×</span>
