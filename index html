@@ -1,1 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bilan SMUR / PSIS</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --accent: #0284c7;
+      --accent-hover: #0369a1;
+      --danger: #dc2626;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); margin: 0; padding: 12px; }
+    h1 { font-size: 1.2rem; text-align: center; color: var(--accent); margin-bottom: 12px; text-transform: uppercase; }
+    fieldset { border: 1px solid var(--border); border-radius: 8px; background: var(--card); margin-bottom: 12px; padding: 10px; }
+    legend { font-weight: 700; color: var(--accent); padding: 0 6px; font-size: 0.9rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+    .field { display: flex; flex-direction: column; margin-bottom: 6px; }
+    label { font-size: 0.75rem; color: var(--muted); margin-bottom: 2px; }
+    input, select, textarea {
+      background: #0b1120; border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); padding: 8px; font-size: 0.85rem; width: 100%;
+    }
+    input:focus, textarea:focus, select:focus { outline: 1px solid var(--accent); }
+    .tag-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+    .tag-btn {
+      background: #334155; border: none; border-radius: 4px; color: var(--text);
+      font-size: 0.7rem; padding: 5px 8px; cursor: pointer;
+    }
+    .tag-btn.active { background: var(--accent); font-weight: bold; }
+    .tag-btn.danger.active { background: var(--danger); }
+    .actions { position: sticky; bottom: 10px; z-index: 100; margin-top: 15px; display: flex; gap: 8px; }
+    button.main-btn {
+      flex: 1; padding: 12px; border-radius: 8px; border: none;
+      font-weight: 700; font-size: 0.95rem; cursor: pointer; background: var(--accent); color: white;
+    }
+    button.main-btn:active { background: var(--accent-hover); }
+    #output {
+      width: 100%; height: 260px; background: #000; color: #38bdf8;
+      font-family: monospace; font-size: 0.8rem; padding: 10px;
+      border-radius: 8px; border: 1px solid var(--border); margin-top: 10px; white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Saisie Bilan Intervention SMUR / PSIS</h1>
+
+  <!-- MISSION & IDENTITÉ -->
+  <fieldset>
+    <legend>Mission & Identité</legend>
+    <div class="grid-3">
+      <div class="field">
+        <label>UMHP / N° Dossier</label>
+        <input type="text" id="umhp">
+      </div>
+      <div class="field">
+        <label>Urgence (P0)</label>
+        <select id="p0"><option value="Non">Non</option><option value="Oui">Oui</option></select>
+      </div>
+      <div class="field">
+        <label>Code Mission / T2IH</label>
+        <input type="text" id="t2ih">
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label>Patient (Nom / Prénom / Sexe)</label>
+        <input type="text" id="patient" placeholder="M./Mme...">
+      </div>
+      <div class="field">
+        <label>Âge / Né(e) le</label>
+        <input type="text" id="age" placeholder="ex: 45 ans (12/03/81)">
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label>Poids (kg)</label>
+        <input type="number" id="poids" placeholder="ex: 75">
+      </div>
+      <div class="field">
+        <label>Vecteur / Dest.</label>
+        <input type="text" id="vecteur" placeholder="PSIS / Hôpital Nord...">
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- MOTIF & ANAMNÈSE -->
+  <fieldset>
+    <legend>Motif d'intervention & SAMPLER</legend>
+    <div class="grid-2">
+      <div class="field">
+        <label>Pour / Symptômes</label>
+        <input type="text" id="motif" placeholder="Douleur tho, détresse resp...">
+      </div>
+      <div class="field">
+        <label>Évoluant depuis</label>
+        <input type="text" id="delai" placeholder="ex: 45 min, ce matin...">
+      </div>
+    </div>
+    <div class="field">
+      <label>Maladies / ATCD</label>
+      <input type="text" id="atcd" placeholder="HTA, Diabète, Coronaropathie...">
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label>Traitements habituels</label>
+        <input type="text" id="ttt">
+      </div>
+      <div class="field">
+        <label>Allergies</label>
+        <input type="text" id="allergies" placeholder="ex: Pénicilline, RAS...">
+      </div>
+    </div>
+    <div class="field">
+      <label>Hospitalisation récente</label>
+      <input type="text" id="hospit">
+    </div>
+  </fieldset>
+
+  <!-- BILAN XABCDE -->
+  <fieldset>
+    <legend>Bilan Primaire XABCDE & Gestes</legend>
+    
+    <div class="field">
+      <label>X - Hémorragies critiques & Gestes</label>
+      <input type="text" id="desc_x" placeholder="Détail hémorragie...">
+      <div class="tag-grid" data-target="desc_x">
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_x', 'PST Hémos')">PST Hémos</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_x', 'Garrot')">Garrot</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_x', 'Celox')">Celox</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_x', 'Ceinture Pelvienne')">C. Pelvienne</button>
+        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_x', 'RAS')">RAS</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>A - Voies Aériennes & Rachis</label>
+      <input type="text" id="desc_a" placeholder="Libres, risque, geste...">
+      <div class="tag-grid" data-target="desc_a">
+        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_a', 'VA Libres')">Libres</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_a', 'VA à risque')">À risque</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_a', 'VA Obstruées')">Obstruées</button>
+        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_a', 'Collier cervical')">Collier cerv.</button>
+        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_a', 'Guedel')">Guedel</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>B - Respiration & Signes de lutte</label>
+      <input type="text" id="desc_b" placeholder="Fréquence, auscultation...">
+      <div class="tag-grid">
+        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_b', 'Eupnéique')">Eupnéique</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Polypnée')">Polypnée</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Tirage')">Tirage</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Balancement')">Balancement</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Cyanose')">Cyanose</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Sueurs')">Sueurs</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_b', 'Parole difficile')">Parole diff.</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>C - Circulation & Perfusion</label>
+      <input type="text" id="desc_c" placeholder="Pouls, TRC, marbrures...">
+      <div class="tag-grid">
+        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_c', 'Radial perçu')">Radial perçu</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_c', 'Radial non perçu')">Radial impalpable</button>
+        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_c', 'Régulier')">Régulier</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_c', 'Irrégulier')">Irrégulier</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_c', 'Filant')">Filant</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_c', 'TRC > 3s')">TRC > 3s</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_c', 'Marbrures')">Marbrures</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>D - Neurologie</label>
+      <input type="text" id="desc_d" placeholder="AVPU, motricité, pupilles...">
+      <div class="tag-grid">
+        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_d', 'A (Alerte)')">A</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_d', 'V (Voix)')">V</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_d', 'P (Douleur)')">P</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_d', 'U (Inconscient)')">U</button>
+        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_d', 'Pupilles ISO-RÉACT')">Pupilles ISO</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_d', 'Anisocorie')">Anisocorie</button>
+        <button type="button" class="tag-btn" onclick="toggleTag(this, 'desc_d', 'Déficit neuro: NON')">Sans déficit</button>
+        <button type="button" class="tag-btn danger" onclick="toggleTag(this, 'desc_d', 'Déficit moteur')">Déficit moteur</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>E - Exposition & Lésions</label>
+      <input type="text" id="desc_e" placeholder="Hypo/hyperthermie, dermabrasions, fractures...">
+    </div>
+  </fieldset>
+
+  <!-- CONSTANTES -->
+  <fieldset>
+    <legend>Séries de Constantes</legend>
+    <div class="grid-3" style="font-size:0.75rem; font-weight:bold; color:var(--muted); text-align:center;">
+      <div>T0 (Arrivée)</div>
+      <div>T1 (+15m)</div>
+      <div>T2 (Sortie)</div>
+    </div>
+    <!-- TA -->
+    <div class="grid-3">
+      <input type="text" id="ta_0" placeholder="PA T0 (ex: 130/80)">
+      <input type="text" id="ta_1" placeholder="PA T1">
+      <input type="text" id="ta_2" placeholder="PA T2">
+    </div>
+    <!-- FC & SAT -->
+    <div class="grid-3">
+      <input type="text" id="fc_sat_0" placeholder="FC/Sat T0 (ex: 85 / 98%)">
+      <input type="text" id="fc_sat_1" placeholder="FC/Sat T1">
+      <input type="text" id="fc_sat_2" placeholder="FC/Sat T2">
+    </div>
+    <!-- FR & HGT -->
+    <div class="grid-3">
+      <input type="text" id="fr_hgt_0" placeholder="FR / HGT (ex: 18 / 1,10)">
+      <input type="text" id="fr_hgt_1" placeholder="FR / HGT T1">
+      <input type="text" id="fr_hgt_2" placeholder="FR / HGT T2">
+    </div>
+    <!-- EVA / T° / HGB -->
+    <div class="grid-3">
+      <input type="text" id="autre_0" placeholder="EN / T° / HGB">
+      <input type="text" id="autre_1" placeholder="EN / T° T1">
+      <input type="text" id="autre_2" placeholder="EN / T° T2">
+    </div>
+  </fieldset>
+
+  <!-- ACTIONS, SAED & TRANSMISSION -->
+  <fieldset>
+    <legend>SAED & Thérapeutique</legend>
+    <div class="field">
+      <label>Accord Régulation / Actions entreprises</label>
+      <textarea id="saed_actions" rows="2" placeholder="Pose VVP, analgésie selon protocole, accord régul..."></textarea>
+    </div>
+    <div class="field">
+      <label>Réévaluation XABCDE / Évolution</label>
+      <textarea id="reeval" rows="2" placeholder="Diminution douleur, stabilité hémodynamique..."></textarea>
+    </div>
+  </fieldset>
+
+  <div class="actions">
+    <button class="main-btn" onclick="generateReport()">Générer le CR</button>
+    <button class="main-btn" style="background: #16a34a;" onclick="copyReport()">Copier</button>
+  </div>
+
+  <textarea id="output" readonly placeholder="Le compte rendu apparaîtra ici..."></textarea>
+
+  <script>
+    function toggleTag(btn, inputId, text) {
+      btn.classList.toggle('active');
+      const input = document.getElementById(inputId);
+      let values = input.value ? input.value.split(', ').filter(Boolean) : [];
+      
+      if (btn.classList.contains('active')) {
+        if (!values.includes(text)) values.push(text);
+      } else {
+        values = values.filter(v => v !== text);
+      }
+      input.value = values.join(', ');
+    }
+
+    function val(id) {
+      return document.getElementById(id).value.trim() || 'Non renseigné';
+    }
+
+    function generateReport() {
+      const cr = 
+`=== TRANSMISSION SMUR / PSIS ===
+DOSSIER : ${val('umhp')} | P0 : ${val('p0')} | T2IH : ${val('t2ih')}
+PATIENT : ${val('patient')} | Âge : ${val('age')} | Poids : ${val('poids')} kg
+VECTEUR / DEST : ${val('vecteur')}
+
+MOTIF DE PRISE EN CHARGE :
+- Motif : ${val('motif')} (Depuis : ${val('delai')})
+
+TERRAIN & SAMPLER :
+- ATCD : ${val('atcd')}
+- Traitement : ${val('ttt')}
+- Allergies : ${val('allergies')}
+- Hospit récente : ${val('hospit')}
+
+BILAN PRIMAIRE INITIAL (XABCDE) :
+- X (Hémorragies) : ${val('desc_x')}
+- A (Voies Aériennes) : ${val('desc_a')}
+- B (Respiration) : ${val('desc_b')}
+- C (Circulation) : ${val('desc_c')}
+- D (Neurologie) : ${val('desc_d')}
+- E (Exposition) : ${val('desc_e')}
+
+CONSTANTES & ÉVOLUTION :
+- T0 (Arrivée) : PA: ${val('ta_0')} | FC/SpO2: ${val('fc_sat_0')} | FR/HGT: ${val('fr_hgt_0')} | ${val('autre_0')}
+- T1 (Intermédiaire) : PA: ${val('ta_1')} | FC/SpO2: ${val('fc_sat_1')} | FR/HGT: ${val('fr_hgt_1')} | ${val('autre_1')}
+- T2 (Transport/Fin) : PA: ${val('ta_2')} | FC/SpO2: ${val('fc_sat_2')} | FR/HGT: ${val('fr_hgt_2')} | ${val('autre_2')}
+
+DÉCISION RÉGULATION / ACTIONS / SAED :
+${val('saed_actions')}
+
+RÉÉVALUATION SECONDAIRE :
+${val('reeval')}`;
+
+      document.getElementById('output').value = cr;
+      document.getElementById('output').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyReport() {
+      const output = document.getElementById('output');
+      if (!output.value) generateReport();
+      navigator.clipboard.writeText(output.value).then(() => {
+        alert('Compte rendu copié dans le presse-papiers !');
+      });
+    }
+  </script>
+</body>
+</html>
 
