@@ -177,7 +177,7 @@
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 
-    /* CHECKBOXES & GESTES */
+    /* CHECKBOXES & ITEMS */
     .checkbox-item {
       display: flex;
       align-items: center;
@@ -192,20 +192,35 @@
       accent-color: var(--primary);
       cursor: pointer;
     }
-    .sub-panel {
-      display: none;
-      background: #f1f5f9;
-      border-left: 3px solid var(--primary);
-      border-radius: 0 8px 8px 0;
-      padding: 10px 12px;
-      margin-bottom: 12px;
-      margin-left: 6px;
-    }
 
     hr.divider {
       border: none;
       border-top: 1.5px solid var(--border);
       margin: 18px 0;
+    }
+
+    /* SCORE AVPU */
+    .avpu-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .avpu-btn {
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 0;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text);
+      cursor: pointer;
+      text-align: center;
+    }
+    .avpu-btn.active {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: #fef2f2;
     }
 
     /* OPTGROUP ROUGE & GRAS */
@@ -488,7 +503,6 @@
       <div class="card">
         <div class="section-label">Bilan Obstétrical</div>
 
-        <!-- Terme prévu -->
         <div class="field">
           <label>Terme prévu</label>
           <div class="row-2">
@@ -497,14 +511,12 @@
           </div>
         </div>
 
-        <!-- Grossesse gémellaire -->
         <div class="field">
           <label class="checkbox-item">
             <input type="checkbox" id="acc-gemellaire"> Grossesse gémellaire
           </label>
         </div>
 
-        <!-- Heure de début du travail -->
         <div class="field">
           <label>Heure de début du travail</label>
           <div class="row-2">
@@ -516,7 +528,6 @@
           </div>
         </div>
 
-        <!-- Durée du travail -->
         <div class="field">
           <label>Durée du travail</label>
           <div class="row-2">
@@ -528,14 +539,12 @@
           </div>
         </div>
 
-        <!-- Perte des eaux -->
         <div class="field">
           <label class="checkbox-item">
             <input type="checkbox" id="acc-perte-eaux"> Perte des eaux
           </label>
         </div>
 
-        <!-- Durée des contractions -->
         <div class="field">
           <label>Durée des contractions</label>
           <div class="row-2">
@@ -547,7 +556,6 @@
           </div>
         </div>
 
-        <!-- Délai entre les contractions -->
         <div class="field">
           <label>Délai entre les contractions</label>
           <div class="row-2">
@@ -561,7 +569,6 @@
 
         <hr class="divider">
 
-        <!-- CHECK-LIST ET ACTIONS -->
         <div class="field">
           <label style="color: var(--primary); margin-bottom: 10px;">Préparation & Matériel :</label>
           <label class="checkbox-item"><input type="checkbox" id="acc-rechauffe"> Réchauffage de la cellule</label>
@@ -573,19 +580,85 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
-        <button type="button" class="btn-nav" onclick="goToPage('regu')">Appel au 15 ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
       </div>
     </div>
 
-    <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS EN ATTENTE) ================= -->
+    <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS) ================= -->
     <div id="page-motif-autre" class="page">
       <div class="card" style="text-align: center; padding: 40px 16px;">
         <h3 id="motif-autre-titre" style="margin-bottom: 12px;">Motif spécifique</h3>
         <p style="color: var(--text-muted); margin-bottom: 24px;">La page dédiée pour ce motif sera construite selon tes consignes.</p>
         <div class="nav-actions">
           <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
-          <button type="button" class="btn-nav" onclick="goToPage('regu')">Appel au 15 ➔</button>
+          <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
         </div>
+      </div>
+    </div>
+
+    <!-- ================= PAGE CONSTANTES ================= -->
+    <div id="page-constantes" class="page">
+      <div class="card">
+        <div class="section-label">Paramètres Vitaux</div>
+
+        <div class="row-2 field">
+          <div>
+            <label for="c-pa">Pression artérielle</label>
+            <input type="text" inputmode="numeric" id="c-pa" placeholder="ex: 120/80">
+          </div>
+          <div>
+            <label for="c-fc">Fréquence card. (bpm)</label>
+            <input type="number" inputmode="numeric" id="c-fc" placeholder="ex: 78">
+          </div>
+        </div>
+
+        <div class="row-2 field">
+          <div>
+            <label for="c-spo2">SpO2 (%)</label>
+            <input type="number" inputmode="numeric" id="c-spo2" placeholder="ex: 98">
+          </div>
+          <div>
+            <label for="c-fr">Fréquence respi (/min)</label>
+            <input type="number" inputmode="numeric" id="c-fr" placeholder="ex: 16">
+          </div>
+        </div>
+
+        <div class="row-2 field">
+          <div>
+            <label for="c-hgt">HGT (g/L)</label>
+            <input type="number" step="0.01" inputmode="decimal" id="c-hgt" placeholder="ex: 1.10">
+          </div>
+          <div>
+            <label for="c-temp">Température (°C)</label>
+            <input type="number" step="0.1" inputmode="decimal" id="c-temp" placeholder="ex: 36.8">
+          </div>
+        </div>
+
+        <div class="row-2 field">
+          <div>
+            <label for="c-eva">EVA / EN (/10)</label>
+            <input type="number" min="0" max="10" inputmode="numeric" id="c-eva" placeholder="ex: 4">
+          </div>
+          <div>
+            <label for="c-trc">TRC (sec)</label>
+            <input type="number" step="0.5" inputmode="decimal" id="c-trc" placeholder="ex: 2">
+          </div>
+        </div>
+
+        <div class="field" style="margin-top: 10px;">
+          <label>Score AVPU</label>
+          <div class="avpu-grid">
+            <div class="avpu-btn" onclick="selectAvpu(this, 'A')">A</div>
+            <div class="avpu-btn" onclick="selectAvpu(this, 'V')">V</div>
+            <div class="avpu-btn" onclick="selectAvpu(this, 'P')">P</div>
+            <div class="avpu-btn" onclick="selectAvpu(this, 'U')">U</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage(previousMotifPage)">⬅ Motif</button>
+        <button type="button" class="btn-nav" onclick="goToPage('regu')">Appel au 15 ➔</button>
       </div>
     </div>
 
@@ -623,7 +696,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(previousPageId)">⬅ Page précédente</button>
+        <button type="button" class="btn-nav secondary" onclick="goToPage('constantes')">⬅ Constantes</button>
       </div>
     </div>
 
@@ -631,10 +704,11 @@
 
   <script>
     const moisNoms = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-    let previousPageId = 2;
+    let previousMotifPage = 'accouchement';
+    let selectedAvpu = '';
 
     window.addEventListener('DOMContentLoaded', () => {
-      // 1. DATE DE NAISSANCE
+      // DATE DE NAISSANCE
       const ddnJour = document.getElementById('ddn-jour');
       for (let j = 1; j <= 31; j++) {
         const opt = document.createElement('option');
@@ -659,7 +733,7 @@
         ddnAnnee.appendChild(opt);
       }
 
-      // 2. POIDS
+      // POIDS
       const poidsSelect = document.getElementById('patient-poids');
       for (let i = 20; i <= 200; i++) {
         const opt = document.createElement('option');
@@ -668,7 +742,7 @@
         poidsSelect.appendChild(opt);
       }
 
-      // 3. DÉLAI D'APPARITION ANAMNÈSE (1-15)
+      // DÉLAI D'APPARITION ANAMNÈSE (1-15)
       const delaiSelect = document.getElementById('delai-valeur');
       for (let i = 1; i <= 15; i++) {
         const opt = document.createElement('option');
@@ -676,7 +750,7 @@
         delaiSelect.appendChild(opt);
       }
 
-      // 4. HOSPIT RÉCENTE
+      // HOSPIT RÉCENTE
       const hospitMois = document.getElementById('hospit-mois');
       moisNoms.forEach((m, idx) => {
         const opt = document.createElement('option');
@@ -692,8 +766,7 @@
         hospitAnnee.appendChild(opt);
       }
 
-      // 5. ROULETTES PAGE ACCOUCHEMENT
-      // Terme prévu (Mois / Année actuelle + 1 an)
+      // ROULETTES PAGE ACCOUCHEMENT
       const accTermeMois = document.getElementById('acc-terme-mois');
       moisNoms.forEach(m => {
         const opt = document.createElement('option');
@@ -707,7 +780,6 @@
         accTermeAnnee.appendChild(opt);
       }
 
-      // Roulettes 1 à 15 (Début travail et Durée travail)
       const accDebutVal = document.getElementById('acc-debut-valeur');
       const accDureeVal = document.getElementById('acc-duree-valeur');
       for (let i = 1; i <= 15; i++) {
@@ -715,17 +787,15 @@
         const opt2 = document.createElement('option'); opt2.value = i; opt2.textContent = i; accDureeVal.appendChild(opt2);
       }
 
-      // Roulettes 0 à 60 (Durée contractions et Délai contractions)
       const accContracDuree = document.getElementById('acc-contractions-duree-valeur');
       const accContracDelai = document.getElementById('acc-contractions-delai-valeur');
       for (let i = 0; i <= 60; i++) {
         const opt1 = document.createElement('option'); opt1.value = i; opt1.textContent = i; accContracDuree.appendChild(opt1);
         const opt2 = document.createElement('option'); opt2.value = i; opt2.textContent = i; accContracDelai.appendChild(opt2);
       }
-      accContracDuree.value = 30; // suggestion par défaut
+      accContracDuree.value = 30;
       accContracDelai.value = 3;
 
-      // 6. MOTIFS INITIAUX
       updateMotifs(false);
     });
 
@@ -752,29 +822,22 @@
       });
     }
 
-    // ROUTAGE VERS PAGE SPÉCIFIQUE
     function routeMotifPage() {
       const motif = document.getElementById('motif-select').value;
-      previousPageId = 2;
-
       if (motif === 'Accouchement') {
+        previousMotifPage = 'accouchement';
         goToPage('accouchement');
       } else {
         document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
+        previousMotifPage = 'motif-autre';
         goToPage('motif-autre');
       }
     }
 
-    // NAVIGATION
     function goToPage(target) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
-      let pageElem;
-      if (typeof target === 'number') {
-        pageElem = document.getElementById(`page-${target}`);
-      } else {
-        pageElem = document.getElementById(`page-${target}`);
-      }
+      let pageElem = typeof target === 'number' ? document.getElementById(`page-${target}`) : document.getElementById(`page-${target}`);
       if (pageElem) pageElem.classList.add('active');
 
       const indicator = document.getElementById('page-indicator');
@@ -789,11 +852,12 @@
       } else if (target === 'accouchement') {
         indicator.textContent = '3. Accouchement';
         p0Container.style.display = 'none';
-        previousPageId = 'accouchement';
       } else if (target === 'motif-autre') {
-        indicator.textContent = '3. Motif Spécifique';
+        indicator.textContent = '3. Motif spécifique';
         p0Container.style.display = 'none';
-        previousPageId = 'motif-autre';
+      } else if (target === 'constantes') {
+        indicator.textContent = 'Constantes';
+        p0Container.style.display = 'none';
       } else if (target === 'regu') {
         indicator.textContent = 'Appel au 15';
         p0Container.style.display = 'none';
@@ -803,7 +867,19 @@
       window.scrollTo(0, 0);
     }
 
-    // TAGS (ATCD, TTT, ALLERGIES, HOSPIT)
+    // SCORE AVPU
+    function selectAvpu(btn, score) {
+      if (btn.classList.contains('active')) {
+        btn.classList.remove('active');
+        selectedAvpu = '';
+      } else {
+        document.querySelectorAll('.avpu-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedAvpu = score;
+      }
+    }
+
+    // TAGS
     function addAtcd(selectElem) {
       const val = selectElem.value;
       if (!val) return;
@@ -861,8 +937,8 @@
       const allergies = getTagsText('allergies-tags');
       const hospit = getTagsText('hospit-tags');
 
-      // ÉVALUATION SPÉCIFIQUE ACCOUCHEMENT
-      let evalText = '';
+      // BILAN SPÉCIFIQUE
+      let evalMotif = '';
       if (motif === 'Accouchement') {
         const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
         const gemellaire = document.getElementById('acc-gemellaire').checked ? 'OUI' : 'NON';
@@ -878,15 +954,38 @@
         if (document.getElementById('acc-o2').checked) prepa.push('O2 SpO2 > 94%');
         if (document.getElementById('acc-aspi').checked) prepa.push('aspi mucosités CH 8');
 
-        evalText = 
+        evalMotif = 
 `- Terme prévu : ${terme} | Grossesse gémellaire : ${gemellaire}
 - Début du travail : il y a ${debutTravail} | Durée du travail : ${dureeTravail}
 - Perte des eaux : ${perteEaux}
 - Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
 - Mesures associées : ${prepa.length > 0 ? prepa.join(', ') : 'En cours'}`;
       } else {
-        evalText = `Bilan clinique en cours de réalisation.`;
+        evalMotif = `- Bilan clinique spécifique : ${motif}`;
       }
+
+      // FILTRAGE STRICT DES CONSTANTES REMPLIES
+      let constList = [];
+      const pa = document.getElementById('c-pa').value.trim();
+      const fc = document.getElementById('c-fc').value.trim();
+      const spo2 = document.getElementById('c-spo2').value.trim();
+      const fr = document.getElementById('c-fr').value.trim();
+      const hgt = document.getElementById('c-hgt').value.trim();
+      const temp = document.getElementById('c-temp').value.trim();
+      const eva = document.getElementById('c-eva').value.trim();
+      const trc = document.getElementById('c-trc').value.trim();
+
+      if (pa) constList.push(`PA: ${pa}`);
+      if (fc) constList.push(`FC: ${fc} bpm`);
+      if (spo2) constList.push(`SpO2: ${spo2}%`);
+      if (fr) constList.push(`FR: ${fr}/min`);
+      if (hgt) constList.push(`HGT: ${hgt} g/L`);
+      if (temp) constList.push(`T°: ${temp}°C`);
+      if (eva) constList.push(`EVA/EN: ${eva}/10`);
+      if (trc) constList.push(`TRC: ${trc}s`);
+      if (selectedAvpu) constList.push(`AVPU: ${selectedAvpu}`);
+
+      const constText = constList.length > 0 ? `- Constantes : ${constList.join(' | ')}` : `- Constantes : Non renseignées`;
 
       // DEMANDE
       const demandeType = document.getElementById('demande-type').value;
@@ -910,8 +1009,9 @@ Motif : ${motif} (évoluant depuis : ${delai})
 - Allergies : ${allergies}
 - Hospitalisation récente : ${hospit}
 
-[E] EVALUATION CLINIQUE (OBSTÉTRICALE)
-${evalText}
+[E] EVALUATION CLINIQUE & CONSTANTES
+${evalMotif}
+${constText}
 
 [D] DEMANDE & CONDUITE A TENIR
 ${demandeText}
