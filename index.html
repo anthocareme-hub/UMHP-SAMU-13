@@ -517,25 +517,12 @@
           </label>
         </div>
 
+        <!-- Heure précise de début du travail (HH:MM) -->
         <div class="field">
           <label>Heure de début du travail</label>
           <div class="row-2">
-            <select id="acc-debut-valeur"></select>
-            <select id="acc-debut-unite">
-              <option value="heures">Heure(s)</option>
-              <option value="minutes">Minute(s)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Durée du travail</label>
-          <div class="row-2">
-            <select id="acc-duree-valeur"></select>
-            <select id="acc-duree-unite">
-              <option value="heures">Heure(s)</option>
-              <option value="minutes">Minute(s)</option>
-            </select>
+            <select id="acc-debut-hh"></select>
+            <select id="acc-debut-mm"></select>
           </div>
         </div>
 
@@ -780,13 +767,26 @@
         accTermeAnnee.appendChild(opt);
       }
 
-      const accDebutVal = document.getElementById('acc-debut-valeur');
-      const accDureeVal = document.getElementById('acc-duree-valeur');
-      for (let i = 1; i <= 15; i++) {
-        const opt1 = document.createElement('option'); opt1.value = i; opt1.textContent = i; accDebutVal.appendChild(opt1);
-        const opt2 = document.createElement('option'); opt2.value = i; opt2.textContent = i; accDureeVal.appendChild(opt2);
+      // Roulettes heure de début du travail (HH:MM)
+      const accDebutHH = document.getElementById('acc-debut-hh');
+      const accDebutMM = document.getElementById('acc-debut-mm');
+      const now = new Date();
+      for (let h = 0; h < 24; h++) {
+        const opt = document.createElement('option');
+        const val = h < 10 ? '0' + h : h;
+        opt.value = val; opt.textContent = `${val} h`;
+        if (h === now.getHours()) opt.selected = true;
+        accDebutHH.appendChild(opt);
+      }
+      for (let m = 0; m < 60; m++) {
+        const opt = document.createElement('option');
+        const val = m < 10 ? '0' + m : m;
+        opt.value = val; opt.textContent = `${val} min`;
+        if (m === now.getMinutes()) opt.selected = true;
+        accDebutMM.appendChild(opt);
       }
 
+      // Roulettes contractions (0 à 60)
       const accContracDuree = document.getElementById('acc-contractions-duree-valeur');
       const accContracDelai = document.getElementById('acc-contractions-delai-valeur');
       for (let i = 0; i <= 60; i++) {
@@ -942,8 +942,7 @@
       if (motif === 'Accouchement') {
         const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
         const gemellaire = document.getElementById('acc-gemellaire').checked ? 'OUI' : 'NON';
-        const debutTravail = `${document.getElementById('acc-debut-valeur').value} ${document.getElementById('acc-debut-unite').value}`;
-        const dureeTravail = `${document.getElementById('acc-duree-valeur').value} ${document.getElementById('acc-duree-unite').value}`;
+        const debutTravail = `${document.getElementById('acc-debut-hh').value}:${document.getElementById('acc-debut-mm').value}`;
         const perteEaux = document.getElementById('acc-perte-eaux').checked ? 'OUI' : 'NON';
         const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
         const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
@@ -956,7 +955,7 @@
 
         evalMotif = 
 `- Terme prévu : ${terme} | Grossesse gémellaire : ${gemellaire}
-- Début du travail : il y a ${debutTravail} | Durée du travail : ${dureeTravail}
+- Début du travail : ${debutTravail}
 - Perte des eaux : ${perteEaux}
 - Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
 - Mesures associées : ${prepa.length > 0 ? prepa.join(', ') : 'En cours'}`;
