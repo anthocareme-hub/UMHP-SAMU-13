@@ -224,11 +224,6 @@
       color: var(--danger);
       border: 1.5px solid #fca5a5;
     }
-    .alert-warning {
-      background: var(--warning-bg);
-      color: var(--warning-text);
-      border: 1.5px solid #fde68a;
-    }
     .alert-surveillance-danger {
       background: #fee2e2;
       color: #991b1b;
@@ -306,6 +301,119 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    /* SÉLECTEUR 3 BLOCS OXYGÈNE */
+    .oxy-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .oxy-btn {
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 4px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text);
+      cursor: pointer;
+      text-align: center;
+      user-select: none;
+      line-height: 1.25;
+    }
+    .oxy-btn small {
+      font-size: 0.72rem;
+      font-weight: 600;
+      display: block;
+      margin-top: 3px;
+      color: var(--text-muted);
+    }
+    .oxy-btn.active {
+      border-color: var(--primary);
+      background: #e0f2fe;
+      color: var(--primary);
+    }
+    .oxy-btn.active small {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* ENCART SURVEILLANCE SCOPE */
+    #modal-scope {
+      display: none;
+      background: #ffffff;
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--danger);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* MODALE PLEIN ÉCRAN DRP */
+    #modal-drp {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.85);
+      z-index: 9999;
+      padding: 16px;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(3px);
+    }
+    .drp-content-card {
+      background: #ffffff;
+      border-radius: 12px;
+      max-width: 480px;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      padding: 16px;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+    .drp-close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--danger);
+      background: none;
+      border: none;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .drp-step {
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .drp-badge {
+      display: inline-block;
+      background: var(--primary);
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 4px;
     }
 
     /* SCORE AVPU */
@@ -724,7 +832,6 @@
 
         <hr class="divider">
 
-        <!-- GESTES RÉFLEXES SANS VVP -->
         <div class="section-label">Gestes réflexes & matériels</div>
         <div class="field">
           <label class="checkbox-item"><input type="checkbox" id="dr-demi-assis"> Position demi-assise</label>
@@ -855,7 +962,7 @@
       </div>
     </div>
 
-    <!-- ================= NOUVELLE PAGE : THÉRAPEUTIQUE (DÉTRESSE RESPIRATOIRE) ================= -->
+    <!-- ================= NOUVELLE PAGE : THÉRAPEUTIQUE ================= -->
     <div id="page-therapeutique" class="page">
       
       <!-- VVP EN TÊTE -->
@@ -864,23 +971,26 @@
           💉 VVP
         </button>
 
-        <!-- OXYGÉNOTHÉRAPIE -->
+        <!-- OXYGÉNOTHÉRAPIE : 3 BLOCS -->
         <div class="section-label">Oxygénothérapie</div>
-        <div class="row-2 field">
-          <button type="button" class="btn-nav secondary" id="btn-o2-asthme" onclick="setOxygeneMode('asthme')">
-            Asthme / Autre<br><small style="font-weight: normal;">SpO2 > 94%</small>
+        <div class="oxy-btn-grid">
+          <button type="button" class="oxy-btn" id="btn-o2-asthme" onclick="setOxygeneProfile('asthme')">
+            Asthme / autre<small>SpO2 &gt; 94%</small>
           </button>
-          <button type="button" class="btn-nav secondary" id="btn-o2-bpco" onclick="setOxygeneMode('bpco')">
-            BPCO<br><small style="font-weight: normal;">SpO2 88 - 92%</small>
+          <button type="button" class="oxy-btn" id="btn-o2-bpco" onclick="setOxygeneProfile('bpco')">
+            BPCO<small>SpO2 88 - 92%</small>
+          </button>
+          <button type="button" class="oxy-btn" id="btn-o2-oap" onclick="setOxygeneProfile('oap')">
+            OAP<small>SpO2 &gt; 94%</small>
           </button>
         </div>
         <div id="o2-cible-text" class="alert-box alert-green" style="display: none; padding: 8px; font-size: 0.9rem;"></div>
       </div>
 
-      <!-- ASTHME / BPCO DÉCOMPENSÉ -->
-      <div class="card thera-box asthme">
+      <!-- ENCART CONDITIONNEL 1 : ASTHME / BPCO -->
+      <div id="encart-asthme-bpco" class="card thera-box asthme" style="display: none;">
         <div class="thera-title" style="color: #166534;">
-          <span>ASTHME / BPCO DÉCOMPENSÉ</span>
+          <span id="thera-asthme-title">ASTHME / BPCO DÉCOMPENSÉ</span>
           <span id="thera-poids-badge" style="font-size: 0.8rem; background: #e2e8f0; padding: 2px 8px; border-radius: 4px; color: var(--text);">Poids: 70 kg</span>
         </div>
 
@@ -889,7 +999,7 @@
             Nébulisation β2-mimétiques + Anticholinergiques :
           </div>
           <div id="nebul-doses-box" style="font-size: 0.9rem; line-height: 1.4;">
-            <!-- Calculé selon poids -->
+            <!-- Calculé dynamiquement -->
           </div>
         </div>
 
@@ -899,20 +1009,20 @@
         </label>
       </div>
 
-      <!-- OAP -->
-      <div class="card thera-box oap">
+      <!-- ENCART CONDITIONNEL 2 : OAP -->
+      <div id="encart-oap" class="card thera-box oap" style="display: none;">
         <div class="thera-title" style="color: #0369a1;">
           <span>OAP</span>
         </div>
 
         <label class="checkbox-item">
           <input type="checkbox" id="check-furosemide"> 
-          <span>Furosémide 80 mg IVD</span>
+          <span><strong>Furosémide 80 mg IVD</strong></span>
         </label>
 
         <div id="box-oap-hta" style="display: none; margin-top: 8px; background: #fee2e2; border: 1.5px solid #fca5a5; border-radius: 6px; padding: 10px;">
           <div style="color: #991b1b; font-weight: 800; font-size: 0.9rem; margin-bottom: 6px;">
-            ⚠️ Si PAS > 180 mmHg (détectée aux constantes) :
+            ⚠️ Si PAS &gt; 180 mmHg (détectée aux constantes) :
           </div>
           <label class="checkbox-item" style="margin-bottom: 0;">
             <input type="checkbox" id="check-isosorbide">
@@ -921,7 +1031,7 @@
         </div>
       </div>
 
-      <!-- NOYADE -->
+      <!-- ENCART 3 : RÉFLEXES NOYADE -->
       <div class="card thera-box noyade">
         <div class="thera-title" style="color: #0f766e;">
           <span>NOYADE</span>
@@ -931,19 +1041,108 @@
         <label class="checkbox-item"><input type="checkbox" id="check-noyade-sng"> Pose de SNG</label>
       </div>
 
-      <!-- NOURRISSON : DRP & SURVEILLANCE -->
+      <!-- NOURRISSON (AVEC MODALE DRP) & SURVEILLANCE SCOPE -->
       <div class="row-2" style="margin-bottom: 14px;">
-        <div style="background: #fef9c3; border: 1.5px solid #fde047; padding: 10px; border-radius: 8px; text-align: center; font-weight: 800; font-size: 0.85rem; color: #854d0e;">
-          Nourrisson : DRP
+        <button type="button" onclick="toggleDrpModal(true)" style="background: #fef9c3; border: 1.5px solid #fde047; padding: 12px 6px; border-radius: 8px; text-align: center; font-weight: 800; font-size: 0.85rem; color: #854d0e; cursor: pointer;">
+          📖 Nourrisson : DRP
+        </button>
+        <button type="button" id="btn-open-scope" onclick="toggleScopeModal(true)" style="background: #dcfce7; border: 2px solid #86efac; padding: 12px 6px; border-radius: 8px; text-align: center; font-weight: 800; font-size: 0.85rem; color: #166534; cursor: pointer;">
+          Surveillance scope ⏱
+        </button>
+      </div>
+
+      <!-- ENCART SCOPE RÉÉVALUATION -->
+      <div id="modal-scope">
+        <button type="button" class="modal-close-btn" onclick="toggleScopeModal(false)">✕</button>
+        <div class="section-label" style="font-size: 0.95rem; margin-bottom: 10px;">Constantes réévaluées sous scope</div>
+        
+        <div class="row-2 field">
+          <div>
+            <label for="sc-fc">Pouls (bpm)</label>
+            <input type="number" inputmode="numeric" id="sc-fc" placeholder="ex: 85">
+          </div>
+          <div>
+            <label for="sc-pa">Tension</label>
+            <input type="text" inputmode="numeric" id="sc-pa" placeholder="ex: 130/80">
+          </div>
         </div>
-        <div style="background: #dcfce7; border: 1.5px solid #86efac; padding: 10px; border-radius: 8px; text-align: center; font-weight: 800; font-size: 0.85rem; color: #166534;">
-          Surveillance scope
+
+        <div class="row-2 field">
+          <div>
+            <label for="sc-fr">FR (/min)</label>
+            <input type="number" inputmode="numeric" id="sc-fr" placeholder="ex: 18">
+          </div>
+          <div>
+            <label for="sc-spo2">SpO2 (%)</label>
+            <input type="number" inputmode="numeric" id="sc-spo2" placeholder="ex: 96">
+          </div>
+        </div>
+
+        <div class="row-3 field">
+          <div>
+            <label for="sc-trc">TRC (sec)</label>
+            <input type="number" step="0.5" inputmode="decimal" id="sc-trc" placeholder="ex: 2">
+          </div>
+          <div>
+            <label for="sc-temp">T° (°C)</label>
+            <input type="number" step="0.1" inputmode="decimal" id="sc-temp" placeholder="ex: 37.0">
+          </div>
+          <div>
+            <label for="sc-hgt">HGT (g/L)</label>
+            <input type="number" step="0.01" inputmode="decimal" id="sc-hgt" placeholder="ex: 1.10">
+          </div>
         </div>
       </div>
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Bilan régulation</button>
         <button type="button" class="btn-nav" onclick="goToPage('resume')">Bilan complémentaire C15 ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= MODALE PLEIN ÉCRAN : DÉSOBSTRUCTION RHINOPHARYNGÉE (DRP) ================= -->
+    <div id="modal-drp">
+      <div class="drp-content-card">
+        <button type="button" class="drp-close-btn" onclick="toggleDrpModal(false)">✕</button>
+        
+        <h3 style="color: var(--primary); margin-bottom: 12px; font-weight: 800; font-size: 1.1rem; padding-right: 30px;">
+          Mode d'emploi : DRP du Nourrisson
+        </h3>
+
+        <div class="drp-step">
+          <span class="drp-badge">ÉTAPE 1</span>
+          <p style="font-size: 0.9rem; font-weight: 600; color: var(--text);">
+            Coucher bébé sur le dos, lui tourner la tête sur le côté et la maintenir fermement en place d'une main.
+          </p>
+        </div>
+
+        <div class="drp-step">
+          <span class="drp-badge">ÉTAPE 2</span>
+          <p style="font-size: 0.9rem; font-weight: 600; color: var(--text);">
+            De l'autre main, insérer l'embout du pulvérisateur ou la dosette d'eau saline dans la narine du haut.
+          </p>
+        </div>
+
+        <div class="drp-step">
+          <span class="drp-badge">ÉTAPE 3</span>
+          <p style="font-size: 0.9rem; font-weight: 600; color: var(--text);">
+            Instiller / pulvériser 1 fois et bloquer la narine du haut.
+          </p>
+        </div>
+
+        <div class="drp-step">
+          <span class="drp-badge">ÉTAPE 4</span>
+          <p style="font-size: 0.9rem; font-weight: 600; color: var(--text);">
+            Attendre 2 ou 3 secondes. Le liquide doit s'écouler par la narine du bas avec les sécrétions.
+          </p>
+        </div>
+
+        <div class="drp-step">
+          <span class="drp-badge">ÉTAPE 5</span>
+          <p style="font-size: 0.9rem; font-weight: 600; color: var(--text);">
+            Essuyer délicatement le nez avec un mouchoir. Répéter de l'autre côté en tournant la tête.
+          </p>
+        </div>
       </div>
     </div>
 
@@ -1513,23 +1712,52 @@
       btn.textContent = btn.classList.contains('active') ? '✓ VVP Posée' : '💉 VVP';
     }
 
-    function setOxygeneMode(mode) {
+    // GESTION MODALE DRP
+    function toggleDrpModal(show) {
+      const modal = document.getElementById('modal-drp');
+      modal.style.display = show ? 'flex' : 'none';
+    }
+
+    // PROFIL OXYGÉNOTHÉRAPIE (3 BLOCS)
+    function setOxygeneProfile(mode) {
       oxygeneMode = mode;
       const btnAsthme = document.getElementById('btn-o2-asthme');
       const btnBpco = document.getElementById('btn-o2-bpco');
+      const btnOap = document.getElementById('btn-o2-oap');
       const box = document.getElementById('o2-cible-text');
 
+      const encartAsthmeBpco = document.getElementById('encart-asthme-bpco');
+      const encartOap = document.getElementById('encart-oap');
+      const titreAsthme = document.getElementById('thera-asthme-title');
+
+      btnAsthme.classList.toggle('active', mode === 'asthme');
+      btnBpco.classList.toggle('active', mode === 'bpco');
+      btnOap.classList.toggle('active', mode === 'oap');
+
+      box.style.display = 'block';
+
       if (mode === 'asthme') {
-        btnAsthme.classList.add('active');
-        btnBpco.classList.remove('active');
-        box.style.display = 'block';
         box.textContent = 'Objectif sélectionné : SpO2 > 94%';
-      } else {
-        btnBpco.classList.add('active');
-        btnAsthme.classList.remove('active');
-        box.style.display = 'block';
+        titreAsthme.textContent = 'ASTHME DÉCOMPENSÉ';
+        encartAsthmeBpco.style.display = 'block';
+        encartOap.style.display = 'none';
+      } else if (mode === 'bpco') {
         box.textContent = 'Objectif sélectionné : SpO2 88 - 92%';
+        titreAsthme.textContent = 'BPCO DÉCOMPENSÉE';
+        encartAsthmeBpco.style.display = 'block';
+        encartOap.style.display = 'none';
+      } else if (mode === 'oap') {
+        box.textContent = 'Objectif sélectionné : SpO2 > 94%';
+        encartAsthmeBpco.style.display = 'none';
+        encartOap.style.display = 'block';
+        checkPasOap();
       }
+    }
+
+    function toggleScopeModal(show) {
+      const modal = document.getElementById('modal-scope');
+      modal.style.display = show ? 'block' : 'none';
+      if (show) modal.scrollIntoView({ behavior: 'smooth' });
     }
 
     function updateTheraDoses() {
@@ -1948,13 +2176,34 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
         const vvpThera = document.getElementById('btn-vvp-thera').classList.contains('active') ? 'Oui' : 'Non';
         
         let theraList = [];
-        if (oxygeneMode) theraList.push(`Oxygénothérapie : mode ${oxygeneMode === 'asthme' ? 'Asthme/Autre (>94%)' : 'BPCO (88-92%)'}`);
-        if (document.getElementById('check-cortico').checked) theraList.push(`Prednisolone : ${poids} mg IVL`);
-        if (document.getElementById('check-furosemide').checked) theraList.push('Furosémide : 80 mg IVD');
-        if (document.getElementById('check-isosorbide').checked) theraList.push('Isosorbide : 1 mg IVD / 5 min');
+        if (oxygeneMode) {
+          const lblOxy = oxygeneMode === 'asthme' ? 'Asthme/Autre (SpO2 > 94%)' : (oxygeneMode === 'bpco' ? 'BPCO (SpO2 88-92%)' : 'OAP (SpO2 > 94%)');
+          theraList.push(`Oxygénothérapie : mode ${lblOxy}`);
+        }
+        if (document.getElementById('check-cortico').checked && (oxygeneMode === 'asthme' || oxygeneMode === 'bpco')) {
+          theraList.push(`Prednisolone : ${poids} mg IVL`);
+        }
+        if (document.getElementById('check-furosemide').checked && oxygeneMode === 'oap') {
+          theraList.push('Furosémide : 80 mg IVD');
+        }
+        if (document.getElementById('check-isosorbide').checked && oxygeneMode === 'oap') {
+          theraList.push('Isosorbide : 1 mg IVD / 5 min');
+        }
         if (document.getElementById('check-noyade-mhc').checked) theraList.push('MHC 15 L/min');
         if (document.getElementById('check-noyade-aspi').checked) theraList.push('Broncho-aspiration');
         if (document.getElementById('check-noyade-sng').checked) theraList.push('Pose de SNG');
+
+        // Constantes réévaluées sous scope
+        let cScope = [];
+        if (document.getElementById('sc-fc').value) cScope.push(`FC: ${document.getElementById('sc-fc').value} bpm`);
+        if (document.getElementById('sc-pa').value) cScope.push(`PA: ${document.getElementById('sc-pa').value}`);
+        if (document.getElementById('sc-fr').value) cScope.push(`FR: ${document.getElementById('sc-fr').value}/min`);
+        if (document.getElementById('sc-spo2').value) cScope.push(`SpO2: ${document.getElementById('sc-spo2').value}%`);
+        if (document.getElementById('sc-trc').value) cScope.push(`TRC: ${document.getElementById('sc-trc').value}s`);
+        if (document.getElementById('sc-temp').value) cScope.push(`T°: ${document.getElementById('sc-temp').value}°C`);
+        if (document.getElementById('sc-hgt').value) cScope.push(`HGT: ${document.getElementById('sc-hgt').value} g/L`);
+
+        const scopeTxt = cScope.length > 0 ? cScope.join(' | ') : 'Non réévaluées';
 
         specificSection = 
 `3. BILAN RESPIRATOIRE DÉTAILLÉ
@@ -1965,7 +2214,7 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 4. THÉRAPEUTIQUE & PRISE EN CHARGE SMUR/PSIS
 - VVP : ${vvpThera}
 - Thérapeutiques appliquées : ${theraList.length > 0 ? theraList.join(', ') : 'Aucune cochée'}
-- Surveillance : Monitorage scope continu`;
+- Réévaluation sous surveillance scope : ${scopeTxt}`;
       }
 
       const resumeTxt = 
@@ -1981,12 +2230,12 @@ RAPPORT D'INTERVENTION SMUR / PSIS
 - Traitements : ${getTagsText('ttt-tags')}
 - Allergies : ${getTagsText('allergies-tags')}
 
-2. PARAMÈTRES VITAUX
+2. PARAMÈTRES VITAUX INITIAUX
 ${cInit.length > 0 ? cInit.join(' | ') : 'Non renseignés'}
 
 ${specificSection}
 
-5. RÉGULATION CENTRE 15 / ORIENTATION SAU
+5. RÉGULATION CENTRE 15 / BILAN COMPLÉMENTAIRE
 - Demande : ${demType}
 - Prescriptions / Consignes : ${demTxt}
 ==============================================`;
@@ -1997,7 +2246,7 @@ ${specificSection}
     function copyResume() {
       const output = document.getElementById('resume-output');
       navigator.clipboard.writeText(output.value).then(() => {
-        alert('Rapport complet copié dans le presse-papiers !');
+        alert('Bilan d\'intervention copié !');
       });
     }
   </script>
