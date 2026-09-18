@@ -303,10 +303,10 @@
       align-items: center;
     }
 
-    /* SÉLECTEUR 3 BLOCS OXYGÈNE */
+    /* SÉLECTEUR 4 BLOCS OXYGÈNE */
     .oxy-btn-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: repeat(4, 1fr);
       gap: 6px;
       margin-bottom: 10px;
     }
@@ -314,17 +314,17 @@
       background: #ffffff;
       border: 2px solid var(--border);
       border-radius: 8px;
-      padding: 10px 4px;
-      font-size: 0.85rem;
+      padding: 8px 2px;
+      font-size: 0.8rem;
       font-weight: 800;
       color: var(--text);
       cursor: pointer;
       text-align: center;
       user-select: none;
-      line-height: 1.25;
+      line-height: 1.2;
     }
     .oxy-btn small {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 600;
       display: block;
       margin-top: 3px;
@@ -348,7 +348,7 @@
       border-radius: 10px;
       padding: 14px;
       margin-bottom: 14px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       position: relative;
     }
     .modal-close-btn {
@@ -363,7 +363,7 @@
       cursor: pointer;
     }
 
-    /* MODALE PLEIN ÉCRAN DRP */
+    /* MODALE DRP */
     #modal-drp {
       display: none;
       position: fixed;
@@ -384,7 +384,7 @@
       overflow-y: auto;
       padding: 16px;
       position: relative;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
     }
     .drp-close-btn {
       position: absolute;
@@ -499,10 +499,10 @@
       text-align: center;
       background: var(--primary);
       color: #ffffff;
-      box-shadow: 0 2px 4px rgba(2,132,199,0.2);
+      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
     }
     .btn-nav.secondary { background: #e2e8f0; color: var(--text); box-shadow: none; }
-    .btn-nav.success { background: var(--success); box-shadow: 0 2px 4px rgba(22,163,74,0.25); }
+    .btn-nav.success { background: var(--success); box-shadow: 0 2px 4px rgba(22, 163, 74, 0.25); }
 
     /* ZONE TEXTE FINAL */
     #cr-output, #resume-output {
@@ -971,17 +971,20 @@
           💉 VVP
         </button>
 
-        <!-- OXYGÉNOTHÉRAPIE : 3 BLOCS -->
+        <!-- OXYGÉNOTHÉRAPIE : 4 BLOCS -->
         <div class="section-label">Oxygénothérapie</div>
         <div class="oxy-btn-grid">
           <button type="button" class="oxy-btn" id="btn-o2-asthme" onclick="setOxygeneProfile('asthme')">
             Asthme / autre<small>SpO2 &gt; 94%</small>
           </button>
           <button type="button" class="oxy-btn" id="btn-o2-bpco" onclick="setOxygeneProfile('bpco')">
-            BPCO<small>SpO2 88 - 92%</small>
+            BPCO<small>SpO2 88-92%</small>
           </button>
           <button type="button" class="oxy-btn" id="btn-o2-oap" onclick="setOxygeneProfile('oap')">
             OAP<small>SpO2 &gt; 94%</small>
+          </button>
+          <button type="button" class="oxy-btn" id="btn-o2-noyade" onclick="setOxygeneProfile('noyade')">
+            Noyade<small>MHC 15L</small>
           </button>
         </div>
         <div id="o2-cible-text" class="alert-box alert-green" style="display: none; padding: 8px; font-size: 0.9rem;"></div>
@@ -998,9 +1001,7 @@
           <div style="font-weight: 800; color: #166534; font-size: 0.9rem; margin-bottom: 6px;">
             Nébulisation β2-mimétiques + Anticholinergiques :
           </div>
-          <div id="nebul-doses-box" style="font-size: 0.9rem; line-height: 1.4;">
-            <!-- Calculé dynamiquement -->
-          </div>
+          <div id="nebul-doses-box" style="font-size: 0.9rem; line-height: 1.4;"></div>
         </div>
 
         <label class="checkbox-item">
@@ -1020,9 +1021,10 @@
           <span><strong>Furosémide 80 mg IVD</strong></span>
         </label>
 
-        <div id="box-oap-hta" style="display: none; margin-top: 8px; background: #fee2e2; border: 1.5px solid #fca5a5; border-radius: 6px; padding: 10px;">
+        <!-- Condition PAS > 180 mmHg automatique -->
+        <div id="box-oap-hta" style="display: none; margin-top: 10px; background: #fee2e2; border: 1.5px solid #fca5a5; border-radius: 6px; padding: 10px;">
           <div style="color: #991b1b; font-weight: 800; font-size: 0.9rem; margin-bottom: 6px;">
-            ⚠️ Si PAS &gt; 180 mmHg (détectée aux constantes) :
+            ⚠️ PAS &gt; 180 mmHg constatée :
           </div>
           <label class="checkbox-item" style="margin-bottom: 0;">
             <input type="checkbox" id="check-isosorbide">
@@ -1031,8 +1033,8 @@
         </div>
       </div>
 
-      <!-- ENCART 3 : RÉFLEXES NOYADE -->
-      <div class="card thera-box noyade">
+      <!-- ENCART CONDITIONNEL 3 : RÉFLEXES NOYADE -->
+      <div id="encart-noyade" class="card thera-box noyade" style="display: none;">
         <div class="thera-title" style="color: #0f766e;">
           <span>NOYADE</span>
         </div>
@@ -1041,7 +1043,7 @@
         <label class="checkbox-item"><input type="checkbox" id="check-noyade-sng"> Pose de SNG</label>
       </div>
 
-      <!-- NOURRISSON (AVEC MODALE DRP) & SURVEILLANCE SCOPE -->
+      <!-- NOURRISSON & SURVEILLANCE SCOPE -->
       <div class="row-2" style="margin-bottom: 14px;">
         <button type="button" onclick="toggleDrpModal(true)" style="background: #fef9c3; border: 1.5px solid #fde047; padding: 12px 6px; border-radius: 8px; text-align: center; font-weight: 800; font-size: 0.85rem; color: #854d0e; cursor: pointer;">
           📖 Nourrisson : DRP
@@ -1063,7 +1065,7 @@
           </div>
           <div>
             <label for="sc-pa">Tension</label>
-            <input type="text" inputmode="numeric" id="sc-pa" placeholder="ex: 130/80">
+            <input type="text" inputmode="numeric" id="sc-pa" placeholder="ex: 190/100" oninput="checkPasOap()">
           </div>
         </div>
 
@@ -1100,7 +1102,7 @@
       </div>
     </div>
 
-    <!-- ================= MODALE PLEIN ÉCRAN : DÉSOBSTRUCTION RHINOPHARYNGÉE (DRP) ================= -->
+    <!-- ================= MODALE PLEIN ÉCRAN : DRP ================= -->
     <div id="modal-drp">
       <div class="drp-content-card">
         <button type="button" class="drp-close-btn" onclick="toggleDrpModal(false)">✕</button>
@@ -1712,27 +1714,29 @@
       btn.textContent = btn.classList.contains('active') ? '✓ VVP Posée' : '💉 VVP';
     }
 
-    // GESTION MODALE DRP
     function toggleDrpModal(show) {
       const modal = document.getElementById('modal-drp');
       modal.style.display = show ? 'flex' : 'none';
     }
 
-    // PROFIL OXYGÉNOTHÉRAPIE (3 BLOCS)
+    // PROFIL OXYGÉNOTHÉRAPIE (4 BLOCS)
     function setOxygeneProfile(mode) {
       oxygeneMode = mode;
       const btnAsthme = document.getElementById('btn-o2-asthme');
       const btnBpco = document.getElementById('btn-o2-bpco');
       const btnOap = document.getElementById('btn-o2-oap');
+      const btnNoyade = document.getElementById('btn-o2-noyade');
       const box = document.getElementById('o2-cible-text');
 
       const encartAsthmeBpco = document.getElementById('encart-asthme-bpco');
       const encartOap = document.getElementById('encart-oap');
+      const encartNoyade = document.getElementById('encart-noyade');
       const titreAsthme = document.getElementById('thera-asthme-title');
 
       btnAsthme.classList.toggle('active', mode === 'asthme');
       btnBpco.classList.toggle('active', mode === 'bpco');
       btnOap.classList.toggle('active', mode === 'oap');
+      btnNoyade.classList.toggle('active', mode === 'noyade');
 
       box.style.display = 'block';
 
@@ -1741,16 +1745,24 @@
         titreAsthme.textContent = 'ASTHME DÉCOMPENSÉ';
         encartAsthmeBpco.style.display = 'block';
         encartOap.style.display = 'none';
+        encartNoyade.style.display = 'none';
       } else if (mode === 'bpco') {
         box.textContent = 'Objectif sélectionné : SpO2 88 - 92%';
         titreAsthme.textContent = 'BPCO DÉCOMPENSÉE';
         encartAsthmeBpco.style.display = 'block';
         encartOap.style.display = 'none';
+        encartNoyade.style.display = 'none';
       } else if (mode === 'oap') {
         box.textContent = 'Objectif sélectionné : SpO2 > 94%';
         encartAsthmeBpco.style.display = 'none';
         encartOap.style.display = 'block';
+        encartNoyade.style.display = 'none';
         checkPasOap();
+      } else if (mode === 'noyade') {
+        box.textContent = 'Objectif sélectionné : Oxygénothérapie MHC 15 L/min';
+        encartAsthmeBpco.style.display = 'none';
+        encartOap.style.display = 'none';
+        encartNoyade.style.display = 'block';
       }
     }
 
@@ -1786,19 +1798,32 @@
       }
     }
 
+    // DÉTECTION PAS > 180 (CONSTANTES INITIALES OU SCOPE)
+    function parsePas(val) {
+      if (!val) return 0;
+      val = val.trim().replace(',', '.');
+      let str = val.includes('/') ? val.split('/')[0] : val;
+      let num = parseFloat(str);
+      if (isNaN(num)) return 0;
+      // Conversion cmHg -> mmHg si nécessaire (ex: 19 -> 190)
+      if (num >= 14 && num <= 30) {
+        num = num * 10;
+      }
+      return num;
+    }
+
     function checkPasOap() {
-      const paVal = document.getElementById('c-pa').value;
+      const paInit = document.getElementById('c-pa') ? document.getElementById('c-pa').value : '';
+      const paScope = document.getElementById('sc-pa') ? document.getElementById('sc-pa').value : '';
+      
+      const pasInit = parsePas(paInit);
+      const pasScope = parsePas(paScope);
+      const maxPas = Math.max(pasInit, pasScope);
+
       const boxHta = document.getElementById('box-oap-hta');
       if (!boxHta) return;
 
-      let pas = 0;
-      if (paVal.includes('/')) {
-        pas = parseInt(paVal.split('/')[0], 10);
-      } else {
-        pas = parseInt(paVal, 10);
-      }
-
-      if (pas > 180) {
+      if (maxPas > 180) {
         boxHta.style.display = 'block';
       } else {
         boxHta.style.display = 'none';
@@ -2177,7 +2202,7 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
         
         let theraList = [];
         if (oxygeneMode) {
-          const lblOxy = oxygeneMode === 'asthme' ? 'Asthme/Autre (SpO2 > 94%)' : (oxygeneMode === 'bpco' ? 'BPCO (SpO2 88-92%)' : 'OAP (SpO2 > 94%)');
+          const lblOxy = oxygeneMode === 'asthme' ? 'Asthme/Autre (SpO2 > 94%)' : (oxygeneMode === 'bpco' ? 'BPCO (SpO2 88-92%)' : (oxygeneMode === 'oap' ? 'OAP (SpO2 > 94%)' : 'Noyade (MHC 15 L/min)'));
           theraList.push(`Oxygénothérapie : mode ${lblOxy}`);
         }
         if (document.getElementById('check-cortico').checked && (oxygeneMode === 'asthme' || oxygeneMode === 'bpco')) {
@@ -2189,11 +2214,16 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
         if (document.getElementById('check-isosorbide').checked && oxygeneMode === 'oap') {
           theraList.push('Isosorbide : 1 mg IVD / 5 min');
         }
-        if (document.getElementById('check-noyade-mhc').checked) theraList.push('MHC 15 L/min');
-        if (document.getElementById('check-noyade-aspi').checked) theraList.push('Broncho-aspiration');
-        if (document.getElementById('check-noyade-sng').checked) theraList.push('Pose de SNG');
+        if (document.getElementById('check-noyade-mhc').checked && oxygeneMode === 'noyade') {
+          theraList.push('MHC 15 L/min');
+        }
+        if (document.getElementById('check-noyade-aspi').checked && oxygeneMode === 'noyade') {
+          theraList.push('Broncho-aspiration');
+        }
+        if (document.getElementById('check-noyade-sng').checked && oxygeneMode === 'noyade') {
+          theraList.push('Pose de SNG');
+        }
 
-        // Constantes réévaluées sous scope
         let cScope = [];
         if (document.getElementById('sc-fc').value) cScope.push(`FC: ${document.getElementById('sc-fc').value} bpm`);
         if (document.getElementById('sc-pa').value) cScope.push(`PA: ${document.getElementById('sc-pa').value}`);
