@@ -204,7 +204,7 @@
       margin: 18px 0;
     }
 
-    /* BANDEAUX D'ALERTE */
+    /* BANDEAUX */
     .alert-box {
       border-radius: 8px;
       padding: 14px;
@@ -223,6 +223,11 @@
       background: var(--danger-bg);
       color: var(--danger);
       border: 1.5px solid #fca5a5;
+    }
+    .alert-warning {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1.5px solid #fde68a;
     }
     .alert-surveillance-danger {
       background: #fee2e2;
@@ -246,7 +251,6 @@
       border-radius: 8px;
       margin-top: 18px;
       letter-spacing: 1px;
-      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
     }
 
     .btn-toggle-action {
@@ -267,131 +271,41 @@
       border-color: var(--success);
       color: var(--success);
     }
-
-    /* ALGO DU NOUVEAU-NÉ */
-    .algo-choice-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 8px;
-      margin-bottom: 12px;
+    .btn-toggle-action.orange {
+      background: #fff7ed;
+      border-color: #fdba74;
+      color: #c2410c;
     }
-    .algo-btn {
-      padding: 12px 8px;
+    .btn-toggle-action.orange.active {
+      background: #fed7aa;
+      border-color: #ea580c;
+      color: #9a3412;
+    }
+
+    /* CARTES PROTOCOLES THÉRAPEUTIQUE */
+    .thera-box {
+      border: 1.5px solid var(--border);
       border-radius: 8px;
-      font-size: 0.92rem;
-      font-weight: 800;
-      cursor: pointer;
-      text-align: center;
-      border: 2px solid transparent;
-      user-select: none;
-    }
-    .algo-btn.green {
-      background: #dcfce7;
-      color: #166534;
-      border-color: #86efac;
-    }
-    .algo-btn.red {
-      background: #fee2e2;
-      color: #991b1b;
-      border-color: #fca5a5;
-    }
-    .algo-btn.active {
-      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.25);
-      filter: brightness(0.95);
-    }
-
-    .algo-step-card {
-      background: #ffffff;
-      border-left: 4px solid var(--primary);
-      border-radius: 0 8px 8px 0;
       padding: 12px;
       margin-bottom: 14px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .algo-step-card.red-border {
-      border-left-color: var(--danger);
-      background: #fffafa;
-    }
-
-    .algo-box-green-details {
-      background: var(--success-bg);
-      border: 2px solid #86efac;
-      border-radius: 8px;
-      padding: 16px;
-      margin-top: 14px;
-      color: #166534;
-      line-height: 1.5;
-    }
-    .algo-box-green-details h4 {
-      font-size: 1.1rem;
-      font-weight: 900;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-    }
-
-    /* SCORE APGAR */
-    .apgar-tool-card {
-      background: #f8fafc;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      margin-top: 16px;
-    }
-    .apgar-nav {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .apgar-tab-btn {
-      flex: 1;
-      padding: 10px;
-      background: #e2e8f0;
-      border: 1.5px solid var(--border);
-      border-radius: 6px;
-      font-weight: 800;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      cursor: pointer;
-      text-align: center;
-    }
-    .apgar-tab-btn.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #ffffff;
-    }
-    .apgar-summary-line {
-      display: flex;
-      justify-content: space-around;
       background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 8px 4px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 12px;
     }
-    .apgar-crit-group {
-      margin-bottom: 8px;
+    .thera-box.asthme {
+      border-left: 6px solid #16a34a;
     }
-    .apgar-crit-group label {
-      font-size: 0.82rem;
-      font-weight: 700;
-      margin-bottom: 3px;
+    .thera-box.oap {
+      border-left: 6px solid #0284c7;
     }
-    .apgar-crit-group select {
-      padding: 8px 10px;
-      font-size: 0.9rem;
+    .thera-box.noyade {
+      border-left: 6px solid #0d9488;
     }
-    .apgar-score-display {
-      background: #0f172a;
-      color: #ffffff;
-      font-size: 1.1rem;
+    .thera-title {
       font-weight: 800;
-      text-align: center;
-      padding: 10px;
-      border-radius: 6px;
-      margin-top: 10px;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     /* SCORE AVPU */
@@ -482,7 +396,7 @@
     .btn-nav.secondary { background: #e2e8f0; color: var(--text); box-shadow: none; }
     .btn-nav.success { background: var(--success); box-shadow: 0 2px 4px rgba(22,163,74,0.25); }
 
-    /* ZONE CR FINAL & RÉSUMÉ */
+    /* ZONE TEXTE FINAL */
     #cr-output, #resume-output {
       width: 100%;
       height: 420px;
@@ -532,7 +446,7 @@
 
         <div class="field">
           <label for="patient-poids">Poids (kg)</label>
-          <select id="patient-poids"></select>
+          <select id="patient-poids" onchange="updateTheraDoses()"></select>
         </div>
       </div>
 
@@ -766,6 +680,64 @@
       </div>
     </div>
 
+    <!-- ================= PAGE SPÉCIFIQUE : DÉTRESSE RESPIRATOIRE ================= -->
+    <div id="page-detresse-respi" class="page">
+      <div class="card">
+        <div class="section-label">Signes cliniques & critères de gravité</div>
+
+        <div class="field">
+          <label class="checkbox-item"><input type="checkbox" id="dr-tirage"> Tirage intercostal / sus-claviculaire</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-balancement"> Balancement thoraco-abdominal</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-sueurs"> Sueurs</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-cyanose"> Cyanose</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-polypnee"> Polypnée > 30/min</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-bradypnee"> Bradypnée</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-silence"> Silence auscultatoire</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-parole"> Parole impossible</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-conscience"> Troubles de la conscience</label>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label">Auscultation pulmonaire</div>
+        <div class="row-2 field">
+          <div>
+            <label for="dr-auscult-type">Bruits auscultatoires</label>
+            <select id="dr-auscult-type">
+              <option value="Murmure vésiculaire conservé">Murmure vésiculaire conservé</option>
+              <option value="Crépitants (OAP)">Crépitants (OAP)</option>
+              <option value="Sibilants (asthme/BPCO)">Sibilants (asthme/BPCO)</option>
+              <option value="Silence / Abolition (pneumothorax/atélectasie)">Silence / Abolition</option>
+              <option value="Ronchis">Ronchis</option>
+              <option value="Frottement pleural">Frottement pleural</option>
+            </select>
+          </div>
+          <div>
+            <label for="dr-auscult-cote">Localisation / Côté</label>
+            <select id="dr-auscult-cote">
+              <option value="bilatéral">Bilatéral</option>
+              <option value="gauche">Gauche</option>
+              <option value="droit">Droit</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- GESTES RÉFLEXES SANS VVP -->
+        <div class="section-label">Gestes réflexes & matériels</div>
+        <div class="field">
+          <label class="checkbox-item"><input type="checkbox" id="dr-demi-assis"> Position demi-assise</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-o2-mhc"> O2 au masque à haute concentration (15 L/min)</label>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
+      </div>
+    </div>
+
     <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS) ================= -->
     <div id="page-motif-autre" class="page">
       <div class="card" style="text-align: center; padding: 40px 16px;">
@@ -786,7 +758,7 @@
         <div class="row-2 field">
           <div>
             <label for="c-pa">Pression artérielle</label>
-            <input type="text" inputmode="numeric" id="c-pa" placeholder="ex: 120/80">
+            <input type="text" inputmode="numeric" id="c-pa" placeholder="ex: 120/80" oninput="checkPasOap()">
           </div>
           <div>
             <label for="c-fc">Fréquence card. (bpm)</label>
@@ -852,40 +824,131 @@
         <div class="field">
           <label for="demande-type">Type de demande</label>
           <select id="demande-type" onchange="generateSAED()">
-            <option value="Renfort">Renfort</option>
-            <option value="PSIS Brûlure">PSIS Brûlure</option>
-            <option value="PSIS Hypoglycémie">PSIS Hypoglycémie</option>
-            <option value="PSIS Allergie">PSIS Allergie</option>
+            <option value="Renfort SMUR">Renfort SMUR</option>
             <option value="PSIS Dyspnée">PSIS Dyspnée</option>
             <option value="PSIS Antalgie">PSIS Antalgie</option>
+            <option value="PSIS Allergie">PSIS Allergie</option>
+            <option value="PSIS Brûlure">PSIS Brûlure</option>
+            <option value="PSIS Hypoglycémie">PSIS Hypoglycémie</option>
           </select>
         </div>
 
         <div class="field">
           <label for="saed-demande">Précisions régulation & actions</label>
-          <textarea id="saed-demande" rows="2" placeholder="ex: Accord pour protocole antalgique palier 3, VVP 18G, transport direct..." oninput="generateSAED()"></textarea>
+          <textarea id="saed-demande" rows="2" placeholder="ex: Accord protocole détresse respi, avis médical pour corticothérapie / diurétique..." oninput="generateSAED()"></textarea>
         </div>
       </div>
 
       <div class="nav-actions" style="margin-top: 0; margin-bottom: 14px;">
-        <button type="button" class="btn-nav" onclick="generateSAED()">Générer le SAED</button>
+        <button type="button" class="btn-nav" onclick="generateSAED()">Générer le SAED / SAU</button>
         <button type="button" class="btn-nav success" onclick="copySAED()">Copier</button>
       </div>
 
       <div class="card">
-        <label>Texte de transmission SAED :</label>
-        <textarea id="cr-output" readonly placeholder="Appuie sur « Générer le SAED » pour afficher le compte rendu..."></textarea>
+        <label>Texte de transmission SAED / SAU :</label>
+        <textarea id="cr-output" readonly placeholder="Appuie sur « Générer le SAED / SAU » pour afficher le compte rendu..."></textarea>
       </div>
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('constantes')">⬅ Constantes</button>
-        <button type="button" class="btn-nav" onclick="goToPage('pec-mere')">Prise en charge ➔</button>
+        <button type="button" class="btn-nav" id="btn-suite-regu" onclick="routeApresRegu()">Thérapeutique ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= NOUVELLE PAGE : THÉRAPEUTIQUE (DÉTRESSE RESPIRATOIRE) ================= -->
+    <div id="page-therapeutique" class="page">
+      
+      <!-- VVP EN TÊTE -->
+      <div class="card">
+        <button type="button" class="btn-toggle-action orange" id="btn-vvp-thera" onclick="toggleVvpThera(this)">
+          💉 VVP
+        </button>
+
+        <!-- OXYGÉNOTHÉRAPIE -->
+        <div class="section-label">Oxygénothérapie</div>
+        <div class="row-2 field">
+          <button type="button" class="btn-nav secondary" id="btn-o2-asthme" onclick="setOxygeneMode('asthme')">
+            Asthme / Autre<br><small style="font-weight: normal;">SpO2 > 94%</small>
+          </button>
+          <button type="button" class="btn-nav secondary" id="btn-o2-bpco" onclick="setOxygeneMode('bpco')">
+            BPCO<br><small style="font-weight: normal;">SpO2 88 - 92%</small>
+          </button>
+        </div>
+        <div id="o2-cible-text" class="alert-box alert-green" style="display: none; padding: 8px; font-size: 0.9rem;"></div>
+      </div>
+
+      <!-- ASTHME / BPCO DÉCOMPENSÉ -->
+      <div class="card thera-box asthme">
+        <div class="thera-title" style="color: #166534;">
+          <span>ASTHME / BPCO DÉCOMPENSÉ</span>
+          <span id="thera-poids-badge" style="font-size: 0.8rem; background: #e2e8f0; padding: 2px 8px; border-radius: 4px; color: var(--text);">Poids: 70 kg</span>
+        </div>
+
+        <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 6px; padding: 10px; margin-bottom: 10px;">
+          <div style="font-weight: 800; color: #166534; font-size: 0.9rem; margin-bottom: 6px;">
+            Nébulisation β2-mimétiques + Anticholinergiques :
+          </div>
+          <div id="nebul-doses-box" style="font-size: 0.9rem; line-height: 1.4;">
+            <!-- Calculé selon poids -->
+          </div>
+        </div>
+
+        <label class="checkbox-item">
+          <input type="checkbox" id="check-cortico"> 
+          <span><strong>Corticothérapie :</strong> Prednisolone 1 mg/kg / 20 min IVL (<span id="prednisolone-dose">70 mg</span>)</span>
+        </label>
+      </div>
+
+      <!-- OAP -->
+      <div class="card thera-box oap">
+        <div class="thera-title" style="color: #0369a1;">
+          <span>OAP</span>
+        </div>
+
+        <label class="checkbox-item">
+          <input type="checkbox" id="check-furosemide"> 
+          <span>Furosémide 80 mg IVD</span>
+        </label>
+
+        <div id="box-oap-hta" style="display: none; margin-top: 8px; background: #fee2e2; border: 1.5px solid #fca5a5; border-radius: 6px; padding: 10px;">
+          <div style="color: #991b1b; font-weight: 800; font-size: 0.9rem; margin-bottom: 6px;">
+            ⚠️ Si PAS > 180 mmHg (détectée aux constantes) :
+          </div>
+          <label class="checkbox-item" style="margin-bottom: 0;">
+            <input type="checkbox" id="check-isosorbide">
+            <span><strong>Isosorbide :</strong> 1 mg IVD renouvelable / 5 min (Objectif PAS &lt; 160 mmHg)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- NOYADE -->
+      <div class="card thera-box noyade">
+        <div class="thera-title" style="color: #0f766e;">
+          <span>NOYADE</span>
+        </div>
+        <label class="checkbox-item"><input type="checkbox" id="check-noyade-mhc"> MHC 15 L O2 / minute</label>
+        <label class="checkbox-item"><input type="checkbox" id="check-noyade-aspi"> Broncho-aspiration</label>
+        <label class="checkbox-item"><input type="checkbox" id="check-noyade-sng"> Pose de SNG</label>
+      </div>
+
+      <!-- NOURRISSON : DRP & SURVEILLANCE -->
+      <div class="row-2" style="margin-bottom: 14px;">
+        <div style="background: #fef9c3; border: 1.5px solid #fde047; padding: 10px; border-radius: 8px; text-align: center; font-weight: 800; font-size: 0.85rem; color: #854d0e;">
+          Nourrisson : DRP
+        </div>
+        <div style="background: #dcfce7; border: 1.5px solid #86efac; padding: 10px; border-radius: 8px; text-align: center; font-weight: 800; font-size: 0.85rem; color: #166534;">
+          Surveillance scope
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Bilan régulation</button>
+        <button type="button" class="btn-nav" onclick="goToPage('resume')">Bilan complémentaire C15 ➔</button>
       </div>
     </div>
 
     <!-- ================= PAGE : PRISE EN CHARGE DE LA MÈRE ================= -->
     <div id="page-pec-mere" class="page">
-      
       <div class="card">
         <div class="section-label">Gestes Initiaux</div>
         <button type="button" class="btn-toggle-action" id="btn-vvp-mere" onclick="toggleVvpMere(this)">
@@ -901,7 +964,6 @@
         </div>
       </div>
 
-      <!-- CAS 1 : PERTES < 500 ML (VERT) -->
       <div id="bloc-pertes-vert" class="card">
         <div class="alert-box alert-green">
           Surveillance continue patiente scopée
@@ -944,7 +1006,6 @@
         </div>
       </div>
 
-      <!-- CAS 2 : PERTES > 500 ML (ROUGE) -->
       <div id="bloc-pertes-rouge" class="card" style="display: none;">
         <div class="alert-box alert-red">
           🚨 Appel immédiat du médecin régulateur
@@ -983,7 +1044,6 @@
 
         <hr class="divider">
 
-        <!-- PRESCRIPTION MÉDICALE -->
         <div class="field">
           <label for="select-prescription">Prescription médicale (ajouter)</label>
           <select id="select-prescription" onchange="addPrescription(this)">
@@ -1006,7 +1066,6 @@
           <button type="button" class="btn-nav" onclick="goToPage('pec-enfant')">Prise en charge de l'enfant ➔</button>
         </div>
       </div>
-
     </div>
 
     <!-- ================= PAGE : PRISE EN CHARGE DU NOUVEAU-NÉ ================= -->
@@ -1014,7 +1073,6 @@
       <div class="card">
         <div class="section-label">Adaptation à la vie extra-utérine</div>
 
-        <!-- 1. ÉVALUATION INITIALE -->
         <div class="algo-step-card">
           <label style="font-size: 1rem; margin-bottom: 6px;">
             Respiration spontanée / Cri vigoureux / Tonus vif ?
@@ -1029,7 +1087,6 @@
           </div>
         </div>
 
-        <!-- 2. ÉTAPE STIMULATION -->
         <div id="nn-step-stimul" class="algo-step-card" style="display: none;">
           <div style="background: #fffbeb; border: 1.5px solid #fef08a; color: #92400e; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
             <strong>Sécher, stimuler</strong> : frotter vigoureusement le dos + plante des pieds.
@@ -1045,7 +1102,6 @@
           </div>
         </div>
 
-        <!-- 3. BLOC APPEL RÉGULATION & 5 INSUFFLATIONS -->
         <div id="nn-step-bavu5" class="algo-step-card red-border" style="display: none;">
           <div style="background: #e0f2fe; border: 1.5px solid #7dd3fc; color: #0369a1; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
             <div style="font-weight: 800; font-size: 1rem; margin-bottom: 6px;">🚨 APPEL MÉDECIN RÉGULATEUR</div>
@@ -1067,7 +1123,6 @@
           </div>
         </div>
 
-        <!-- 4. BLOC 10 INSUFFLATIONS & CHOIX FC -->
         <div id="nn-step-bavu10" class="algo-step-card" style="display: none;">
           <div style="background: #f0f9ff; border: 1.5px solid #38bdf8; color: #0284c7; padding: 10px; border-radius: 6px; margin-bottom: 10px; font-weight: 800;">
             👉 10 insufflations BAVU sans O2
@@ -1084,7 +1139,6 @@
           </div>
         </div>
 
-        <!-- 5. CAS FC 60-100 (15 INSUFFLATIONS) -->
         <div id="nn-sub-15insuff" class="algo-step-card" style="display: none;">
           <div style="background: #f0f9ff; border: 1.5px solid #7dd3fc; color: #0369a1; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
             <p>• <strong>15 insufflations sans O2</strong></p>
@@ -1100,7 +1154,6 @@
           </div>
         </div>
 
-        <!-- 6. CAS FC < 60 (RCP 3/1) -->
         <div id="nn-sub-rcp" class="algo-step-card red-border" style="display: none;">
           <div style="background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
             <div style="font-weight: 900; font-size: 1.05rem; margin-bottom: 6px;">🚨 RCP 3/1</div>
@@ -1119,7 +1172,6 @@
           </div>
         </div>
 
-        <!-- ================= GRAND CARRÉ VERT (BONNE ADAPTATION DÉTAILLÉE) ================= -->
         <div id="bloc-grand-carre-vert" class="algo-box-green-details" style="display: none;">
           <h4>✓ Prise en charge Bonne Adaptation</h4>
           <p>• <strong>Clampage du cordon</strong> à 15 cm de l'enfant en posant 2 clamps de BAR ou 2 pinces Kocher. Couper entre les clamps. Désinfecter à la Chlorhexidine. Emballer cordon et clamp avec des compresses stériles / fixer avec une bande.</p>
@@ -1127,7 +1179,6 @@
           <p>• <strong>Réchauffer l'enfant :</strong> sécher le nouveau-né + bonnet + sac Neohelp + le placer sur le thorax de la mère + les couvrir avec une couverture de survie.</p>
           <p>• <em>Si nécessité :</em> désobstruer prudemment (sonde CH 8 - max -100 mmHg).</p>
 
-          <!-- CALCULATEUR SCORE APGAR 1, 3, 5 MIN -->
           <div class="apgar-tool-card">
             <div style="font-weight: 800; color: var(--text); margin-bottom: 8px; font-size: 0.95rem;">
               Score d'APGAR (1, 3 et 5 minutes)
@@ -1195,7 +1246,6 @@
             </div>
           </div>
 
-          <!-- RAPPEL ROUGE POSE SPO2 -->
           <div class="alert-spo2-rappel">
             POSE SpO2
           </div>
@@ -1209,7 +1259,7 @@
       </div>
     </div>
 
-    <!-- ================= NOUVELLE PAGE : RÉSUMÉ FINAL INTERVENTION ================= -->
+    <!-- ================= PAGE : RÉSUMÉ FINAL ================= -->
     <div id="page-resume" class="page">
       <div class="card">
         <div class="section-label">Bilan Récapitulatif Complet</div>
@@ -1221,7 +1271,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage('pec-enfant')">⬅ PEC Nouveau-né</button>
+        <button type="button" class="btn-nav secondary" id="btn-back-resume" onclick="goToPage('therapeutique')">⬅ Prise en charge</button>
       </div>
     </div>
 
@@ -1229,9 +1279,10 @@
 
   <script>
     const moisNoms = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-    let previousMotifPage = 'accouchement';
+    let previousMotifPage = 'detresse-respi';
     let selectedAvpu = '';
     let statutNouveauNe = 'Non évalué';
+    let oxygeneMode = '';
 
     window.addEventListener('DOMContentLoaded', () => {
       // DATE DE NAISSANCE
@@ -1261,7 +1312,7 @@
 
       // POIDS
       const poidsSelect = document.getElementById('patient-poids');
-      for (let i = 20; i <= 200; i++) {
+      for (let i = 5; i <= 200; i++) {
         const opt = document.createElement('option');
         opt.value = i; opt.textContent = `${i} kg`;
         if (i === 70) opt.selected = true;
@@ -1292,7 +1343,7 @@
         hospitAnnee.appendChild(opt);
       }
 
-      // ROULETTES PAGE ACCOUCHEMENT
+      // ROULETTES ACCOUCHEMENT
       const accTermeMois = document.getElementById('acc-terme-mois');
       moisNoms.forEach(m => {
         const opt = document.createElement('option');
@@ -1334,6 +1385,7 @@
       accContracDelai.value = 3;
 
       calculateApgar();
+      updateTheraDoses();
       updateMotifs(false);
     });
 
@@ -1365,10 +1417,24 @@
       if (motif === 'Accouchement') {
         previousMotifPage = 'accouchement';
         goToPage('accouchement');
+      } else if (motif === 'Détresse respiratoire') {
+        previousMotifPage = 'detresse-respi';
+        goToPage('detresse-respi');
       } else {
         document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
         previousMotifPage = 'motif-autre';
         goToPage('motif-autre');
+      }
+    }
+
+    function routeApresRegu() {
+      const motif = document.getElementById('motif-select').value;
+      if (motif === 'Accouchement') {
+        goToPage('pec-mere');
+      } else if (motif === 'Détresse respiratoire') {
+        goToPage('therapeutique');
+      } else {
+        goToPage('resume');
       }
     }
 
@@ -1390,6 +1456,9 @@
       } else if (target === 'accouchement') {
         indicator.textContent = '3. Accouchement';
         p0Container.style.display = 'none';
+      } else if (target === 'detresse-respi') {
+        indicator.textContent = '3. Détresse respiratoire';
+        p0Container.style.display = 'none';
       } else if (target === 'motif-autre') {
         indicator.textContent = '3. Motif spécifique';
         p0Container.style.display = 'none';
@@ -1399,7 +1468,21 @@
       } else if (target === 'regu') {
         indicator.textContent = 'Appel au 15';
         p0Container.style.display = 'none';
+        const motif = document.getElementById('motif-select').value;
+        const btnSuite = document.getElementById('btn-suite-regu');
+        if (motif === 'Détresse respiratoire') {
+          btnSuite.textContent = 'Thérapeutique ➔';
+        } else if (motif === 'Accouchement') {
+          btnSuite.textContent = 'Prise en charge ➔';
+        } else {
+          btnSuite.textContent = 'Résumé final ➔';
+        }
         generateSAED();
+      } else if (target === 'therapeutique') {
+        indicator.textContent = 'Thérapeutique';
+        p0Container.style.display = 'none';
+        updateTheraDoses();
+        checkPasOap();
       } else if (target === 'pec-mere') {
         indicator.textContent = 'PEC de la mère';
         p0Container.style.display = 'none';
@@ -1409,10 +1492,89 @@
       } else if (target === 'resume') {
         indicator.textContent = 'Résumé global';
         p0Container.style.display = 'none';
+        const motif = document.getElementById('motif-select').value;
+        const btnBack = document.getElementById('btn-back-resume');
+        if (motif === 'Accouchement') {
+          btnBack.onclick = () => goToPage('pec-enfant');
+        } else if (motif === 'Détresse respiratoire') {
+          btnBack.onclick = () => goToPage('therapeutique');
+        } else {
+          btnBack.onclick = () => goToPage('regu');
+        }
         generateResumeFinal();
       }
 
       window.scrollTo(0, 0);
+    }
+
+    // GESTION THÉRAPEUTIQUE (DÉTRESSE RESPIRATOIRE)
+    function toggleVvpThera(btn) {
+      btn.classList.toggle('active');
+      btn.textContent = btn.classList.contains('active') ? '✓ VVP Posée' : '💉 VVP';
+    }
+
+    function setOxygeneMode(mode) {
+      oxygeneMode = mode;
+      const btnAsthme = document.getElementById('btn-o2-asthme');
+      const btnBpco = document.getElementById('btn-o2-bpco');
+      const box = document.getElementById('o2-cible-text');
+
+      if (mode === 'asthme') {
+        btnAsthme.classList.add('active');
+        btnBpco.classList.remove('active');
+        box.style.display = 'block';
+        box.textContent = 'Objectif sélectionné : SpO2 > 94%';
+      } else {
+        btnBpco.classList.add('active');
+        btnAsthme.classList.remove('active');
+        box.style.display = 'block';
+        box.textContent = 'Objectif sélectionné : SpO2 88 - 92%';
+      }
+    }
+
+    function updateTheraDoses() {
+      const poids = parseInt(document.getElementById('patient-poids').value, 10) || 70;
+      const badge = document.getElementById('thera-poids-badge');
+      if (badge) badge.textContent = `Poids: ${poids} kg`;
+
+      const dosesBox = document.getElementById('nebul-doses-box');
+      if (dosesBox) {
+        if (poids < 20) {
+          dosesBox.innerHTML = `
+            • <strong>Salbutamol ou Terbutaline :</strong> 2,5 mg dosette<br>
+            • <strong>Ipratropium :</strong> 0,25 mg dosette
+          `;
+        } else {
+          dosesBox.innerHTML = `
+            • <strong>Salbutamol ou Terbutaline :</strong> 5 mg dosette<br>
+            • <strong>Ipratropium :</strong> 0,5 mg dosette
+          `;
+        }
+      }
+
+      const corticoDose = document.getElementById('prednisolone-dose');
+      if (corticoDose) {
+        corticoDose.textContent = `${poids} mg`;
+      }
+    }
+
+    function checkPasOap() {
+      const paVal = document.getElementById('c-pa').value;
+      const boxHta = document.getElementById('box-oap-hta');
+      if (!boxHta) return;
+
+      let pas = 0;
+      if (paVal.includes('/')) {
+        pas = parseInt(paVal.split('/')[0], 10);
+      } else {
+        pas = parseInt(paVal, 10);
+      }
+
+      if (pas > 180) {
+        boxHta.style.display = 'block';
+      } else {
+        boxHta.style.display = 'none';
+      }
     }
 
     // PEC MÈRE
@@ -1574,7 +1736,33 @@
       return tags.length > 0 ? tags.join(', ') : 'Aucun';
     }
 
-    // ================= GÉNÉRATION SAED (APPEL 15) =================
+    // CLINIQUE DÉTRESSE RESPIRATOIRE
+    function getDetresseRespiData() {
+      let signes = [];
+      if (document.getElementById('dr-tirage').checked) signes.push('Tirage intercostal/sus-claviculaire');
+      if (document.getElementById('dr-balancement').checked) signes.push('Balancement thoraco-abdominal');
+      if (document.getElementById('dr-sueurs').checked) signes.push('Sueurs');
+      if (document.getElementById('dr-cyanose').checked) signes.push('Cyanose');
+      if (document.getElementById('dr-polypnee').checked) signes.push('Polypnée > 30/min');
+      if (document.getElementById('dr-bradypnee').checked) signes.push('Bradypnée');
+      if (document.getElementById('dr-silence').checked) signes.push('Silence auscultatoire');
+      if (document.getElementById('dr-parole').checked) signes.push('Parole impossible');
+      if (document.getElementById('dr-conscience').checked) signes.push('Troubles de la conscience');
+
+      const auscult = `${document.getElementById('dr-auscult-type').value} (${document.getElementById('dr-auscult-cote').value})`;
+
+      let gestes = [];
+      if (document.getElementById('dr-demi-assis').checked) gestes.push('Position demi-assise');
+      if (document.getElementById('dr-o2-mhc').checked) gestes.push('O2 MHC 15 L/min');
+
+      return {
+        signes: signes.length > 0 ? signes.join(', ') : 'Aucun critère spécifique coché',
+        auscult: auscult,
+        gestes: gestes.length > 0 ? gestes.join(', ') : 'Aucun geste réflexe coché'
+      };
+    }
+
+    // GÉNÉRATION SAED / SAU (APPEL 15)
     function generateSAED() {
       const isP0 = document.getElementById('toggle-p0').checked;
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
@@ -1609,6 +1797,12 @@
 - Perte des eaux : ${perteEaux}
 - Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
 - Mesures associées : ${prepa.length > 0 ? prepa.join(', ') : 'En cours'}`;
+      } else if (motif === 'Détresse respiratoire') {
+        const dr = getDetresseRespiData();
+        evalMotif = 
+`- Signes de gravité : ${dr.signes}
+- Auscultation : ${dr.auscult}
+- Gestes réflexes entrepris : ${dr.gestes}`;
       } else {
         evalMotif = `- Bilan clinique spécifique : ${motif}`;
       }
@@ -1643,8 +1837,8 @@
       }
 
       const cr = 
-`TRANSMISSION SMUR INFIRMIER (SAED)
-----------------------------------
+`TRANSMISSION SMUR INFIRMIER (SAED / SAU)
+----------------------------------------
 [S] SITUATION
 Patient : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
 Degré d'urgence : ${isP0 ? 'P0 (Urgence vitale)' : 'Non P0'}
@@ -1662,7 +1856,7 @@ ${constText}
 
 [D] DEMANDE & CONDUITE A TENIR
 ${demandeText}
-----------------------------------`;
+----------------------------------------`;
 
       document.getElementById('cr-output').value = cr;
     }
@@ -1671,26 +1865,19 @@ ${demandeText}
       const output = document.getElementById('cr-output');
       if (!output.value) generateSAED();
       navigator.clipboard.writeText(output.value).then(() => {
-        alert('Compte rendu SAED copié dans le presse-papiers !');
+        alert('Compte rendu SAED / SAU copié !');
       });
     }
 
-    // ================= NOUVELLE FONCTION : RÉSUMÉ FINAL =================
+    // RÉSUMÉ FINAL INTERVENTION
     function generateResumeFinal() {
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
       const poids = document.getElementById('patient-poids').value;
       const isP0 = document.getElementById('toggle-p0').checked;
+      const motif = document.getElementById('motif-select').value;
+      const delai = `${document.getElementById('delai-valeur').value} ${document.getElementById('delai-unite').value}`;
 
-      // Obstétrique
-      const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
-      const gemellaire = document.getElementById('acc-gemellaire').checked ? 'Oui' : 'Non';
-      const debutTravail = `${document.getElementById('acc-debut-hh').value}:${document.getElementById('acc-debut-mm').value}`;
-      const perteEaux = document.getElementById('acc-perte-eaux').checked ? 'Oui' : 'Non';
-      const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
-      const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
-
-      // Constantes initiales
       let cInit = [];
       if (document.getElementById('c-pa').value) cInit.push(`PA: ${document.getElementById('c-pa').value}`);
       if (document.getElementById('c-fc').value) cInit.push(`FC: ${document.getElementById('c-fc').value} bpm`);
@@ -1702,77 +1889,106 @@ ${demandeText}
       if (document.getElementById('c-trc').value) cInit.push(`TRC: ${document.getElementById('c-trc').value}s`);
       if (selectedAvpu) cInit.push(`AVPU: ${selectedAvpu}`);
 
-      // Régulation
       const demType = document.getElementById('demande-type').value;
-      const demTxt = document.getElementById('saed-demande').value.trim() || 'Aucune consigne textuelle';
+      const demTxt = document.getElementById('saed-demande').value.trim() || 'Aucune précision textuelle';
 
-      // PEC Mère
-      const vvpPosee = document.getElementById('btn-vvp-mere').classList.contains('active') ? 'Oui' : 'Non';
-      const pertes = document.getElementById('select-pertes').value === 'sup500' ? '> 500 ml (Hémorragie de la délivrance)' : '< 500 ml (Physiologique)';
-      
-      let mereDetails = [];
-      if (document.getElementById('select-pertes').value === 'sup500') {
-        let gestesHemo = [];
-        if (document.getElementById('geste-mhc').checked) gestesHemo.push('O2 MHC');
-        if (document.getElementById('geste-massage').checked) gestesHemo.push('Massage utérin');
-        if (document.getElementById('geste-vvp2').checked) gestesHemo.push('2ème VVP');
-        mereDetails.push(`Gestes d'urgence : ${gestesHemo.join(', ') || 'aucun coché'}`);
+      let specificSection = '';
 
-        let chocConst = [];
-        if (document.getElementById('choc-fc').value) chocConst.push(`Pouls: ${document.getElementById('choc-fc').value} bpm`);
-        if (document.getElementById('choc-ta').value) chocConst.push(`TA: ${document.getElementById('choc-ta').value}`);
-        if (document.getElementById('choc-sat').value) chocConst.push(`Sat: ${document.getElementById('choc-sat').value}%`);
-        if (document.getElementById('choc-hb').value) chocConst.push(`Hb: ${document.getElementById('choc-hb').value} g/L`);
-        if (chocConst.length > 0) mereDetails.push(`Constantes choc : ${chocConst.join(' | ')}`);
+      if (motif === 'Accouchement') {
+        const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
+        const gemellaire = document.getElementById('acc-gemellaire').checked ? 'Oui' : 'Non';
+        const debutTravail = `${document.getElementById('acc-debut-hh').value}:${document.getElementById('acc-debut-mm').value}`;
+        const perteEaux = document.getElementById('acc-perte-eaux').checked ? 'Oui' : 'Non';
+        const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
+        const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
 
-        const prescr = getTagsText('prescription-tags');
-        mereDetails.push(`Prescriptions médicales réalisées : ${prescr}`);
-      } else {
-        let c10 = [];
-        if (document.getElementById('c10-pa').value) c10.push(`PA: ${document.getElementById('c10-pa').value}`);
-        if (document.getElementById('c10-fc').value) c10.push(`FC: ${document.getElementById('c10-fc').value}`);
-        if (document.getElementById('c10-spo2').value) c10.push(`SpO2: ${document.getElementById('c10-spo2').value}%`);
-        if (document.getElementById('c10-fr').value) c10.push(`FR: ${document.getElementById('c10-fr').value}`);
-        if (c10.length > 0) mereDetails.push(`Constantes de surveillance : ${c10.join(' | ')}`);
-      }
+        const vvpPosee = document.getElementById('btn-vvp-mere').classList.contains('active') ? 'Oui' : 'Non';
+        const pertes = document.getElementById('select-pertes').value === 'sup500' ? '> 500 ml (Hémorragie délivrance)' : '< 500 ml (Physiologique)';
 
-      // PEC Nouveau-né
-      const apgar1 = apgarScores['1m'] !== null ? `${apgarScores['1m']}/10` : 'Non calculé';
-      const apgar3 = apgarScores['3m'] !== null ? `${apgarScores['3m']}/10` : 'Non calculé';
-      const apgar5 = apgarScores['5m'] !== null ? `${apgarScores['5m']}/10` : 'Non calculé';
+        let mereDetails = [];
+        if (document.getElementById('select-pertes').value === 'sup500') {
+          let gestesHemo = [];
+          if (document.getElementById('geste-mhc').checked) gestesHemo.push('O2 MHC');
+          if (document.getElementById('geste-massage').checked) gestesHemo.push('Massage utérin');
+          if (document.getElementById('geste-vvp2').checked) gestesHemo.push('2ème VVP');
+          mereDetails.push(`Gestes d'urgence : ${gestesHemo.join(', ') || 'aucun coché'}`);
 
-      const resumeTxt = 
-`==============================================
-RAPPORT D'INTERVENTION : ACCOUCHEMENT INOPINÉ
-==============================================
+          let chocConst = [];
+          if (document.getElementById('choc-fc').value) chocConst.push(`Pouls: ${document.getElementById('choc-fc').value} bpm`);
+          if (document.getElementById('choc-ta').value) chocConst.push(`TA: ${document.getElementById('choc-ta').value}`);
+          if (document.getElementById('choc-sat').value) chocConst.push(`Sat: ${document.getElementById('choc-sat').value}%`);
+          if (document.getElementById('choc-hb').value) chocConst.push(`Hb: ${document.getElementById('choc-hb').value} g/L`);
+          if (chocConst.length > 0) mereDetails.push(`Constantes choc : ${chocConst.join(' | ')}`);
 
-1. PATIENTE & CONTEXTE
-- Identité : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
-- Statut : ${isP0 ? 'P0' : 'Non P0'}
+          const prescr = getTagsText('prescription-tags');
+          mereDetails.push(`Prescriptions médicales : ${prescr}`);
+        }
+
+        const apgar1 = apgarScores['1m'] !== null ? `${apgarScores['1m']}/10` : 'Non calculé';
+        const apgar3 = apgarScores['3m'] !== null ? `${apgarScores['3m']}/10` : 'Non calculé';
+        const apgar5 = apgarScores['5m'] !== null ? `${apgarScores['5m']}/10` : 'Non calculé';
+
+        specificSection = 
+`3. PROTOCOLE OBSTÉTRICAL
 - Terme : ${terme} | Grossesse gémellaire : ${gemellaire}
-- Début du travail : ${debutTravail} | Perte des eaux : ${perteEaux}
+- Début travail : ${debutTravail} | Perte des eaux : ${perteEaux}
 - Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
 
-2. PARAMÈTRES VITAUX INITIAUX
-${cInit.length > 0 ? cInit.join(' | ') : 'Non renseignés'}
-
-3. APPEL RÉGULATION CENTRE 15
-- Demande : ${demType}
-- Consignes / Thérapeutiques : ${demTxt}
-
 4. PRISE EN CHARGE MATERNELLE
-- Pose de VVP : ${vvpPosee}
-- Pertes sanguines : ${pertes}
+- VVP : ${vvpPosee} | Pertes sanguines : ${pertes}
 ${mereDetails.map(l => '- ' + l).join('\n')}
 
 5. PRISE EN CHARGE DU NOUVEAU-NÉ
 - Évolution clinique : ${statutNouveauNe}
-- Clampage cordon (15 cm) & réchauffement Neohelp réalisés
-- Score d'APGAR :
-  • 1 minute  : ${apgar1}
-  • 3 minutes : ${apgar3}
-  • 5 minutes : ${apgar5}
-- Pose de SpO2 : Effectuée
+- Clampage (15 cm) & réchauffement Neohelp réalisés
+- Score d'APGAR : 1 min: ${apgar1} | 3 min: ${apgar3} | 5 min: ${apgar5}
+- Pose de SpO2 : Effectuée`;
+      } else if (motif === 'Détresse respiratoire') {
+        const dr = getDetresseRespiData();
+        const vvpThera = document.getElementById('btn-vvp-thera').classList.contains('active') ? 'Oui' : 'Non';
+        
+        let theraList = [];
+        if (oxygeneMode) theraList.push(`Oxygénothérapie : mode ${oxygeneMode === 'asthme' ? 'Asthme/Autre (>94%)' : 'BPCO (88-92%)'}`);
+        if (document.getElementById('check-cortico').checked) theraList.push(`Prednisolone : ${poids} mg IVL`);
+        if (document.getElementById('check-furosemide').checked) theraList.push('Furosémide : 80 mg IVD');
+        if (document.getElementById('check-isosorbide').checked) theraList.push('Isosorbide : 1 mg IVD / 5 min');
+        if (document.getElementById('check-noyade-mhc').checked) theraList.push('MHC 15 L/min');
+        if (document.getElementById('check-noyade-aspi').checked) theraList.push('Broncho-aspiration');
+        if (document.getElementById('check-noyade-sng').checked) theraList.push('Pose de SNG');
+
+        specificSection = 
+`3. BILAN RESPIRATOIRE DÉTAILLÉ
+- Critères de gravité : ${dr.signes}
+- Auscultation : ${dr.auscult}
+- Gestes initiaux : ${dr.gestes}
+
+4. THÉRAPEUTIQUE & PRISE EN CHARGE SMUR/PSIS
+- VVP : ${vvpThera}
+- Thérapeutiques appliquées : ${theraList.length > 0 ? theraList.join(', ') : 'Aucune cochée'}
+- Surveillance : Monitorage scope continu`;
+      }
+
+      const resumeTxt = 
+`==============================================
+RAPPORT D'INTERVENTION SMUR / PSIS
+==============================================
+
+1. PATIENT & SITUATION
+- Identité : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
+- Statut : ${isP0 ? 'P0 (Urgence vitale)' : 'Non P0'}
+- Motif : ${motif} (depuis ${delai})
+- ATCD : ${getTagsText('atcd-tags')}
+- Traitements : ${getTagsText('ttt-tags')}
+- Allergies : ${getTagsText('allergies-tags')}
+
+2. PARAMÈTRES VITAUX
+${cInit.length > 0 ? cInit.join(' | ') : 'Non renseignés'}
+
+${specificSection}
+
+5. RÉGULATION CENTRE 15 / ORIENTATION SAU
+- Demande : ${demType}
+- Prescriptions / Consignes : ${demTxt}
 ==============================================`;
 
       document.getElementById('resume-output').value = resumeTxt;
