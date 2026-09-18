@@ -241,6 +241,18 @@
       margin: 16px 0;
       letter-spacing: 0.5px;
     }
+    .alert-spo2-rappel {
+      background: #dc2626;
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 900;
+      text-align: center;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 18px;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.35);
+    }
 
     .btn-toggle-action {
       width: 100%;
@@ -316,6 +328,69 @@
       margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 0.3px;
+    }
+
+    /* OUTIL SCORE APGAR */
+    .apgar-nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .apgar-tab-btn {
+      flex: 1;
+      padding: 10px 4px;
+      background: #e2e8f0;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+    }
+    .apgar-tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+    .apgar-group {
+      margin-bottom: 10px;
+    }
+    .apgar-group label {
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+    }
+    .apgar-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+    }
+    .apgar-opt-btn {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      line-height: 1.2;
+    }
+    .apgar-opt-btn.active {
+      background: #e0f2fe;
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 800;
+    }
+    .apgar-total-banner {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-top: 10px;
     }
 
     /* SCORE AVPU */
@@ -801,7 +876,6 @@
         <textarea id="cr-output" readonly placeholder="Appuie sur « Générer le SAED » pour afficher le compte rendu..."></textarea>
       </div>
 
-      <!-- BOUTONS BAS PAGE APPEL 15 -->
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('constantes')">⬅ Constantes</button>
         <button type="button" class="btn-nav" onclick="goToPage('pec-mere')">Prise en charge ➔</button>
@@ -922,7 +996,6 @@
           <div class="tag-container" id="prescription-tags"></div>
         </div>
 
-        <!-- TEXTE ROUGE SURVEILLANCE DES CONSTANTES+++ -->
         <div class="alert-surveillance-danger">
           SURVEILLANCE DES CONSTANTES +++
         </div>
@@ -960,8 +1033,6 @@
           <br>
           <p>• <strong>Réchauffer l'enfant :</strong> sécher le nouveau-né + bonnet + sac Neohelp + le placer sur le thorax de la mère + couvrir avec couverture de survie.</p>
           <p>• Si nécessité : désobstruer prudemment (sonde CH 8, max -100 mmHg).</p>
-          <br>
-          <p>• <strong>Surveillance :</strong> score d'APGAR à 1, 3 et 5 minutes + pose du capteur SpO2.</p>
         </div>
 
         <!-- CAS 2 : MAUVAISE ADAPTATION -->
@@ -980,491 +1051,104 @@
             </select>
           </div>
 
-          <!-- ÉCHEC 1 -> BLOC RÉANIMATION BLEU -->
-          <div id="bloc-nn-reanim" class="algo-box blue" style="display: none;">
-            <div class="algo-box-title" style="color: #0369a1;">🚨 Appel Médecin Régulateur</div>
-            <p>1. Clamper / couper le cordon</p>
-            <p>2. Mettre le nouveau-né à plat sur un plan dur</p>
-            <p>3. Libérer les VAS : tête en position neutre +/- aspiration douce buccale et nasale avec sonde CH 8 (max -100 mmHg)</p>
-            <p>4. Scoper l'enfant</p>
-            <p>5. <strong>5 insufflations de 2-3 secondes au BAVU sans O2</strong></p>
+          <!-- ÉCHECVoici un composant HTML/JavaScript léger et autonome, directement intégrable dans ton interface web, optimisé pour un usage rapide sur mobile :
 
-            <hr class="divider" style="border-color: #bae6fd;">
-
-            <div class="field">
-              <label style="color: #0369a1;">Évolution après les 5 insufflations :</label>
-              <select id="select-nn-etape2" onchange="onNnEtape2Change()">
-                <option value="" disabled selected>Évaluer FC et respiration...</option>
-                <option value="recup">Récupération</option>
-                <option value="echec">Échec (anomalie respi / hypotonie / FC &lt; 100)</option>
-              </select>
-            </div>
-
-            <!-- SUITE : 10 INSUFFLATIONS -->
-            <div id="bloc-nn-10insuff" style="display: none; background: #ffffff; border-radius: 8px; padding: 12px; margin-top: 10px; border: 1.5px solid #38bdf8;">
-              <p style="font-weight: 800; color: #0284c7; margin-bottom: 8px;">👉 10 insufflations BAVU sans O2</p>
-
-              <div class="field">
-                <label>Fréquence Cardiaque après 10 insufflations :</label>
-                <select id="select-nn-fc" onchange="onNnFcChange()">
-                  <option value="" disabled selected>Sélectionner la tranche de FC...</option>
-                  <option value="fc-60-100">FC entre 60 et 100 bpm</option>
-                  <option value="fc-inf60">FC &lt; 60 bpm (Arrêt / Bradycardie critique)</option>
-                </select>
-              </div>
-
-              <!-- CAS FC 60-100 -->
-              <div id="bloc-nn-fc-60-100" class="algo-box blue" style="display: none; background: #f0f9ff;">
-                <p>• <strong>15 insufflations sans O2</strong></p>
-                <p>• Réévaluer la FC</p>
-              </div>
-
-              <!-- CAS FC < 60 : RCP 3/1 -->
-              <div id="bloc-nn-fc-inf60" class="algo-box" style="display: none; background: #fee2e2; border: 2px solid #ef4444; color: #991b1b;">
-                <div class="algo-box-title" style="color: #991b1b;">🚨 RCP 3/1</div>
-                <p>• <strong>Insufflation sous O2 15 L/min</strong></p>
-                <p>• <strong>MCE</strong> avec les pouces des deux mains placées côte à côte et encerclant le thorax</p>
-                <p>• Rythme : <strong>100 - 120 cpm</strong></p>
-                <p>• <strong>Réévaluer la FC toutes les 30 secondes</strong></p>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage('pec-mere')">⬅ PEC Mère</button>
-      </div>
-    </div>
-
+```html
+<div id="apgar-tool" style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+  <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+    <button type="button" class="tab-btn" onclick="selectTime('1m')" id="btn-1m" style="flex: 1; padding: 8px; font-weight: bold; background: #007bff; color: white; border: none; border-radius: 4px;">1 min</button>
+    <button type="button" class="tab-btn" onclick="selectTime('3m')" id="btn-3m" style="flex: 1; padding: 8px; font-weight: bold; background: #e0e0e0; color: #333; border: none; border-radius: 4px;">3 min</button>
+    <button type="button" class="tab-btn" onclick="selectTime('5m')" id="btn-5m" style="flex: 1; padding: 8px; font-weight: bold; background: #e0e0e0; color: #333; border: none; border-radius: 4px;">5 min</button>
   </div>
 
-  <script>
-    const moisNoms = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-    let previousMotifPage = 'accouchement';
-    let selectedAvpu = '';
+  <form id="apgar-form">
+    <div style="margin-bottom: 8px;">
+      <label style="font-size: 0.85em; font-weight: bold; display: block;">Fréquence cardiaque</label>
+      <select class="apgar-crit" onchange="calculateScore()" style="width: 100%; padding: 6px;">
+        <option value="0">0 — Absente</option>
+        <option value="1">1 — &lt; 100 bpm</option>
+        <option value="2">2 — &ge; 100 bpm</option>
+      </select>
+    </div>
 
-    window.addEventListener('DOMContentLoaded', () => {
-      // DATE DE NAISSANCE
-      const ddnJour = document.getElementById('ddn-jour');
-      for (let j = 1; j <= 31; j++) {
-        const opt = document.createElement('option');
-        const v = j < 10 ? '0' + j : j;
-        opt.value = v; opt.textContent = v;
-        ddnJour.appendChild(opt);
-      }
+    <div style="margin-bottom: 8px;">
+      <label style="font-size: 0.85em; font-weight: bold; display: block;">Respiration</label>
+      <select class="apgar-crit" onchange="calculateScore()" style="width: 100%; padding: 6px;">
+        <option value="0">0 — Absente</option>
+        <option value="1">1 — Lente, irrégulière, vagissement</option>
+        <option value="2">2 — Vigoureuse, cris</option>
+      </select>
+    </div>
 
-      const ddnMois = document.getElementById('ddn-mois');
-      moisNoms.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m; opt.textContent = m;
-        ddnMois.appendChild(opt);
-      });
+    <div style="margin-bottom: 8px;">
+      <label style="font-size: 0.85em; font-weight: bold; display: block;">Tonus musculaire</label>
+      <select class="apgar-crit" onchange="calculateScore()" style="width: 100%; padding: 6px;">
+        <option value="0">0 — Flaccidité totale</option>
+        <option value="1">1 — Légère flexion des membres</option>
+        <option value="2">2 — Mouvements actifs, quadri-flexion</option>
+      </select>
+    </div>
 
-      const ddnAnnee = document.getElementById('ddn-annee');
-      const curYear = new Date().getFullYear();
-      for (let y = curYear; y >= curYear - 105; y--) {
-        const opt = document.createElement('option');
-        opt.value = y; opt.textContent = y;
-        if (y === 1980) opt.selected = true;
-        ddnAnnee.appendChild(opt);
-      }
+    <div style="margin-bottom: 8px;">
+      <label style="font-size: 0.85em; font-weight: bold; display: block;">Réactivité aux stimulations</label>
+      <select class="apgar-crit" onchange="calculateScore()" style="width: 100%; padding: 6px;">
+        <option value="0">0 — Nulle</option>
+        <option value="1">1 — Grimace faible</option>
+        <option value="2">2 — Cri, toux, éternuement</option>
+      </select>
+    </div>
 
-      // POIDS
-      const poidsSelect = document.getElementById('patient-poids');
-      for (let i = 20; i <= 200; i++) {
-        const opt = document.createElement('option');
-        opt.value = i; opt.textContent = `${i} kg`;
-        if (i === 70) opt.selected = true;
-        poidsSelect.appendChild(opt);
-      }
+    <div style="margin-bottom: 12px;">
+      <label style="font-size: 0.85em; font-weight: bold; display: block;">Coloration</label>
+      <select class="apgar-crit" onchange="calculateScore()" style="width: 100%; padding: 6px;">
+        <option value="0">0 — Pâle ou bleuâtre globale</option>
+        <option value="1">1 — Corps rose, extrémités bleues</option>
+        <option value="2">2 — Complètement rose</option>
+      </select>
+    </div>
+  </form>
 
-      // DÉLAI D'APPARITION ANAMNÈSE (1-15)
-      const delaiSelect = document.getElementById('delai-valeur');
-      for (let i = 1; i <= 15; i++) {
-        const opt = document.createElement('option');
-        opt.value = i; opt.textContent = i;
-        delaiSelect.appendChild(opt);
-      }
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8f9fa; border-radius: 6px; font-weight: bold;">
+    <span>Total (<span id="current-label">1 min</span>) :</span>
+    <span id="score-display" style="font-size: 1.4em; color: #007bff;">0 / 10</span>
+  </div>
 
-      // HOSPIT RÉCENTE
-      const hospitMois = document.getElementById('hospit-mois');
-      moisNoms.forEach((m, idx) => {
-        const opt = document.createElement('option');
-        opt.value = m; opt.textContent = m;
-        if (idx === new Date().getMonth()) opt.selected = true;
-        hospitMois.appendChild(opt);
-      });
+  <div style="margin-top: 10px; display: flex; justify-content: space-between; font-size: 0.85em; color: #555;">
+    <span>1 min : <b id="res-1m">-</b></span>
+    <span>3 min : <b id="res-3m">-</b></span>
+    <span>5 min : <b id="res-5m">-</b></span>
+  </div>
 
-      const hospitAnnee = document.getElementById('hospit-annee');
-      for (let y = curYear; y >= curYear - 5; y--) {
-        const opt = document.createElement('option');
-        opt.value = y; opt.textContent = y;
-        hospitAnnee.appendChild(opt);
-      }
+  <div style="margin-top: 14px; padding: 10px; background: #ffebee; border-left: 5px solid #d32f2f; color: #d32f2f; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 0.5px;">
+    ⚠️ Pose SpO2
+  </div>
+</div>
 
-      // ROULETTES PAGE ACCOUCHEMENT
-      const accTermeMois = document.getElementById('acc-terme-mois');
-      moisNoms.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m; opt.textContent = m;
-        accTermeMois.appendChild(opt);
-      });
-      const accTermeAnnee = document.getElementById('acc-terme-annee');
-      for (let y = curYear; y <= curYear + 1; y++) {
-        const opt = document.createElement('option');
-        opt.value = y; opt.textContent = y;
-        accTermeAnnee.appendChild(opt);
-      }
+<script>
+  const scores = { '1m': null, '3m': null, '5m': null };
+  let activeTime = '1m';
 
-      const accDebutHH = document.getElementById('acc-debut-hh');
-      const accDebutMM = document.getElementById('acc-debut-mm');
-      const now = new Date();
-      for (let h = 0; h < 24; h++) {
-        const opt = document.createElement('option');
-        const val = h < 10 ? '0' + h : h;
-        opt.value = val; opt.textContent = `${val} h`;
-        if (h === now.getHours()) opt.selected = true;
-        accDebutHH.appendChild(opt);
-      }
-      for (let m = 0; m < 60; m++) {
-        const opt = document.createElement('option');
-        const val = m < 10 ? '0' + m : m;
-        opt.value = val; opt.textContent = `${val} min`;
-        if (m === now.getMinutes()) opt.selected = true;
-        accDebutMM.appendChild(opt);
-      }
-
-      const accContracDuree = document.getElementById('acc-contractions-duree-valeur');
-      const accContracDelai = document.getElementById('acc-contractions-delai-valeur');
-      for (let i = 0; i <= 60; i++) {
-        const opt1 = document.createElement('option'); opt1.value = i; opt1.textContent = i; accContracDuree.appendChild(opt1);
-        const opt2 = document.createElement('option'); opt2.value = i; opt2.textContent = i; accContracDelai.appendChild(opt2);
-      }
-      accContracDuree.value = 30;
-      accContracDelai.value = 3;
-
-      updateMotifs(false);
+  function selectTime(time) {
+    activeTime = time;
+    ['1m', '3m', '5m'].forEach(t => {
+      const btn = document.getElementById(`btn-${t}`);
+      btn.style.background = (t === time) ? '#007bff' : '#e0e0e0';
+      btn.style.color = (t === time) ? '#ffffff' : '#333333';
     });
+    document.getElementById('current-label').innerText = `${time.replace('m', ' min')}`;
+    calculateScore();
+  }
 
-    // SWITCH P0 & MOTIFS
-    const motifsP0Non = ["Allergie", "Antalgie", "Brûlure", "Dyspnée", "Hypoglycémie"];
-    const motifsP0Oui = ["ACR adulte", "ACR enfant", "Accouchement", "Détresse respiratoire", "Électrisé", "Noyé"];
+  function calculateScore() {
+    const selects = document.querySelectorAll('.apgar-crit');
+    let total = 0;
+    selects.forEach(s => { total += parseInt(s.value, 10); });
+    
+    scores[activeTime] = total;
+    document.getElementById('score-display').innerText = `${total} / 10`;
+    document.getElementById(`res-${activeTime}`).innerText = `${total}/10`;
+  }
 
-    function onP0Change() {
-      const isChecked = document.getElementById('toggle-p0').checked;
-      const statusLabel = document.getElementById('p0-status');
-      statusLabel.textContent = isChecked ? 'P0 : OUI' : 'P0 : NON';
-      statusLabel.classList.toggle('active', isChecked);
-      updateMotifs(isChecked);
-    }
-
-    function updateMotifs(isP0) {
-      const select = document.getElementById('motif-select');
-      select.innerHTML = '';
-      const list = isP0 ? motifsP0Oui : motifsP0Non;
-      list.forEach(item => {
-        const opt = document.createElement('option');
-        opt.value = item; opt.textContent = item;
-        select.appendChild(opt);
-      });
-    }
-
-    function routeMotifPage() {
-      const motif = document.getElementById('motif-select').value;
-      if (motif === 'Accouchement') {
-        previousMotifPage = 'accouchement';
-        goToPage('accouchement');
-      } else {
-        document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
-        previousMotifPage = 'motif-autre';
-        goToPage('motif-autre');
-      }
-    }
-
-    function goToPage(target) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
-      let pageElem = typeof target === 'number' ? document.getElementById(`page-${target}`) : document.getElementById(`page-${target}`);
-      if (pageElem) pageElem.classList.add('active');
-
-      const indicator = document.getElementById('page-indicator');
-      const p0Container = document.getElementById('p0-container');
-
-      if (target === 1) {
-        indicator.textContent = '1. Identité';
-        p0Container.style.display = 'flex';
-      } else if (target === 2) {
-        indicator.textContent = '2. Anamnèse';
-        p0Container.style.display = 'flex';
-      } else if (target === 'accouchement') {
-        indicator.textContent = '3. Accouchement';
-        p0Container.style.display = 'none';
-      } else if (target === 'motif-autre') {
-        indicator.textContent = '3. Motif spécifique';
-        p0Container.style.display = 'none';
-      } else if (target === 'constantes') {
-        indicator.textContent = 'Constantes';
-        p0Container.style.display = 'none';
-      } else if (target === 'regu') {
-        indicator.textContent = 'Appel au 15';
-        p0Container.style.display = 'none';
-        generateSAED();
-      } else if (target === 'pec-mere') {
-        indicator.textContent = 'PEC de la mère';
-        p0Container.style.display = 'none';
-      } else if (target === 'pec-enfant') {
-        indicator.textContent = 'PEC du nouveau-né';
-        p0Container.style.display = 'none';
-      }
-
-      window.scrollTo(0, 0);
-    }
-
-    // PEC MÈRE
-    function onPertesChange() {
-      const val = document.getElementById('select-pertes').value;
-      const blocVert = document.getElementById('bloc-pertes-vert');
-      const blocRouge = document.getElementById('bloc-pertes-rouge');
-
-      if (val === 'inf500') {
-        blocVert.style.display = 'block';
-        blocRouge.style.display = 'none';
-      } else {
-        blocVert.style.display = 'none';
-        blocRouge.style.display = 'block';
-      }
-    }
-
-    function toggleVvpMere(btn) {
-      btn.classList.toggle('active');
-      btn.textContent = btn.classList.contains('active') ? '✓ VVP posée' : '💉 Pose de VVP';
-    }
-
-    function addPrescription(select) {
-      const val = select.value;
-      if (!val) return;
-      createTagBadge(val, 'prescription-tags', false, true);
-      select.selectedIndex = 0;
-    }
-
-    // PEC NOUVEAU-NÉ ALGORITHME
-    function selectAdaptationNn(type) {
-      const btnBonne = document.getElementById('btn-nn-bonne');
-      const btnMauvaise = document.getElementById('btn-nn-mauvaise');
-      const blocBonne = document.getElementById('bloc-nn-bonne');
-      const blocMauvaise = document.getElementById('bloc-nn-mauvaise');
-
-      if (type === 'bonne') {
-        btnBonne.classList.add('active');
-        btnMauvaise.classList.remove('active');
-        blocBonne.style.display = 'block';
-        blocMauvaise.style.display = 'none';
-      } else {
-        btnMauvaise.classList.add('active');
-        btnBonne.classList.remove('active');
-        blocBonne.style.display = 'none';
-        blocMauvaise.style.display = 'block';
-      }
-    }
-
-    function onNnEtape1Change() {
-      const val = document.getElementById('select-nn-etape1').value;
-      const blocReanim = document.getElementById('bloc-nn-reanim');
-      const blocBonne = document.getElementById('bloc-nn-bonne');
-
-      if (val === 'echec') {
-        blocReanim.style.display = 'block';
-      } else {
-        blocReanim.style.display = 'none';
-        blocBonne.style.display = 'block';
-      }
-    }
-
-    function onNnEtape2Change() {
-      const val = document.getElementById('select-nn-etape2').value;
-      const bloc10 = document.getElementById('bloc-nn-10insuff');
-      bloc10.style.display = (val === 'echec') ? 'block' : 'none';
-    }
-
-    function onNnFcChange() {
-      const val = document.getElementById('select-nn-fc').value;
-      const bloc60100 = document.getElementById('bloc-nn-fc-60-100');
-      const blocInf60 = document.getElementById('bloc-nn-fc-inf60');
-
-      if (val === 'fc-60-100') {
-        bloc60100.style.display = 'block';
-        blocInf60.style.display = 'none';
-      } else if (val === 'fc-inf60') {
-        bloc60100.style.display = 'none';
-        blocInf60.style.display = 'block';
-      } else {
-        bloc60100.style.display = 'none';
-        blocInf60.style.display = 'none';
-      }
-    }
-
-    // SCORE AVPU
-    function selectAvpu(btn, score) {
-      if (btn.classList.contains('active')) {
-        btn.classList.remove('active');
-        selectedAvpu = '';
-      } else {
-        document.querySelectorAll('.avpu-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedAvpu = score;
-      }
-    }
-
-    // TAGS
-    function addAtcd(selectElem) {
-      const val = selectElem.value;
-      if (!val) return;
-      createTagBadge(val, 'atcd-tags');
-      selectElem.selectedIndex = 0;
-    }
-
-    function addTagFromInput(inputId, containerId) {
-      const input = document.getElementById(inputId);
-      const val = input.value.trim();
-      if (!val) return;
-      createTagBadge(val, containerId);
-      input.value = '';
-      input.focus();
-    }
-
-    function addHospit() {
-      const mois = document.getElementById('hospit-mois').value;
-      const annee = document.getElementById('hospit-annee').value;
-      const service = document.getElementById('hospit-service').value;
-      const label = `${service} (${mois} ${annee})`;
-      createTagBadge(label, 'hospit-tags', true);
-    }
-
-    function createTagBadge(text, containerId, isHospit = false, isMed = false) {
-      const container = document.getElementById(containerId);
-      const existing = Array.from(container.querySelectorAll('.tag-text')).map(el => el.textContent);
-      if (existing.includes(text)) return;
-
-      const badge = document.createElement('div');
-      badge.className = 'tag';
-      if (isHospit) badge.classList.add('hospit-tag');
-      if (isMed) badge.classList.add('med-tag');
-      
-      badge.innerHTML = `
-        <span class="tag-text">${text}</span>
-        <span class="tag-remove" onclick="this.parentElement.remove()">×</span>
-      `;
-      container.appendChild(badge);
-    }
-
-    function getTagsText(containerId) {
-      const tags = Array.from(document.querySelectorAll(`#${containerId} .tag-text`)).map(el => el.textContent);
-      return tags.length > 0 ? tags.join(', ') : 'Aucun';
-    }
-
-    // ================= GÉNÉRATION SAED =================
-    function generateSAED() {
-      const isP0 = document.getElementById('toggle-p0').checked;
-      const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
-      const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
-      const poids = document.getElementById('patient-poids').value;
-      const motif = document.getElementById('motif-select').value;
-      const delai = `${document.getElementById('delai-valeur').value} ${document.getElementById('delai-unite').value}`;
-
-      const atcd = getTagsText('atcd-tags');
-      const ttt = getTagsText('ttt-tags');
-      const allergies = getTagsText('allergies-tags');
-      const hospit = getTagsText('hospit-tags');
-
-      let evalMotif = '';
-      if (motif === 'Accouchement') {
-        const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
-        const gemellaire = document.getElementById('acc-gemellaire').checked ? 'OUI' : 'NON';
-        const debutTravail = `${document.getElementById('acc-debut-hh').value}:${document.getElementById('acc-debut-mm').value}`;
-        const perteEaux = document.getElementById('acc-perte-eaux').checked ? 'OUI' : 'NON';
-        const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
-        const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
-
-        let prepa = [];
-        if (document.getElementById('acc-rechauffe').checked) prepa.push('cellule réchauffée');
-        if (document.getElementById('acc-scope').checked) prepa.push('scope');
-        if (document.getElementById('acc-o2').checked) prepa.push('O2 SpO2 > 94%');
-        if (document.getElementById('acc-aspi').checked) prepa.push('aspi mucosités CH 8');
-
-        evalMotif = 
-`- Terme prévu : ${terme} | Grossesse gémellaire : ${gemellaire}
-- Début du travail : ${debutTravail}
-- Perte des eaux : ${perteEaux}
-- Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
-- Mesures associées : ${prepa.length > 0 ? prepa.join(', ') : 'En cours'}`;
-      } else {
-        evalMotif = `- Bilan clinique spécifique : ${motif}`;
-      }
-
-      let constList = [];
-      const pa = document.getElementById('c-pa').value.trim();
-      const fc = document.getElementById('c-fc').value.trim();
-      const spo2 = document.getElementById('c-spo2').value.trim();
-      const fr = document.getElementById('c-fr').value.trim();
-      const hgt = document.getElementById('c-hgt').value.trim();
-      const temp = document.getElementById('c-temp').value.trim();
-      const eva = document.getElementById('c-eva').value.trim();
-      const trc = document.getElementById('c-trc').value.trim();
-
-      if (pa) constList.push(`PA: ${pa}`);
-      if (fc) constList.push(`FC: ${fc} bpm`);
-      if (spo2) constList.push(`SpO2: ${spo2}%`);
-      if (fr) constList.push(`FR: ${fr}/min`);
-      if (hgt) constList.push(`HGT: ${hgt} g/L`);
-      if (temp) constList.push(`T°: ${temp}°C`);
-      if (eva) constList.push(`EVA/EN: ${eva}/10`);
-      if (trc) constList.push(`TRC: ${trc}s`);
-      if (selectedAvpu) constList.push(`AVPU: ${selectedAvpu}`);
-
-      const constText = constList.length > 0 ? `- Constantes : ${constList.join(' | ')}` : `- Constantes : Non renseignées`;
-
-      const demandeType = document.getElementById('demande-type').value;
-      const demandeDetails = document.getElementById('saed-demande').value.trim();
-      let demandeText = `Type : ${demandeType}`;
-      if (demandeDetails) {
-        demandeText += `\nPrécisions / Actions : ${demandeDetails}`;
-      }
-
-      const cr = 
-`TRANSMISSION SMUR INFIRMIER (SAED)
-----------------------------------
-[S] SITUATION
-Patient : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
-Degré d'urgence : ${isP0 ? 'P0 (Urgence vitale)' : 'Non P0'}
-Motif : ${motif} (évoluant depuis : ${delai})
-
-[A] ANTECEDENTS & TERRAIN
-- ATCD : ${atcd}
-- Traitements : ${ttt}
-- Allergies : ${allergies}
-- Hospitalisation récente : ${hospit}
-
-[E] EVALUATION CLINIQUE & CONSTANTES
-${evalMotif}
-${constText}
-
-[D] DEMANDE & CONDUITE A TENIR
-${demandeText}
-----------------------------------`;
-
-      document.getElementById('cr-output').value = cr;
-    }
-
-    function copySAED() {
-      const output = document.getElementById('cr-output');
-      if (!output.value) generateSAED();
-      navigator.clipboard.writeText(output.value).then(() => {
-        alert('Compte rendu SAED copié dans le presse-papiers !');
-      });
-    }
-  </script>
-</body>
-</html>
+  // Calcul initial au chargement
+  calculateScore();
+</script>
