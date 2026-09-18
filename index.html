@@ -19,6 +19,10 @@
       --radius: 10px;
       --success: #16a34a;
       --success-bg: #dcfce7;
+      --warning-bg: #fef3c7;
+      --warning-text: #b45309;
+      --algo-blue: #0284c7;
+      --algo-blue-bg: #e0f2fe;
     }
 
     * {
@@ -178,7 +182,7 @@
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 
-    /* CHECKBOXES & ITEMS */
+    /* CHECKBOXES */
     .checkbox-item {
       display: flex;
       align-items: center;
@@ -220,8 +224,24 @@
       color: var(--danger);
       border: 1.5px solid #fca5a5;
     }
+    .alert-warning {
+      background: var(--warning-bg);
+      color: var(--warning-text);
+      border: 1.5px solid #fde68a;
+    }
+    .alert-surveillance-danger {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 2px solid #ef4444;
+      font-size: 1.15rem;
+      font-weight: 900;
+      text-align: center;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      letter-spacing: 0.5px;
+    }
 
-    /* BOUTON ACTION PLEINE LARGEUR */
     .btn-toggle-action {
       width: 100%;
       padding: 14px;
@@ -239,6 +259,63 @@
       background: var(--success-bg);
       border-color: var(--success);
       color: var(--success);
+    }
+
+    /* ALGO NOURRISSON */
+    .algo-choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .algo-btn {
+      padding: 14px 10px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      border: 2px solid transparent;
+      user-select: none;
+    }
+    .algo-btn.green {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #86efac;
+    }
+    .algo-btn.red {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fca5a5;
+    }
+    .algo-btn.active {
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.2);
+      filter: brightness(0.95);
+    }
+
+    .algo-box {
+      border-radius: 8px;
+      padding: 14px;
+      margin-top: 14px;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+    .algo-box.blue {
+      background: var(--algo-blue-bg);
+      border: 1.5px solid #7dd3fc;
+      color: #0369a1;
+    }
+    .algo-box.green {
+      background: var(--success-bg);
+      border: 1.5px solid #86efac;
+      color: #166534;
+    }
+    .algo-box-title {
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     /* SCORE AVPU */
@@ -731,7 +808,7 @@
       </div>
     </div>
 
-    <!-- ================= NOUVELLE PAGE : PRISE EN CHARGE DE LA MÈRE ================= -->
+    <!-- ================= PAGE : PRISE EN CHARGE DE LA MÈRE ================= -->
     <div id="page-pec-mere" class="page">
       
       <div class="card">
@@ -784,6 +861,11 @@
             <label for="c10-hgt">HGT (g/L)</label>
             <input type="number" step="0.01" inputmode="decimal" id="c10-hgt" placeholder="ex: 1.05">
           </div>
+        </div>
+
+        <div class="nav-actions">
+          <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Appel au 15</button>
+          <button type="button" class="btn-nav" onclick="goToPage('pec-enfant')">Prise en charge de l'enfant ➔</button>
         </div>
       </div>
 
@@ -839,10 +921,121 @@
           </select>
           <div class="tag-container" id="prescription-tags"></div>
         </div>
+
+        <!-- TEXTE ROUGE SURVEILLANCE DES CONSTANTES+++ -->
+        <div class="alert-surveillance-danger">
+          SURVEILLANCE DES CONSTANTES +++
+        </div>
+
+        <div class="nav-actions">
+          <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Appel au 15</button>
+          <button type="button" class="btn-nav" onclick="goToPage('pec-enfant')">Prise en charge de l'enfant ➔</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= NOUVELLE PAGE : PRISE EN CHARGE DE L'ENFANT ================= -->
+    <div id="page-pec-enfant" class="page">
+      <div class="card">
+        <div class="section-label">Adaptation à la vie extra-utérine</div>
+
+        <label style="font-size: 1.05rem; margin-bottom: 8px;">
+          Respiration spontanée / Cri vigoureux / Tonus vif ?
+        </label>
+
+        <div class="algo-choice-grid">
+          <button type="button" class="algo-btn green" id="btn-nn-bonne" onclick="selectAdaptationNn('bonne')">
+            ✓ Bonne adaptation
+          </button>
+          <button type="button" class="algo-btn red" id="btn-nn-mauvaise" onclick="selectAdaptationNn('mauvaise')">
+            ⚠ 1 critère de mauvaise adaptation ?
+          </button>
+        </div>
+
+        <!-- CAS 1 : BONNE ADAPTATION -->
+        <div id="bloc-nn-bonne" class="algo-box green" style="display: none;">
+          <div class="algo-box-title">Protocole Bonne Adaptation</div>
+          <p>• <strong>Clampage du cordon</strong> à 15 cm de l'enfant (2 clamps de BAR ou pinces Kocher). Couper entre les clamps. Désinfecter à la Chlorhexidine. Emballer cordon + clamp avec compresses stériles et fixer avec une bande.</p>
+          <br>
+          <p>• <strong>Réchauffer l'enfant :</strong> sécher le nouveau-né + bonnet + sac Neohelp + le placer sur le thorax de la mère + couvrir avec couverture de survie.</p>
+          <p>• Si nécessité : désobstruer prudemment (sonde CH 8, max -100 mmHg).</p>
+          <br>
+          <p>• <strong>Surveillance :</strong> score d'APGAR à 1, 3 et 5 minutes + pose du capteur SpO2.</p>
+        </div>
+
+        <!-- CAS 2 : MAUVAISE ADAPTATION -->
+        <div id="bloc-nn-mauvaise" style="display: none;">
+          <div class="algo-box" style="background: #fffbeb; border: 1.5px solid #fef08a; color: #92400e; margin-top: 14px;">
+            <div class="algo-box-title">1. Sécher et stimuler</div>
+            Frotter vigoureusement le dos + la plante des pieds.
+          </div>
+
+          <div class="field" style="margin-top: 14px;">
+            <label>Résultat après stimulation :</label>
+            <select id="select-nn-etape1" onchange="onNnEtape1Change()">
+              <option value="" disabled selected>Évaluer l'état...</option>
+              <option value="recupere">Récupération (bonne adaptation)</option>
+              <option value="echec">Échec (anomalie respiratoire / hypotonie)</option>
+            </select>
+          </div>
+
+          <!-- ÉCHEC 1 -> BLOC RÉANIMATION BLEU -->
+          <div id="bloc-nn-reanim" class="algo-box blue" style="display: none;">
+            <div class="algo-box-title" style="color: #0369a1;">🚨 Appel Médecin Régulateur</div>
+            <p>1. Clamper / couper le cordon</p>
+            <p>2. Mettre le nouveau-né à plat sur un plan dur</p>
+            <p>3. Libérer les VAS : tête en position neutre +/- aspiration douce buccale et nasale avec sonde CH 8 (max -100 mmHg)</p>
+            <p>4. Scoper l'enfant</p>
+            <p>5. <strong>5 insufflations de 2-3 secondes au BAVU sans O2</strong></p>
+
+            <hr class="divider" style="border-color: #bae6fd;">
+
+            <div class="field">
+              <label style="color: #0369a1;">Évolution après les 5 insufflations :</label>
+              <select id="select-nn-etape2" onchange="onNnEtape2Change()">
+                <option value="" disabled selected>Évaluer FC et respiration...</option>
+                <option value="recup">Récupération</option>
+                <option value="echec">Échec (anomalie respi / hypotonie / FC &lt; 100)</option>
+              </select>
+            </div>
+
+            <!-- SUITE : 10 INSUFFLATIONS -->
+            <div id="bloc-nn-10insuff" style="display: none; background: #ffffff; border-radius: 8px; padding: 12px; margin-top: 10px; border: 1.5px solid #38bdf8;">
+              <p style="font-weight: 800; color: #0284c7; margin-bottom: 8px;">👉 10 insufflations BAVU sans O2</p>
+
+              <div class="field">
+                <label>Fréquence Cardiaque après 10 insufflations :</label>
+                <select id="select-nn-fc" onchange="onNnFcChange()">
+                  <option value="" disabled selected>Sélectionner la tranche de FC...</option>
+                  <option value="fc-60-100">FC entre 60 et 100 bpm</option>
+                  <option value="fc-inf60">FC &lt; 60 bpm (Arrêt / Bradycardie critique)</option>
+                </select>
+              </div>
+
+              <!-- CAS FC 60-100 -->
+              <div id="bloc-nn-fc-60-100" class="algo-box blue" style="display: none; background: #f0f9ff;">
+                <p>• <strong>15 insufflations sans O2</strong></p>
+                <p>• Réévaluer la FC</p>
+              </div>
+
+              <!-- CAS FC < 60 : RCP 3/1 -->
+              <div id="bloc-nn-fc-inf60" class="algo-box" style="display: none; background: #fee2e2; border: 2px solid #ef4444; color: #991b1b;">
+                <div class="algo-box-title" style="color: #991b1b;">🚨 RCP 3/1</div>
+                <p>• <strong>Insufflation sous O2 15 L/min</strong></p>
+                <p>• <strong>MCE</strong> avec les pouces des deux mains placées côte à côte et encerclant le thorax</p>
+                <p>• Rythme : <strong>100 - 120 cpm</strong></p>
+                <p>• <strong>Réévaluer la FC toutes les 30 secondes</strong></p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Appel au 15</button>
+        <button type="button" class="btn-nav secondary" onclick="goToPage('pec-mere')">⬅ PEC Mère</button>
       </div>
     </div>
 
@@ -1022,12 +1215,15 @@
       } else if (target === 'pec-mere') {
         indicator.textContent = 'PEC de la mère';
         p0Container.style.display = 'none';
+      } else if (target === 'pec-enfant') {
+        indicator.textContent = 'PEC du nouveau-né';
+        p0Container.style.display = 'none';
       }
 
       window.scrollTo(0, 0);
     }
 
-    // GESTION PERTES SANGUINES (PEC MÈRE)
+    // PEC MÈRE
     function onPertesChange() {
       const val = document.getElementById('select-pertes').value;
       const blocVert = document.getElementById('bloc-pertes-vert');
@@ -1044,11 +1240,7 @@
 
     function toggleVvpMere(btn) {
       btn.classList.toggle('active');
-      if (btn.classList.contains('active')) {
-        btn.textContent = '✓ VVP posée';
-      } else {
-        btn.textContent = '💉 Pose de VVP';
-      }
+      btn.textContent = btn.classList.contains('active') ? '✓ VVP posée' : '💉 Pose de VVP';
     }
 
     function addPrescription(select) {
@@ -1056,6 +1248,62 @@
       if (!val) return;
       createTagBadge(val, 'prescription-tags', false, true);
       select.selectedIndex = 0;
+    }
+
+    // PEC NOUVEAU-NÉ ALGORITHME
+    function selectAdaptationNn(type) {
+      const btnBonne = document.getElementById('btn-nn-bonne');
+      const btnMauvaise = document.getElementById('btn-nn-mauvaise');
+      const blocBonne = document.getElementById('bloc-nn-bonne');
+      const blocMauvaise = document.getElementById('bloc-nn-mauvaise');
+
+      if (type === 'bonne') {
+        btnBonne.classList.add('active');
+        btnMauvaise.classList.remove('active');
+        blocBonne.style.display = 'block';
+        blocMauvaise.style.display = 'none';
+      } else {
+        btnMauvaise.classList.add('active');
+        btnBonne.classList.remove('active');
+        blocBonne.style.display = 'none';
+        blocMauvaise.style.display = 'block';
+      }
+    }
+
+    function onNnEtape1Change() {
+      const val = document.getElementById('select-nn-etape1').value;
+      const blocReanim = document.getElementById('bloc-nn-reanim');
+      const blocBonne = document.getElementById('bloc-nn-bonne');
+
+      if (val === 'echec') {
+        blocReanim.style.display = 'block';
+      } else {
+        blocReanim.style.display = 'none';
+        blocBonne.style.display = 'block';
+      }
+    }
+
+    function onNnEtape2Change() {
+      const val = document.getElementById('select-nn-etape2').value;
+      const bloc10 = document.getElementById('bloc-nn-10insuff');
+      bloc10.style.display = (val === 'echec') ? 'block' : 'none';
+    }
+
+    function onNnFcChange() {
+      const val = document.getElementById('select-nn-fc').value;
+      const bloc60100 = document.getElementById('bloc-nn-fc-60-100');
+      const blocInf60 = document.getElementById('bloc-nn-fc-inf60');
+
+      if (val === 'fc-60-100') {
+        bloc60100.style.display = 'block';
+        blocInf60.style.display = 'none';
+      } else if (val === 'fc-inf60') {
+        bloc60100.style.display = 'none';
+        blocInf60.style.display = 'block';
+      } else {
+        bloc60100.style.display = 'none';
+        blocInf60.style.display = 'none';
+      }
     }
 
     // SCORE AVPU
