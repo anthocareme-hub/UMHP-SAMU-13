@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Bilan SMUR / PSIS</title>
+  <title>Bilan SMUR / PSIS - SAMU 13</title>
   <style>
     :root {
       --bg: #f8fafc;
@@ -11,8 +11,9 @@
       --text: #0f172a;
       --text-muted: #64748b;
       --border: #cbd5e1;
-      --primary: #0284c7;
-      --primary-hover: #0369a1;
+      --primary: #005ea8;
+      --primary-hover: #004b87;
+      --samu-yellow: #f59e0b;
       --danger: #dc2626;
       --danger-bg: #fee2e2;
       --tag-bg: #e2e8f0;
@@ -45,6 +46,62 @@
       margin: 0 auto;
     }
 
+    /* PAGE D'ACCUEIL PLEIN ÉCRAN */
+    #page-home {
+      background: #ffffff;
+      min-height: calc(100vh - 32px);
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 10px;
+    }
+    #page-home.active {
+      display: flex;
+    }
+    .home-top-half {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+    .home-logo-svg {
+      width: 75vw;
+      max-width: 280px;
+      height: auto;
+      display: block;
+    }
+    .home-bottom-half {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-bottom: 20px;
+    }
+    .btn-home {
+      width: 100%;
+      padding: 20px 16px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      font-size: 1.2rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      transition: transform 0.1s;
+    }
+    .btn-home:active {
+      transform: scale(0.98);
+    }
+    .btn-home-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+    .btn-home-secondary {
+      background: #f8fafc;
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
     /* HEADER & SWITCH P0 */
     .header-bar {
       display: flex;
@@ -55,7 +112,7 @@
       border-bottom: 2px solid var(--border);
     }
     .header-title {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 800;
       color: var(--text);
     }
@@ -285,15 +342,9 @@
       margin-bottom: 14px;
       background: #ffffff;
     }
-    .thera-box.asthme {
-      border-left: 6px solid #16a34a;
-    }
-    .thera-box.oap {
-      border-left: 6px solid #0284c7;
-    }
-    .thera-box.noyade {
-      border-left: 6px solid #0d9488;
-    }
+    .thera-box.asthme { border-left: 6px solid #16a34a; }
+    .thera-box.oap { border-left: 6px solid #0284c7; }
+    .thera-box.noyade { border-left: 6px solid #0d9488; }
     .thera-title {
       font-weight: 800;
       font-size: 1rem;
@@ -334,10 +385,6 @@
       border-color: var(--primary);
       background: #e0f2fe;
       color: var(--primary);
-    }
-    .oxy-btn.active small {
-      color: var(--primary);
-      font-weight: 700;
     }
 
     /* ENCART SURVEILLANCE SCOPE */
@@ -416,6 +463,107 @@
       margin-bottom: 4px;
     }
 
+    /* ALGO DU NOUVEAU-NÉ */
+    .algo-choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+    .algo-btn {
+      padding: 12px 8px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      border: 2px solid transparent;
+      user-select: none;
+    }
+    .algo-btn.green {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #86efac;
+    }
+    .algo-btn.red {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fca5a5;
+    }
+    .algo-step-card {
+      background: #ffffff;
+      border-left: 4px solid var(--primary);
+      border-radius: 0 8px 8px 0;
+      padding: 12px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .algo-step-card.red-border {
+      border-left-color: var(--danger);
+      background: #fffafa;
+    }
+    .algo-box-green-details {
+      background: var(--success-bg);
+      border: 2px solid #86efac;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 14px;
+      color: #166534;
+      line-height: 1.5;
+    }
+
+    /* APGAR */
+    .apgar-tool-card {
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 16px;
+    }
+    .apgar-nav { display: flex; gap: 8px; margin-bottom: 12px; }
+    .apgar-tab-btn {
+      flex: 1;
+      padding: 10px;
+      background: #e2e8f0;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+    }
+    .apgar-tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+    .apgar-summary-line {
+      display: flex;
+      justify-content: space-around;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 4px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .apgar-crit-group { margin-bottom: 8px; }
+    .apgar-crit-group label { font-size: 0.82rem; font-weight: 700; margin-bottom: 3px; }
+    .apgar-crit-group select { padding: 8px 10px; font-size: 0.9rem; }
+    .apgar-score-display {
+      background: #0f172a;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-align: center;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
     /* SCORE AVPU */
     .avpu-grid {
       display: grid;
@@ -440,7 +588,7 @@
       background: #fef2f2;
     }
 
-    /* OPTGROUP ROUGE & GRAS */
+    /* OPTGROUP */
     select optgroup {
       font-weight: 800;
       color: var(--danger);
@@ -499,15 +647,15 @@
       text-align: center;
       background: var(--primary);
       color: #ffffff;
-      box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
+      box-shadow: 0 2px 4px rgba(0,94,168,0.2);
     }
     .btn-nav.secondary { background: #e2e8f0; color: var(--text); box-shadow: none; }
-    .btn-nav.success { background: var(--success); box-shadow: 0 2px 4px rgba(22, 163, 74, 0.25); }
+    .btn-nav.success { background: var(--success); box-shadow: 0 2px 4px rgba(22,163,74,0.25); }
 
     /* ZONE TEXTE FINAL */
     #cr-output, #resume-output {
       width: 100%;
-      height: 420px;
+      height: 400px;
       background: #0f172a;
       color: #f8fafc;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -518,13 +666,59 @@
       border: 1px solid #334155;
       white-space: pre-wrap;
     }
+
+    /* LISTE MES UMHP */
+    .umhp-item {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-left: 5px solid var(--primary);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .umhp-item-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .umhp-item-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- BARRE FIXE HAUT -->
-    <div class="header-bar">
+
+    <!-- ================= PAGE ACCUEIL SAMU 13 ================= -->
+    <div id="page-home" class="page active">
+      <div class="home-top-half">
+        <!-- Reproduction vectorielle fidèle du logo SAMU 13 -->
+        <svg class="home-logo-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="200" cy="200" r="190" fill="none" stroke="#f59e0b" stroke-width="14"/>
+          <text x="200" y="198" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="105" fill="#005ea8" text-anchor="middle" letter-spacing="-3">SAMU</text>
+          <text x="175" y="298" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="115" fill="#005ea8" text-anchor="middle" letter-spacing="-2">13</text>
+          <circle cx="330" cy="255" r="15" fill="#f59e0b" />
+        </svg>
+      </div>
+
+      <div class="home-bottom-half">
+        <button type="button" class="btn-home btn-home-primary" onclick="startNewIntervention()">
+          🚑 Nouvelle intervention
+        </button>
+        <button type="button" class="btn-home btn-home-secondary" onclick="openMesUmhp()">
+          📁 Mes UMHP
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= BARRE FIXE HAUT ================= -->
+    <div class="header-bar" id="app-header" style="display: none;">
       <div class="header-title" id="page-indicator">1. Identité</div>
       <div class="toggle-wrapper" id="p0-container">
         <span class="toggle-label" id="p0-status">P0 : NON</span>
@@ -536,7 +730,7 @@
     </div>
 
     <!-- ================= PAGE 1 : IDENTITÉ ================= -->
-    <div id="page-1" class="page active">
+    <div id="page-1" class="page">
       <div class="card">
         <div class="field">
           <label for="patient-nom">Nom et Prénom</label>
@@ -559,6 +753,7 @@
       </div>
 
       <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToHome()">🏠 Accueil</button>
         <button type="button" class="btn-nav" onclick="goToPage(2)">Anamnèse ➔</button>
       </div>
     </div>
@@ -962,16 +1157,13 @@
       </div>
     </div>
 
-    <!-- ================= NOUVELLE PAGE : THÉRAPEUTIQUE ================= -->
+    <!-- ================= PAGE : THÉRAPEUTIQUE (DÉTRESSE RESPIRATOIRE) ================= -->
     <div id="page-therapeutique" class="page">
-      
-      <!-- VVP EN TÊTE -->
       <div class="card">
         <button type="button" class="btn-toggle-action orange" id="btn-vvp-thera" onclick="toggleVvpThera(this)">
           💉 VVP
         </button>
 
-        <!-- OXYGÉNOTHÉRAPIE : 4 BLOCS -->
         <div class="section-label">Oxygénothérapie</div>
         <div class="oxy-btn-grid">
           <button type="button" class="oxy-btn" id="btn-o2-asthme" onclick="setOxygeneProfile('asthme')">
@@ -990,7 +1182,6 @@
         <div id="o2-cible-text" class="alert-box alert-green" style="display: none; padding: 8px; font-size: 0.9rem;"></div>
       </div>
 
-      <!-- ENCART CONDITIONNEL 1 : ASTHME / BPCO -->
       <div id="encart-asthme-bpco" class="card thera-box asthme" style="display: none;">
         <div class="thera-title" style="color: #166534;">
           <span id="thera-asthme-title">ASTHME / BPCO DÉCOMPENSÉ</span>
@@ -1010,7 +1201,6 @@
         </label>
       </div>
 
-      <!-- ENCART CONDITIONNEL 2 : OAP -->
       <div id="encart-oap" class="card thera-box oap" style="display: none;">
         <div class="thera-title" style="color: #0369a1;">
           <span>OAP</span>
@@ -1021,7 +1211,6 @@
           <span><strong>Furosémide 80 mg IVD</strong></span>
         </label>
 
-        <!-- Condition PAS > 180 mmHg automatique -->
         <div id="box-oap-hta" style="display: none; margin-top: 10px; background: #fee2e2; border: 1.5px solid #fca5a5; border-radius: 6px; padding: 10px;">
           <div style="color: #991b1b; font-weight: 800; font-size: 0.9rem; margin-bottom: 6px;">
             ⚠️ PAS &gt; 180 mmHg constatée :
@@ -1033,7 +1222,6 @@
         </div>
       </div>
 
-      <!-- ENCART CONDITIONNEL 3 : RÉFLEXES NOYADE -->
       <div id="encart-noyade" class="card thera-box noyade" style="display: none;">
         <div class="thera-title" style="color: #0f766e;">
           <span>NOYADE</span>
@@ -1043,7 +1231,6 @@
         <label class="checkbox-item"><input type="checkbox" id="check-noyade-sng"> Pose de SNG</label>
       </div>
 
-      <!-- NOURRISSON & SURVEILLANCE SCOPE -->
       <div class="row-2" style="margin-bottom: 14px;">
         <button type="button" onclick="toggleDrpModal(true)" style="background: #fef9c3; border: 1.5px solid #fde047; padding: 12px 6px; border-radius: 8px; text-align: center; font-weight: 800; font-size: 0.85rem; color: #854d0e; cursor: pointer;">
           📖 Nourrisson : DRP
@@ -1053,7 +1240,6 @@
         </button>
       </div>
 
-      <!-- ENCART SCOPE RÉÉVALUATION -->
       <div id="modal-scope">
         <button type="button" class="modal-close-btn" onclick="toggleScopeModal(false)">✕</button>
         <div class="section-label" style="font-size: 0.95rem; margin-bottom: 10px;">Constantes réévaluées sous scope</div>
@@ -1102,7 +1288,7 @@
       </div>
     </div>
 
-    <!-- ================= MODALE PLEIN ÉCRAN : DRP ================= -->
+    <!-- ================= MODALE DRP ================= -->
     <div id="modal-drp">
       <div class="drp-content-card">
         <button type="button" class="drp-close-btn" onclick="toggleDrpModal(false)">✕</button>
@@ -1460,7 +1646,7 @@
       </div>
     </div>
 
-    <!-- ================= PAGE : RÉSUMÉ FINAL ================= -->
+    <!-- ================= PAGE : RÉSUMÉ FINAL INTERVENTION ================= -->
     <div id="page-resume" class="page">
       <div class="card">
         <div class="section-label">Bilan Récapitulatif Complet</div>
@@ -1468,11 +1654,28 @@
       </div>
 
       <div class="nav-actions" style="margin-top: 0; margin-bottom: 14px;">
-        <button type="button" class="btn-nav success" onclick="copyResume()">Copier le résumé</button>
+        <button type="button" class="btn-nav success" onclick="saveCurrentIntervention()">
+          💾 Enregistrer dans mes interventions
+        </button>
       </div>
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" id="btn-back-resume" onclick="goToPage('therapeutique')">⬅ Prise en charge</button>
+        <button type="button" class="btn-nav secondary" onclick="goToHome()">🏠 Accueil</button>
+      </div>
+    </div>
+
+    <!-- ================= NOUVELLE PAGE : MES UMHP (HISTORIQUE) ================= -->
+    <div id="page-mes-umhp" class="page">
+      <div class="card">
+        <div class="section-label">Historique des interventions (Mémoire locale)</div>
+        <div id="umhp-list-container">
+          <!-- Liste générée dynamiquement -->
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToHome()">🏠 Accueil</button>
       </div>
     </div>
 
@@ -1590,6 +1793,23 @@
       updateMotifs(false);
     });
 
+    // NAVIGATION ACCUEIL & ÉCRANS
+    function goToHome() {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-home').classList.add('active');
+      document.getElementById('app-header').style.display = 'none';
+      window.scrollTo(0, 0);
+    }
+
+    function startNewIntervention() {
+      goToPage(1);
+    }
+
+    function openMesUmhp() {
+      renderUmhpList();
+      goToPage('mes-umhp');
+    }
+
     // SWITCH P0 & MOTIFS
     const motifsP0Non = ["Allergie", "Antalgie", "Brûlure", "Dyspnée", "Hypoglycémie"];
     const motifsP0Oui = ["ACR adulte", "ACR enfant", "Accouchement", "Détresse respiratoire", "Électrisé", "Noyé"];
@@ -1647,6 +1867,14 @@
 
       const indicator = document.getElementById('page-indicator');
       const p0Container = document.getElementById('p0-container');
+      const appHeader = document.getElementById('app-header');
+
+      if (target === 'home') {
+        appHeader.style.display = 'none';
+        return;
+      }
+
+      appHeader.style.display = 'flex';
 
       if (target === 1) {
         indicator.textContent = '1. Identité';
@@ -1703,6 +1931,9 @@
           btnBack.onclick = () => goToPage('regu');
         }
         generateResumeFinal();
+      } else if (target === 'mes-umhp') {
+        indicator.textContent = 'Mes UMHP';
+        p0Container.style.display = 'none';
       }
 
       window.scrollTo(0, 0);
@@ -1719,7 +1950,6 @@
       modal.style.display = show ? 'flex' : 'none';
     }
 
-    // PROFIL OXYGÉNOTHÉRAPIE (4 BLOCS)
     function setOxygeneProfile(mode) {
       oxygeneMode = mode;
       const btnAsthme = document.getElementById('btn-o2-asthme');
@@ -1798,14 +2028,12 @@
       }
     }
 
-    // DÉTECTION PAS > 180 (CONSTANTES INITIALES OU SCOPE)
     function parsePas(val) {
       if (!val) return 0;
       val = val.trim().replace(',', '.');
       let str = val.includes('/') ? val.split('/')[0] : val;
       let num = parseFloat(str);
       if (isNaN(num)) return 0;
-      // Conversion cmHg -> mmHg si nécessaire (ex: 19 -> 190)
       if (num >= 14 && num <= 30) {
         num = num * 10;
       }
@@ -1857,7 +2085,7 @@
       select.selectedIndex = 0;
     }
 
-    // ALGORITHME DU NOUVEAU-NÉ
+    // NOUVEAU-NÉ
     function actionBonneAdaptation(motifTxt = 'Bonne adaptation confirmée') {
       statutNouveauNe = motifTxt;
       document.getElementById('nn-step-stimul').style.display = 'none';
@@ -2015,7 +2243,7 @@
       };
     }
 
-    // GÉNÉRATION SAED / SAU (APPEL 15)
+    // TRANSMISSION SAED
     function generateSAED() {
       const isP0 = document.getElementById('toggle-p0').checked;
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
@@ -2122,7 +2350,7 @@ ${demandeText}
       });
     }
 
-    // RÉSUMÉ FINAL INTERVENTION
+    // RÉSUMÉ FINAL & ENREGISTREMENT LOCAL
     function generateResumeFinal() {
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
@@ -2249,7 +2477,7 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 
       const resumeTxt = 
 `==============================================
-RAPPORT D'INTERVENTION SMUR / PSIS
+RAPPORT D'INTERVENTION SMUR / PSIS - SAMU 13
 ==============================================
 
 1. PATIENT & SITUATION
@@ -2271,13 +2499,76 @@ ${specificSection}
 ==============================================`;
 
       document.getElementById('resume-output').value = resumeTxt;
+      return {
+        nom: nom,
+        motif: motif,
+        date: new Date().toLocaleString('fr-FR'),
+        texte: resumeTxt
+      };
     }
 
-    function copyResume() {
-      const output = document.getElementById('resume-output');
-      navigator.clipboard.writeText(output.value).then(() => {
-        alert('Bilan d\'intervention copié !');
+    // SAUVEGARDE EN MÉMOIRE LOCALE (LOCALSTORAGE)
+    function saveCurrentIntervention() {
+      const data = generateResumeFinal();
+      let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+      
+      const newEntry = {
+        id: Date.now(),
+        date: data.date,
+        nom: data.nom,
+        motif: data.motif,
+        texte: data.texte
+      };
+
+      savedList.unshift(newEntry);
+      localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
+      alert('✓ Intervention enregistrée avec succès dans « Mes UMHP » !');
+    }
+
+    function renderUmhpList() {
+      const container = document.getElementById('umhp-list-container');
+      const savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+
+      if (savedList.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; color: var(--text-muted); padding: 30px 10px;">
+            Aucune intervention enregistrée pour le moment.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      savedList.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'umhp-item';
+        div.innerHTML = `
+          <div class="umhp-item-title">${item.nom} — ${item.motif}</div>
+          <div class="umhp-item-meta">📅 ${item.date}</div>
+          <div style="margin-top: 8px; display: flex; gap: 8px;">
+            <button type="button" style="flex:1; padding: 6px; font-size: 0.85rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--primary); background: #f0f9ff; color: var(--primary); cursor: pointer;" onclick="event.stopPropagation(); viewUmhpDetail(${item.id})">Consulter</button>
+            <button type="button" style="padding: 6px 12px; font-size: 0.85rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--danger); background: #fef2f2; color: var(--danger); cursor: pointer;" onclick="event.stopPropagation(); deleteUmhp(${item.id})">Supprimer</button>
+          </div>
+        `;
+        container.appendChild(div);
       });
+    }
+
+    function viewUmhpDetail(id) {
+      const savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+      const entry = savedList.find(x => x.id === id);
+      if (!entry) return;
+
+      document.getElementById('resume-output').value = entry.texte;
+      goToPage('resume');
+    }
+
+    function deleteUmhp(id) {
+      if (!confirm('Supprimer définitivement cette intervention ?')) return;
+      let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+      savedList = savedList.filter(x => x.id !== id);
+      localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
+      renderUmhpList();
     }
   </script>
 </body>
