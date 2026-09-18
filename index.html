@@ -202,71 +202,10 @@
       margin-left: 6px;
     }
 
-    /* SCORE AVPU */
-    .avpu-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-top: 6px;
-    }
-    .avpu-btn {
-      background: #ffffff;
-      border: 2px solid var(--border);
-      border-radius: 10px;
-      padding: 14px 0;
-      font-size: 1.3rem;
-      font-weight: 800;
-      color: var(--text);
-      cursor: pointer;
-      text-align: center;
-    }
-    .avpu-btn.active {
-      border-color: var(--danger);
-      color: var(--danger);
-      background: #fef2f2;
-    }
-
-    /* INTERRUPTEURS OUI / NON */
-    .switch-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 0;
-    }
-    .switch-line span {
-      font-size: 1rem;
-      font-weight: 700;
-    }
-
-    /* SEGMENTED SLIDERS (ABDOMEN) */
-    .segmented-group {
-      margin-bottom: 12px;
-    }
-    .segmented-group:last-child {
-      margin-bottom: 0;
-    }
-    .segmented-toggle {
-      display: flex;
-      background: #e2e8f0;
-      border-radius: 8px;
-      padding: 3px;
-      gap: 4px;
-    }
-    .segmented-option {
-      flex: 1;
-      text-align: center;
-      padding: 10px 0;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      border-radius: 6px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .segmented-option.active {
-      background: #ffffff;
-      color: var(--text);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    hr.divider {
+      border: none;
+      border-top: 1.5px solid var(--border);
+      margin: 18px 0;
     }
 
     /* OPTGROUP ROUGE & GRAS */
@@ -332,7 +271,7 @@
     .btn-nav.secondary { background: #e2e8f0; color: var(--text); box-shadow: none; }
     .btn-nav.success { background: var(--success); box-shadow: 0 2px 4px rgba(22,163,74,0.25); }
 
-    /* ZONE CR FINAL PAGE 4 */
+    /* ZONE CR FINAL */
     #cr-output {
       width: 100%;
       height: 380px;
@@ -540,277 +479,118 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage(1)">⬅ Identité</button>
-        <button type="button" class="btn-nav" onclick="goToPage(3)">XABCDE ➔</button>
+        <button type="button" class="btn-nav" onclick="routeMotifPage()">Suivant ➔</button>
       </div>
     </div>
 
-    <!-- ================= PAGE 3 : XABCDE ================= -->
-    <div id="page-3" class="page">
-      
-      <!-- X : HÉMORRAGIES -->
+    <!-- ================= PAGE SPÉCIFIQUE : ACCOUCHEMENT ================= -->
+    <div id="page-accouchement" class="page">
       <div class="card">
-        <div class="section-label">X - Contrôle des hémorragies</div>
+        <div class="section-label">Bilan Obstétrical</div>
 
-        <label class="checkbox-item">
-          <input type="checkbox" id="check-pst" onchange="toggleXItem('panel-pst', this)">
-          Pansement hémostatique
-        </label>
-        <div id="panel-pst" class="sub-panel">
-          <label style="font-size: 0.85rem;">Heure de pose & Localisation</label>
-          <div class="row-2" style="margin-bottom: 6px;">
-            <select class="select-hh" id="pst-hh"></select>
-            <select class="select-mm" id="pst-mm"></select>
-          </div>
-          <input type="text" id="pst-loc" placeholder="Localisation (ex: cuisse droite)">
-        </div>
-
-        <label class="checkbox-item">
-          <input type="checkbox" id="check-garrot" onchange="toggleXItem('panel-garrot', this)">
-          Garrot
-        </label>
-        <div id="panel-garrot" class="sub-panel">
-          <label style="font-size: 0.85rem;">Heure de pose & Localisation</label>
-          <div class="row-2" style="margin-bottom: 6px;">
-            <select class="select-hh" id="garrot-hh"></select>
-            <select class="select-mm" id="garrot-mm"></select>
-          </div>
-          <input type="text" id="garrot-loc" placeholder="Localisation (ex: bras gauche)">
-        </div>
-
-        <label class="checkbox-item">
-          <input type="checkbox" id="check-celox" onchange="toggleXItem('panel-celox', this)">
-          Celox (mèche / poudre)
-        </label>
-        <div id="panel-celox" class="sub-panel">
-          <label style="font-size: 0.85rem;">Heure de pose & Localisation</label>
-          <div class="row-2" style="margin-bottom: 6px;">
-            <select class="select-hh" id="celox-hh"></select>
-            <select class="select-mm" id="celox-mm"></select>
-          </div>
-          <input type="text" id="celox-loc" placeholder="Localisation (ex: pli aine)">
-        </div>
-
-        <label class="checkbox-item">
-          <input type="checkbox" id="check-ceinture" onchange="toggleXItem('panel-ceinture', this)">
-          Ceinture pelvienne
-        </label>
-        <div id="panel-ceinture" class="sub-panel">
-          <label style="font-size: 0.85rem;">Heure de pose & Localisation</label>
-          <div class="row-2" style="margin-bottom: 6px;">
-            <select class="select-hh" id="ceinture-hh"></select>
-            <select class="select-mm" id="ceinture-mm"></select>
-          </div>
-          <input type="text" id="ceinture-loc" placeholder="Localisation (ex: bassin)">
-        </div>
-      </div>
-
-      <!-- A : VOIES AÉRIENNES -->
-      <div class="card">
-        <div class="section-label">A - Voies aériennes</div>
+        <!-- Terme prévu -->
         <div class="field">
-          <label class="checkbox-item"><input type="checkbox" id="va-libres"> Libres</label>
-          <label class="checkbox-item"><input type="checkbox" id="va-risque"> À risque</label>
-          <label class="checkbox-item"><input type="checkbox" id="va-obstr"> Obstruées</label>
-        </div>
-
-        <label style="margin-top: 10px; color: var(--primary);">Gestes :</label>
-        <label class="checkbox-item"><input type="checkbox" id="geste-collier"> Collier cervical</label>
-        <label class="checkbox-item"><input type="checkbox" id="geste-guedel"> Canule de Guedel</label>
-      </div>
-
-      <!-- B : RESPIRATION -->
-      <div class="card">
-        <div class="section-label">B - Respiration</div>
-        <div class="field">
-          <label for="resp-fr">Fréquence respiratoire (/min)</label>
-          <input type="number" inputmode="numeric" id="resp-fr" placeholder="ex: 16">
-        </div>
-
-        <div class="field">
-          <label>Signes de détresse :</label>
-          <label class="checkbox-item"><input type="checkbox" id="signe-balancement"> Balancement thoraco-abdominal</label>
-          <label class="checkbox-item"><input type="checkbox" id="signe-tirage"> Tirage</label>
-          <label class="checkbox-item"><input type="checkbox" id="signe-cyanose"> Cyanose</label>
-          <label class="checkbox-item"><input type="checkbox" id="signe-sueurs"> Sueurs</label>
-          <label class="checkbox-item"><input type="checkbox" id="signe-frein"> Frein expiratoire</label>
-        </div>
-
-        <div class="field">
-          <label>Auscultation pulmonaire</label>
+          <label>Terme prévu</label>
           <div class="row-2">
-            <select id="auscult-type">
-              <option value="Murmure vésiculaire conservé">Murmure vésiculaire conservé</option>
-              <option value="Diminution MV">Diminution MV</option>
-              <option value="Abolition MV">Abolition MV</option>
-              <option value="Sibilants (expi)">Sibilants (expi)</option>
-              <option value="Stridor (inspi)">Stridor (inspi)</option>
-              <option value="Ronchis">Ronchis</option>
-              <option value="Crépitants">Crépitants</option>
-              <option value="Frottement pleural">Frottement pleural</option>
-            </select>
-            <select id="auscult-cote">
-              <option value="bilatéral">Bilatéral</option>
-              <option value="gauche">Gauche</option>
-              <option value="droit">Droit</option>
-            </select>
+            <select id="acc-terme-mois"></select>
+            <select id="acc-terme-annee"></select>
           </div>
         </div>
 
-        <!-- GESTES RESPIRATOIRES -->
-        <div class="field" style="margin-top: 10px;">
-          <label style="color: var(--primary);">Gestes :</label>
-          <label class="checkbox-item"><input type="checkbox" id="geste-demi-assis"> 1/2 assis</label>
-          <label class="checkbox-item"><input type="checkbox" id="geste-pst-3cotes"> Pansement 3 côtés</label>
-        </div>
-      </div>
-
-      <!-- C : CIRCULATION -->
-      <div class="card">
-        <div class="section-label">C - Circulation</div>
-        
-        <div class="row-3 field">
-          <div>
-            <label for="circ-pouls">Pouls (bpm)</label>
-            <input type="number" inputmode="numeric" id="circ-pouls" placeholder="ex: 80">
-          </div>
-          <div>
-            <label for="circ-ta">Tension</label>
-            <input type="text" inputmode="numeric" id="circ-ta" placeholder="ex: 120/80">
-          </div>
-          <div>
-            <label for="circ-trc">TRC (sec)</label>
-            <input type="number" inputmode="numeric" id="circ-trc" placeholder="ex: 2">
-          </div>
-        </div>
-
+        <!-- Grossesse gémellaire -->
         <div class="field">
-          <label class="checkbox-item"><input type="checkbox" id="circ-regulier"> Régulier</label>
-          <label class="checkbox-item"><input type="checkbox" id="circ-irregulier"> Irrégulier</label>
-          <label class="checkbox-item"><input type="checkbox" id="circ-frappe"> Frappé</label>
-          <label class="checkbox-item"><input type="checkbox" id="circ-filant"> Filant</label>
-          <label class="checkbox-item"><input type="checkbox" id="circ-radial"> Radial perçu</label>
-          <label class="checkbox-item"><input type="checkbox" id="circ-marbrures"> Marbrures</label>
-        </div>
-      </div>
-
-      <!-- D : NEUROLOGIE -->
-      <div class="card">
-        <div class="section-label">D - Neurologie</div>
-        
-        <div class="field">
-          <label>Score AVPU</label>
-          <div class="avpu-grid">
-            <div class="avpu-btn active" onclick="selectAvpu(this, 'A')">A</div>
-            <div class="avpu-btn" onclick="selectAvpu(this, 'V')">V</div>
-            <div class="avpu-btn" onclick="selectAvpu(this, 'P')">P</div>
-            <div class="avpu-btn" onclick="selectAvpu(this, 'U')">U</div>
-          </div>
-        </div>
-
-        <div class="field switch-line">
-          <span>Perte de connaissance (PCI)</span>
-          <label class="switch">
-            <input type="checkbox" id="switch-pci">
-            <span class="slider"></span>
+          <label class="checkbox-item">
+            <input type="checkbox" id="acc-gemellaire"> Grossesse gémellaire
           </label>
         </div>
 
+        <!-- Heure de début du travail -->
         <div class="field">
-          <label for="neuro-hgt">HGT (g/L)</label>
-          <input type="number" step="0.01" inputmode="numeric" id="neuro-hgt" placeholder="ex: 1.10">
-        </div>
-
-        <div class="field">
-          <label>Pupilles</label>
+          <label>Heure de début du travail</label>
           <div class="row-2">
-            <select id="pupilles-etat">
-              <option value="Isocores">Isocores</option>
-              <option value="Myosis">Myosis</option>
-              <option value="Mydriase">Mydriase</option>
-            </select>
-            <select id="pupilles-sym">
-              <option value="Symétriques">Symétriques</option>
-              <option value="Asymétriques">Asymétriques</option>
+            <select id="acc-debut-valeur"></select>
+            <select id="acc-debut-unite">
+              <option value="heures">Heure(s)</option>
+              <option value="minutes">Minute(s)</option>
             </select>
           </div>
         </div>
 
-        <div class="field switch-line">
-          <span>Sensibilité conservée</span>
-          <label class="switch">
-            <input type="checkbox" id="switch-sensibilite" checked>
-            <span class="slider"></span>
+        <!-- Durée du travail -->
+        <div class="field">
+          <label>Durée du travail</label>
+          <div class="row-2">
+            <select id="acc-duree-valeur"></select>
+            <select id="acc-duree-unite">
+              <option value="heures">Heure(s)</option>
+              <option value="minutes">Minute(s)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Perte des eaux -->
+        <div class="field">
+          <label class="checkbox-item">
+            <input type="checkbox" id="acc-perte-eaux"> Perte des eaux
           </label>
         </div>
 
-        <div class="field switch-line">
-          <span>Motricité conservée</span>
-          <label class="switch">
-            <input type="checkbox" id="switch-motricite" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-
-      <!-- E : EXPOSITION -->
-      <div class="card">
-        <div class="section-label">E - Autres expositions</div>
-        
+        <!-- Durée des contractions -->
         <div class="field">
-          <label for="expo-temp">Température (°C)</label>
-          <input type="number" step="0.1" inputmode="numeric" id="expo-temp" placeholder="ex: 36.8">
+          <label>Durée des contractions</label>
+          <div class="row-2">
+            <select id="acc-contractions-duree-valeur"></select>
+            <select id="acc-contractions-duree-unite">
+              <option value="secondes" selected>Seconde(s)</option>
+              <option value="minutes">Minute(s)</option>
+            </select>
+          </div>
         </div>
 
+        <!-- Délai entre les contractions -->
         <div class="field">
-          <label>Lésions cutanées & articulaires</label>
-          <select id="lesions-select" onchange="checkLesionLocation(this)">
-            <option value="Aucune">Aucune lésion visible</option>
-            <option value="Plaies">Plaies</option>
-            <option value="Suspicion fracture/luxation">Suspicion fracture / luxation</option>
-            <option value="Oedème">Œdème</option>
-            <option value="Dermabrasions">Dermabrasions</option>
-            <option value="Éruption cutanée">Éruption cutanée</option>
-            <option value="Rougeur">Rougeur</option>
-          </select>
-          <div id="lesion-loc-box" style="display: none; margin-top: 8px;">
-            <input type="text" id="lesion-localisation" placeholder="Préciser la localisation...">
+          <label>Délai entre les contractions</label>
+          <div class="row-2">
+            <select id="acc-contractions-delai-valeur"></select>
+            <select id="acc-contractions-delai-unite">
+              <option value="minutes" selected>Minute(s)</option>
+              <option value="secondes">Seconde(s)</option>
+            </select>
           </div>
         </div>
 
-        <div class="field" style="margin-top: 14px;">
-          <label style="color: var(--primary);">Abdomen :</label>
+        <hr class="divider">
 
-          <div class="segmented-group">
-            <div class="segmented-toggle" id="group-abd-tonus">
-              <div class="segmented-option active" onclick="setSegmented(this)">Souple</div>
-              <div class="segmented-option" onclick="setSegmented(this)">Dur</div>
-            </div>
-          </div>
-
-          <div class="segmented-group">
-            <div class="segmented-toggle" id="group-abd-depr">
-              <div class="segmented-option active" onclick="setSegmented(this)">Dépressible</div>
-              <div class="segmented-option" onclick="setSegmented(this)">Défense</div>
-            </div>
-          </div>
-
-          <div class="segmented-group">
-            <div class="segmented-toggle" id="group-abd-doul">
-              <div class="segmented-option active" onclick="setSegmented(this)">Indolore</div>
-              <div class="segmented-option" onclick="setSegmented(this)">Douloureux</div>
-            </div>
-          </div>
+        <!-- CHECK-LIST ET ACTIONS -->
+        <div class="field">
+          <label style="color: var(--primary); margin-bottom: 10px;">Préparation & Matériel :</label>
+          <label class="checkbox-item"><input type="checkbox" id="acc-rechauffe"> Réchauffage de la cellule</label>
+          <label class="checkbox-item"><input type="checkbox" id="acc-scope"> Scope</label>
+          <label class="checkbox-item"><input type="checkbox" id="acc-o2"> O2 pour saturation > 94 %</label>
+          <label class="checkbox-item"><input type="checkbox" id="acc-aspi"> Aspirateur à mucosités sonde CH 8</label>
         </div>
       </div>
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
-        <button type="button" class="btn-nav" onclick="goToPage(4)">Appel régulation ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('regu')">Appel au 15 ➔</button>
       </div>
     </div>
 
-    <!-- ================= PAGE 4 : SAED / CR FINAL ================= -->
-    <div id="page-4" class="page">
+    <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS EN ATTENTE) ================= -->
+    <div id="page-motif-autre" class="page">
+      <div class="card" style="text-align: center; padding: 40px 16px;">
+        <h3 id="motif-autre-titre" style="margin-bottom: 12px;">Motif spécifique</h3>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">La page dédiée pour ce motif sera construite selon tes consignes.</p>
+        <div class="nav-actions">
+          <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+          <button type="button" class="btn-nav" onclick="goToPage('regu')">Appel au 15 ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= PAGE RÉGULATION : APPEL AU 15 / SAED ================= -->
+    <div id="page-regu" class="page">
       <div class="card">
         <div class="section-label">Demande / Thérapeutique (D)</div>
         
@@ -843,7 +623,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(3)">⬅ Modifier XABCDE</button>
+        <button type="button" class="btn-nav secondary" onclick="goToPage(previousPageId)">⬅ Page précédente</button>
       </div>
     </div>
 
@@ -851,9 +631,10 @@
 
   <script>
     const moisNoms = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-    let selectedAvpu = 'A';
+    let previousPageId = 2;
 
     window.addEventListener('DOMContentLoaded', () => {
+      // 1. DATE DE NAISSANCE
       const ddnJour = document.getElementById('ddn-jour');
       for (let j = 1; j <= 31; j++) {
         const opt = document.createElement('option');
@@ -878,6 +659,7 @@
         ddnAnnee.appendChild(opt);
       }
 
+      // 2. POIDS
       const poidsSelect = document.getElementById('patient-poids');
       for (let i = 20; i <= 200; i++) {
         const opt = document.createElement('option');
@@ -886,6 +668,7 @@
         poidsSelect.appendChild(opt);
       }
 
+      // 3. DÉLAI D'APPARITION ANAMNÈSE (1-15)
       const delaiSelect = document.getElementById('delai-valeur');
       for (let i = 1; i <= 15; i++) {
         const opt = document.createElement('option');
@@ -893,6 +676,7 @@
         delaiSelect.appendChild(opt);
       }
 
+      // 4. HOSPIT RÉCENTE
       const hospitMois = document.getElementById('hospit-mois');
       moisNoms.forEach((m, idx) => {
         const opt = document.createElement('option');
@@ -908,38 +692,44 @@
         hospitAnnee.appendChild(opt);
       }
 
-      initTimePickers();
+      // 5. ROULETTES PAGE ACCOUCHEMENT
+      // Terme prévu (Mois / Année actuelle + 1 an)
+      const accTermeMois = document.getElementById('acc-terme-mois');
+      moisNoms.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m; opt.textContent = m;
+        accTermeMois.appendChild(opt);
+      });
+      const accTermeAnnee = document.getElementById('acc-terme-annee');
+      for (let y = curYear; y <= curYear + 1; y++) {
+        const opt = document.createElement('option');
+        opt.value = y; opt.textContent = y;
+        accTermeAnnee.appendChild(opt);
+      }
+
+      // Roulettes 1 à 15 (Début travail et Durée travail)
+      const accDebutVal = document.getElementById('acc-debut-valeur');
+      const accDureeVal = document.getElementById('acc-duree-valeur');
+      for (let i = 1; i <= 15; i++) {
+        const opt1 = document.createElement('option'); opt1.value = i; opt1.textContent = i; accDebutVal.appendChild(opt1);
+        const opt2 = document.createElement('option'); opt2.value = i; opt2.textContent = i; accDureeVal.appendChild(opt2);
+      }
+
+      // Roulettes 0 à 60 (Durée contractions et Délai contractions)
+      const accContracDuree = document.getElementById('acc-contractions-duree-valeur');
+      const accContracDelai = document.getElementById('acc-contractions-delai-valeur');
+      for (let i = 0; i <= 60; i++) {
+        const opt1 = document.createElement('option'); opt1.value = i; opt1.textContent = i; accContracDuree.appendChild(opt1);
+        const opt2 = document.createElement('option'); opt2.value = i; opt2.textContent = i; accContracDelai.appendChild(opt2);
+      }
+      accContracDuree.value = 30; // suggestion par défaut
+      accContracDelai.value = 3;
+
+      // 6. MOTIFS INITIAUX
       updateMotifs(false);
     });
 
-    function initTimePickers() {
-      const now = new Date();
-      const curH = now.getHours();
-      const curM = now.getMinutes();
-
-      document.querySelectorAll('.select-hh').forEach(sel => {
-        sel.innerHTML = '';
-        for (let h = 0; h < 24; h++) {
-          const opt = document.createElement('option');
-          const val = h < 10 ? '0' + h : h;
-          opt.value = val; opt.textContent = `${val} h`;
-          if (h === curH) opt.selected = true;
-          sel.appendChild(opt);
-        }
-      });
-
-      document.querySelectorAll('.select-mm').forEach(sel => {
-        sel.innerHTML = '';
-        for (let m = 0; m < 60; m++) {
-          const opt = document.createElement('option');
-          const val = m < 10 ? '0' + m : m;
-          opt.value = val; opt.textContent = `${val} min`;
-          if (m === curM) opt.selected = true;
-          sel.appendChild(opt);
-        }
-      });
-    }
-
+    // SWITCH P0 & MOTIFS
     const motifsP0Non = ["Allergie", "Antalgie", "Brûlure", "Dyspnée", "Hypoglycémie"];
     const motifsP0Oui = ["ACR adulte", "ACR enfant", "Accouchement", "Détresse respiratoire", "Électrisé", "Noyé"];
 
@@ -962,25 +752,58 @@
       });
     }
 
-    function goToPage(pageNumber) {
+    // ROUTAGE VERS PAGE SPÉCIFIQUE
+    function routeMotifPage() {
+      const motif = document.getElementById('motif-select').value;
+      previousPageId = 2;
+
+      if (motif === 'Accouchement') {
+        goToPage('accouchement');
+      } else {
+        document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
+        goToPage('motif-autre');
+      }
+    }
+
+    // NAVIGATION
+    function goToPage(target) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(`page-${pageNumber}`).classList.add('active');
-      
+
+      let pageElem;
+      if (typeof target === 'number') {
+        pageElem = document.getElementById(`page-${target}`);
+      } else {
+        pageElem = document.getElementById(`page-${target}`);
+      }
+      if (pageElem) pageElem.classList.add('active');
+
       const indicator = document.getElementById('page-indicator');
       const p0Container = document.getElementById('p0-container');
 
-      if (pageNumber === 1) indicator.textContent = '1. Identité';
-      if (pageNumber === 2) indicator.textContent = '2. Anamnèse';
-      if (pageNumber === 3) indicator.textContent = '3. Bilan XABCDE';
-      if (pageNumber === 4) {
-        indicator.textContent = '4. Transmission SAED';
+      if (target === 1) {
+        indicator.textContent = '1. Identité';
+        p0Container.style.display = 'flex';
+      } else if (target === 2) {
+        indicator.textContent = '2. Anamnèse';
+        p0Container.style.display = 'flex';
+      } else if (target === 'accouchement') {
+        indicator.textContent = '3. Accouchement';
+        p0Container.style.display = 'none';
+        previousPageId = 'accouchement';
+      } else if (target === 'motif-autre') {
+        indicator.textContent = '3. Motif Spécifique';
+        p0Container.style.display = 'none';
+        previousPageId = 'motif-autre';
+      } else if (target === 'regu') {
+        indicator.textContent = 'Appel au 15';
+        p0Container.style.display = 'none';
         generateSAED();
       }
 
-      p0Container.style.display = (pageNumber >= 3) ? 'none' : 'flex';
       window.scrollTo(0, 0);
     }
 
+    // TAGS (ATCD, TTT, ALLERGIES, HOSPIT)
     function addAtcd(selectElem) {
       const val = selectElem.value;
       if (!val) return;
@@ -1019,26 +842,6 @@
       container.appendChild(badge);
     }
 
-    function toggleXItem(panelId, checkbox) {
-      document.getElementById(panelId).style.display = checkbox.checked ? 'block' : 'none';
-    }
-
-    function selectAvpu(btn, score) {
-      document.querySelectorAll('.avpu-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedAvpu = score;
-    }
-
-    function checkLesionLocation(select) {
-      document.getElementById('lesion-loc-box').style.display = (select.value !== 'Aucune') ? 'block' : 'none';
-    }
-
-    function setSegmented(elem) {
-      const parent = elem.parentElement;
-      parent.querySelectorAll('.segmented-option').forEach(opt => opt.classList.remove('active'));
-      elem.classList.add('active');
-    }
-
     function getTagsText(containerId) {
       const tags = Array.from(document.querySelectorAll(`#${containerId} .tag-text`)).map(el => el.textContent);
       return tags.length > 0 ? tags.join(', ') : 'Aucun';
@@ -1046,7 +849,6 @@
 
     // ================= GÉNÉRATION SAED =================
     function generateSAED() {
-      // SITUATION
       const isP0 = document.getElementById('toggle-p0').checked;
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
@@ -1054,91 +856,37 @@
       const motif = document.getElementById('motif-select').value;
       const delai = `${document.getElementById('delai-valeur').value} ${document.getElementById('delai-unite').value}`;
 
-      // ANTECEDENTS
       const atcd = getTagsText('atcd-tags');
       const ttt = getTagsText('ttt-tags');
       const allergies = getTagsText('allergies-tags');
       const hospit = getTagsText('hospit-tags');
 
-      // ÉVALUATION (XABCDE)
-      // X
-      let xActions = [];
-      if (document.getElementById('check-pst').checked) {
-        xActions.push(`Pansement hémostatique posé à ${document.getElementById('pst-hh').value}:${document.getElementById('pst-mm').value} (${document.getElementById('pst-loc').value || 'sans précision'})`);
+      // ÉVALUATION SPÉCIFIQUE ACCOUCHEMENT
+      let evalText = '';
+      if (motif === 'Accouchement') {
+        const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
+        const gemellaire = document.getElementById('acc-gemellaire').checked ? 'OUI' : 'NON';
+        const debutTravail = `${document.getElementById('acc-debut-valeur').value} ${document.getElementById('acc-debut-unite').value}`;
+        const dureeTravail = `${document.getElementById('acc-duree-valeur').value} ${document.getElementById('acc-duree-unite').value}`;
+        const perteEaux = document.getElementById('acc-perte-eaux').checked ? 'OUI' : 'NON';
+        const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
+        const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
+
+        let prepa = [];
+        if (document.getElementById('acc-rechauffe').checked) prepa.push('cellule réchauffée');
+        if (document.getElementById('acc-scope').checked) prepa.push('scope');
+        if (document.getElementById('acc-o2').checked) prepa.push('O2 SpO2 > 94%');
+        if (document.getElementById('acc-aspi').checked) prepa.push('aspi mucosités CH 8');
+
+        evalText = 
+`- Terme prévu : ${terme} | Grossesse gémellaire : ${gemellaire}
+- Début du travail : il y a ${debutTravail} | Durée du travail : ${dureeTravail}
+- Perte des eaux : ${perteEaux}
+- Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
+- Mesures associées : ${prepa.length > 0 ? prepa.join(', ') : 'En cours'}`;
+      } else {
+        evalText = `Bilan clinique en cours de réalisation.`;
       }
-      if (document.getElementById('check-garrot').checked) {
-        xActions.push(`Garrot posé à ${document.getElementById('garrot-hh').value}:${document.getElementById('garrot-mm').value} (${document.getElementById('garrot-loc').value || 'sans précision'})`);
-      }
-      if (document.getElementById('check-celox').checked) {
-        xActions.push(`Celox posé à ${document.getElementById('celox-hh').value}:${document.getElementById('celox-mm').value} (${document.getElementById('celox-loc').value || 'sans précision'})`);
-      }
-      if (document.getElementById('check-ceinture').checked) {
-        xActions.push(`Ceinture pelvienne posée à ${document.getElementById('ceinture-hh').value}:${document.getElementById('ceinture-mm').value} (${document.getElementById('ceinture-loc').value || 'sans précision'})`);
-      }
-      const xText = xActions.length > 0 ? xActions.join(' ; ') : 'Absence d\'hémorragie active objectivée';
-
-      // A
-      let vaList = [];
-      if (document.getElementById('va-libres').checked) vaList.push('libres');
-      if (document.getElementById('va-risque').checked) vaList.push('à risque');
-      if (document.getElementById('va-obstr').checked) vaList.push('obstruées');
-      let vaGestes = [];
-      if (document.getElementById('geste-collier').checked) vaGestes.push('collier cervical');
-      if (document.getElementById('geste-guedel').checked) vaGestes.push('canule de Guedel');
-      let aText = `Voies aériennes ${vaList.join(', ') || 'libres'}`;
-      if (vaGestes.length > 0) aText += ` (Gestes : ${vaGestes.join(', ')})`;
-
-      // B
-      const fr = document.getElementById('resp-fr').value ? `${document.getElementById('resp-fr').value}/min` : 'FR non mesurée';
-      let signesB = [];
-      if (document.getElementById('signe-balancement').checked) signesB.push('balancement thoraco-abdominal');
-      if (document.getElementById('signe-tirage').checked) signesB.push('tirage');
-      if (document.getElementById('signe-cyanose').checked) signesB.push('cyanose');
-      if (document.getElementById('signe-sueurs').checked) signesB.push('sueurs');
-      if (document.getElementById('signe-frein').checked) signesB.push('frein expiratoire');
-      const auscult = `${document.getElementById('auscult-type').value} (${document.getElementById('auscult-cote').value})`;
-      
-      let gestesB = [];
-      if (document.getElementById('geste-demi-assis').checked) gestesB.push('1/2 assis');
-      if (document.getElementById('geste-pst-3cotes').checked) gestesB.push('pansement 3 côtés');
-
-      let bText = `${fr} | Auscultation : ${auscult}`;
-      if (signesB.length > 0) bText += ` | Signes de détresse : ${signesB.join(', ')}`;
-      if (gestesB.length > 0) bText += ` | Gestes : ${gestesB.join(', ')}`;
-
-      // C
-      const pouls = document.getElementById('circ-pouls').value ? `${document.getElementById('circ-pouls').value} bpm` : 'FC -';
-      const ta = document.getElementById('circ-ta').value || 'TA -';
-      const trc = document.getElementById('circ-trc').value ? `TRC ${document.getElementById('circ-trc').value}s` : 'TRC < 2s';
-      let circDetails = [];
-      if (document.getElementById('circ-regulier').checked) circDetails.push('régulier');
-      if (document.getElementById('circ-irregulier').checked) circDetails.push('irrégulier');
-      if (document.getElementById('circ-frappe').checked) circDetails.push('frappé');
-      if (document.getElementById('circ-filant').checked) circDetails.push('filant');
-      if (document.getElementById('circ-radial').checked) circDetails.push('radial perçu');
-      if (document.getElementById('circ-marbrures').checked) circDetails.push('marbrures');
-      let cText = `TA : ${ta} | FC : ${pouls} | ${trc}`;
-      if (circDetails.length > 0) cText += ` (${circDetails.join(', ')})`;
-
-      // D
-      const pci = document.getElementById('switch-pci').checked ? 'Oui' : 'Non';
-      const hgt = document.getElementById('neuro-hgt').value ? `${document.getElementById('neuro-hgt').value} g/L` : 'non mesuré';
-      const pupilles = `${document.getElementById('pupilles-etat').value} ${document.getElementById('pupilles-sym').value.toLowerCase()}`;
-      const sensi = document.getElementById('switch-sensibilite').checked ? 'conservée' : 'altérée';
-      const motri = document.getElementById('switch-motricite').checked ? 'conservée' : 'altérée';
-      const dText = `Score ${selectedAvpu} | PCI : ${pci} | HGT : ${hgt} | Pupilles : ${pupilles} | Sensibilité : ${sensi} | Motricité : ${motri}`;
-
-      // E
-      const temp = document.getElementById('expo-temp').value ? `${document.getElementById('expo-temp').value}°C` : 'non prise';
-      const lesionType = document.getElementById('lesions-select').value;
-      const lesionLoc = document.getElementById('lesion-localisation').value;
-      let lesionText = lesionType;
-      if (lesionType !== 'Aucune' && lesionLoc) lesionText += ` (${lesionLoc})`;
-      
-      const tonus = document.querySelector('#group-abd-tonus .active').textContent;
-      const depr = document.querySelector('#group-abd-depr .active').textContent;
-      const doul = document.querySelector('#group-abd-doul .active').textContent;
-      const eText = `T° : ${temp} | Lésions : ${lesionText} | Abdomen : ${tonus}, ${depr}, ${doul}`;
 
       // DEMANDE
       const demandeType = document.getElementById('demande-type').value;
@@ -1148,7 +896,6 @@
         demandeText += `\nPrécisions / Actions : ${demandeDetails}`;
       }
 
-      // COMPILATION SAED
       const cr = 
 `TRANSMISSION SMUR INFIRMIER (SAED)
 ----------------------------------
@@ -1163,13 +910,8 @@ Motif : ${motif} (évoluant depuis : ${delai})
 - Allergies : ${allergies}
 - Hospitalisation récente : ${hospit}
 
-[E] EVALUATION CLINIQUE (XABCDE)
-- X : ${xText}
-- A : ${aText}
-- B : ${bText}
-- C : ${cText}
-- D : ${dText}
-- E : ${eText}
+[E] EVALUATION CLINIQUE (OBSTÉTRICALE)
+${evalText}
 
 [D] DEMANDE & CONDUITE A TENIR
 ${demandeText}
