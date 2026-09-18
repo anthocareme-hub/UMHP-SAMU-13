@@ -482,14 +482,14 @@
     .btn-nav.secondary { background: #e2e8f0; color: var(--text); box-shadow: none; }
     .btn-nav.success { background: var(--success); box-shadow: 0 2px 4px rgba(22,163,74,0.25); }
 
-    /* ZONE CR FINAL */
-    #cr-output {
+    /* ZONE CR FINAL & RÉSUMÉ */
+    #cr-output, #resume-output {
       width: 100%;
-      height: 380px;
+      height: 420px;
       background: #0f172a;
       color: #f8fafc;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       line-height: 1.45;
       padding: 14px;
       border-radius: 8px;
@@ -1020,7 +1020,7 @@
             Respiration spontanée / Cri vigoureux / Tonus vif ?
           </label>
           <div class="algo-choice-grid">
-            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation()">
+            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation('Initiale : cri vigoureux et tonus vif')">
               ✓ Bonne adaptation
             </button>
             <button type="button" class="algo-btn red" onclick="actionEchecInit()">
@@ -1029,14 +1029,14 @@
           </div>
         </div>
 
-        <!-- 2. ÉTAPE STIMULATION (SI MAUVAISE ADAPTATION) -->
+        <!-- 2. ÉTAPE STIMULATION -->
         <div id="nn-step-stimul" class="algo-step-card" style="display: none;">
           <div style="background: #fffbeb; border: 1.5px solid #fef08a; color: #92400e; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
             <strong>Sécher, stimuler</strong> : frotter vigoureusement le dos + plante des pieds.
           </div>
           <label style="font-size: 0.9rem;">Réévaluation après stimulation :</label>
           <div class="algo-choice-grid">
-            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation()">
+            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation('Récupération après séchage et stimulation')">
               ✓ Bonne adaptation
             </button>
             <button type="button" class="algo-btn red" onclick="actionEchecStimul()">
@@ -1058,7 +1058,7 @@
 
           <label style="font-size: 0.9rem;">Réévaluation après 5 insufflations :</label>
           <div class="algo-choice-grid">
-            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation()">
+            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation('Récupération après 5 insufflations BAVU')">
               ✓ Bonne adaptation
             </button>
             <button type="button" class="algo-btn red" onclick="actionEchecBavu5()">
@@ -1091,7 +1091,7 @@
             <p>• Réévaluer la FC</p>
           </div>
           <div class="algo-choice-grid">
-            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation()">
+            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation('Récupération après 15 insufflations')">
               ✓ Bonne adaptation
             </button>
             <button type="button" class="algo-btn red" onclick="actionFcInf60()">
@@ -1110,7 +1110,7 @@
             <p>• <strong>Réévaluer la FC toutes les 30 secondes</strong></p>
           </div>
           <div class="algo-choice-grid">
-            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation()">
+            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation('Récupération post-RCP')">
               ✓ Récupération (bonne adaptation)
             </button>
             <button type="button" class="algo-btn red" onclick="alert('Poursuivre RCP 3/1 - Réévaluation dans 30 secondes')">
@@ -1205,6 +1205,23 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('pec-mere')">⬅ PEC Mère</button>
+        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= NOUVELLE PAGE : RÉSUMÉ FINAL INTERVENTION ================= -->
+    <div id="page-resume" class="page">
+      <div class="card">
+        <div class="section-label">Bilan Récapitulatif Complet</div>
+        <textarea id="resume-output" readonly placeholder="Génération du résumé en cours..."></textarea>
+      </div>
+
+      <div class="nav-actions" style="margin-top: 0; margin-bottom: 14px;">
+        <button type="button" class="btn-nav success" onclick="copyResume()">Copier le résumé</button>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('pec-enfant')">⬅ PEC Nouveau-né</button>
       </div>
     </div>
 
@@ -1214,6 +1231,7 @@
     const moisNoms = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
     let previousMotifPage = 'accouchement';
     let selectedAvpu = '';
+    let statutNouveauNe = 'Non évalué';
 
     window.addEventListener('DOMContentLoaded', () => {
       // DATE DE NAISSANCE
@@ -1388,6 +1406,10 @@
       } else if (target === 'pec-enfant') {
         indicator.textContent = 'PEC du nouveau-né';
         p0Container.style.display = 'none';
+      } else if (target === 'resume') {
+        indicator.textContent = 'Résumé global';
+        p0Container.style.display = 'none';
+        generateResumeFinal();
       }
 
       window.scrollTo(0, 0);
@@ -1421,45 +1443,49 @@
     }
 
     // ALGORITHME DU NOUVEAU-NÉ
-    function actionBonneAdaptation() {
-      // Masquer les étapes d'échec
+    function actionBonneAdaptation(motifTxt = 'Bonne adaptation confirmée') {
+      statutNouveauNe = motifTxt;
       document.getElementById('nn-step-stimul').style.display = 'none';
       document.getElementById('nn-step-bavu5').style.display = 'none';
       document.getElementById('nn-step-bavu10').style.display = 'none';
       document.getElementById('nn-sub-15insuff').style.display = 'none';
       document.getElementById('nn-sub-rcp').style.display = 'none';
 
-      // Afficher le grand carré vert
       const grandCarre = document.getElementById('bloc-grand-carre-vert');
       grandCarre.style.display = 'block';
       grandCarre.scrollIntoView({ behavior: 'smooth' });
     }
 
     function actionEchecInit() {
+      statutNouveauNe = 'Critère de mauvaise adaptation initial';
       document.getElementById('bloc-grand-carre-vert').style.display = 'none';
       document.getElementById('nn-step-stimul').style.display = 'block';
       document.getElementById('nn-step-stimul').scrollIntoView({ behavior: 'smooth' });
     }
 
     function actionEchecStimul() {
+      statutNouveauNe = 'Échec stimulation -> Appel régulateur + 5 insufflations BAVU';
       document.getElementById('bloc-grand-carre-vert').style.display = 'none';
       document.getElementById('nn-step-bavu5').style.display = 'block';
       document.getElementById('nn-step-bavu5').scrollIntoView({ behavior: 'smooth' });
     }
 
     function actionEchecBavu5() {
+      statutNouveauNe = 'Échec 5 insufflations -> 10 insufflations BAVU';
       document.getElementById('bloc-grand-carre-vert').style.display = 'none';
       document.getElementById('nn-step-bavu10').style.display = 'block';
       document.getElementById('nn-step-bavu10').scrollIntoView({ behavior: 'smooth' });
     }
 
     function actionFc60100() {
+      statutNouveauNe = 'FC 60-100 bpm -> 15 insufflations sans O2';
       document.getElementById('nn-sub-15insuff').style.display = 'block';
       document.getElementById('nn-sub-rcp').style.display = 'none';
       document.getElementById('nn-sub-15insuff').scrollIntoView({ behavior: 'smooth' });
     }
 
     function actionFcInf60() {
+      statutNouveauNe = 'FC < 60 bpm -> RCP 3/1 sous O2 15L';
       document.getElementById('nn-sub-15insuff').style.display = 'none';
       document.getElementById('nn-sub-rcp').style.display = 'block';
       document.getElementById('nn-sub-rcp').scrollIntoView({ behavior: 'smooth' });
@@ -1548,7 +1574,7 @@
       return tags.length > 0 ? tags.join(', ') : 'Aucun';
     }
 
-    // ================= GÉNÉRATION SAED =================
+    // ================= GÉNÉRATION SAED (APPEL 15) =================
     function generateSAED() {
       const isP0 = document.getElementById('toggle-p0').checked;
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
@@ -1646,6 +1672,116 @@ ${demandeText}
       if (!output.value) generateSAED();
       navigator.clipboard.writeText(output.value).then(() => {
         alert('Compte rendu SAED copié dans le presse-papiers !');
+      });
+    }
+
+    // ================= NOUVELLE FONCTION : RÉSUMÉ FINAL =================
+    function generateResumeFinal() {
+      const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
+      const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
+      const poids = document.getElementById('patient-poids').value;
+      const isP0 = document.getElementById('toggle-p0').checked;
+
+      // Obstétrique
+      const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
+      const gemellaire = document.getElementById('acc-gemellaire').checked ? 'Oui' : 'Non';
+      const debutTravail = `${document.getElementById('acc-debut-hh').value}:${document.getElementById('acc-debut-mm').value}`;
+      const perteEaux = document.getElementById('acc-perte-eaux').checked ? 'Oui' : 'Non';
+      const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
+      const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
+
+      // Constantes initiales
+      let cInit = [];
+      if (document.getElementById('c-pa').value) cInit.push(`PA: ${document.getElementById('c-pa').value}`);
+      if (document.getElementById('c-fc').value) cInit.push(`FC: ${document.getElementById('c-fc').value} bpm`);
+      if (document.getElementById('c-spo2').value) cInit.push(`SpO2: ${document.getElementById('c-spo2').value}%`);
+      if (document.getElementById('c-fr').value) cInit.push(`FR: ${document.getElementById('c-fr').value}/min`);
+      if (document.getElementById('c-hgt').value) cInit.push(`HGT: ${document.getElementById('c-hgt').value} g/L`);
+      if (document.getElementById('c-temp').value) cInit.push(`T°: ${document.getElementById('c-temp').value}°C`);
+      if (document.getElementById('c-eva').value) cInit.push(`EVA: ${document.getElementById('c-eva').value}/10`);
+      if (document.getElementById('c-trc').value) cInit.push(`TRC: ${document.getElementById('c-trc').value}s`);
+      if (selectedAvpu) cInit.push(`AVPU: ${selectedAvpu}`);
+
+      // Régulation
+      const demType = document.getElementById('demande-type').value;
+      const demTxt = document.getElementById('saed-demande').value.trim() || 'Aucune consigne textuelle';
+
+      // PEC Mère
+      const vvpPosee = document.getElementById('btn-vvp-mere').classList.contains('active') ? 'Oui' : 'Non';
+      const pertes = document.getElementById('select-pertes').value === 'sup500' ? '> 500 ml (Hémorragie de la délivrance)' : '< 500 ml (Physiologique)';
+      
+      let mereDetails = [];
+      if (document.getElementById('select-pertes').value === 'sup500') {
+        let gestesHemo = [];
+        if (document.getElementById('geste-mhc').checked) gestesHemo.push('O2 MHC');
+        if (document.getElementById('geste-massage').checked) gestesHemo.push('Massage utérin');
+        if (document.getElementById('geste-vvp2').checked) gestesHemo.push('2ème VVP');
+        mereDetails.push(`Gestes d'urgence : ${gestesHemo.join(', ') || 'aucun coché'}`);
+
+        let chocConst = [];
+        if (document.getElementById('choc-fc').value) chocConst.push(`Pouls: ${document.getElementById('choc-fc').value} bpm`);
+        if (document.getElementById('choc-ta').value) chocConst.push(`TA: ${document.getElementById('choc-ta').value}`);
+        if (document.getElementById('choc-sat').value) chocConst.push(`Sat: ${document.getElementById('choc-sat').value}%`);
+        if (document.getElementById('choc-hb').value) chocConst.push(`Hb: ${document.getElementById('choc-hb').value} g/L`);
+        if (chocConst.length > 0) mereDetails.push(`Constantes choc : ${chocConst.join(' | ')}`);
+
+        const prescr = getTagsText('prescription-tags');
+        mereDetails.push(`Prescriptions médicales réalisées : ${prescr}`);
+      } else {
+        let c10 = [];
+        if (document.getElementById('c10-pa').value) c10.push(`PA: ${document.getElementById('c10-pa').value}`);
+        if (document.getElementById('c10-fc').value) c10.push(`FC: ${document.getElementById('c10-fc').value}`);
+        if (document.getElementById('c10-spo2').value) c10.push(`SpO2: ${document.getElementById('c10-spo2').value}%`);
+        if (document.getElementById('c10-fr').value) c10.push(`FR: ${document.getElementById('c10-fr').value}`);
+        if (c10.length > 0) mereDetails.push(`Constantes de surveillance : ${c10.join(' | ')}`);
+      }
+
+      // PEC Nouveau-né
+      const apgar1 = apgarScores['1m'] !== null ? `${apgarScores['1m']}/10` : 'Non calculé';
+      const apgar3 = apgarScores['3m'] !== null ? `${apgarScores['3m']}/10` : 'Non calculé';
+      const apgar5 = apgarScores['5m'] !== null ? `${apgarScores['5m']}/10` : 'Non calculé';
+
+      const resumeTxt = 
+`==============================================
+RAPPORT D'INTERVENTION : ACCOUCHEMENT INOPINÉ
+==============================================
+
+1. PATIENTE & CONTEXTE
+- Identité : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
+- Statut : ${isP0 ? 'P0' : 'Non P0'}
+- Terme : ${terme} | Grossesse gémellaire : ${gemellaire}
+- Début du travail : ${debutTravail} | Perte des eaux : ${perteEaux}
+- Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
+
+2. PARAMÈTRES VITAUX INITIAUX
+${cInit.length > 0 ? cInit.join(' | ') : 'Non renseignés'}
+
+3. APPEL RÉGULATION CENTRE 15
+- Demande : ${demType}
+- Consignes / Thérapeutiques : ${demTxt}
+
+4. PRISE EN CHARGE MATERNELLE
+- Pose de VVP : ${vvpPosee}
+- Pertes sanguines : ${pertes}
+${mereDetails.map(l => '- ' + l).join('\n')}
+
+5. PRISE EN CHARGE DU NOUVEAU-NÉ
+- Évolution clinique : ${statutNouveauNe}
+- Clampage cordon (15 cm) & réchauffement Neohelp réalisés
+- Score d'APGAR :
+  • 1 minute  : ${apgar1}
+  • 3 minutes : ${apgar3}
+  • 5 minutes : ${apgar5}
+- Pose de SpO2 : Effectuée
+==============================================`;
+
+      document.getElementById('resume-output').value = resumeTxt;
+    }
+
+    function copyResume() {
+      const output = document.getElementById('resume-output');
+      navigator.clipboard.writeText(output.value).then(() => {
+        alert('Rapport complet copié dans le presse-papiers !');
       });
     }
   </script>
