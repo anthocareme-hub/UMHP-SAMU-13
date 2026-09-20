@@ -22,8 +22,6 @@
       --success-bg: #dcfce7;
       --warning-bg: #fef3c7;
       --warning-text: #b45309;
-      --algo-blue: #0284c7;
-      --algo-blue-bg: #e0f2fe;
     }
 
     * {
@@ -46,7 +44,7 @@
       margin: 0 auto;
     }
 
-    /* PAGE D'ACCUEIL PLEIN ÉCRAN */
+    /* ACCUEIL */
     #page-home {
       background: #ffffff;
       min-height: calc(100vh - 32px);
@@ -91,7 +89,7 @@
     .btn-home-primary { background: var(--primary); color: #ffffff; }
     .btn-home-secondary { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
 
-    /* HEADER & SWITCH P0 */
+    /* HEADER */
     .header-bar {
       display: flex;
       justify-content: space-between;
@@ -115,14 +113,9 @@
       font-size: 0.95rem;
       color: var(--text-muted);
     }
-    .toggle-label.active {
-      color: var(--danger);
-    }
+    .toggle-label.active { color: var(--danger); }
     .switch {
-      position: relative;
-      display: inline-block;
-      width: 54px;
-      height: 30px;
+      position: relative; display: inline-block; width: 54px; height: 30px;
     }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider {
@@ -138,11 +131,7 @@
 
     /* PAGES */
     .page { display: none; }
-    .page.active { display: block; animation: fadeIn 0.15s ease-in-out; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .page.active { display: block; }
 
     /* CARTES & CHAMPS */
     .card {
@@ -160,9 +149,6 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
     .field { margin-bottom: 14px; }
     .field:last-child { margin-bottom: 0; }
@@ -196,9 +182,7 @@
     .alert-box {
       border-radius: 8px; padding: 14px; font-weight: 800; font-size: 1rem; text-align: center; margin-bottom: 14px;
     }
-    .alert-green { background: var(--success-bg); color: var(--success); border: 1.5px solid #86efac; }
     .alert-red { background: var(--danger-bg); color: var(--danger); border: 1.5px solid #fca5a5; }
-    .alert-warning { background: var(--warning-bg); color: var(--warning-text); border: 1.5px solid #fde68a; }
 
     .btn-toggle-action {
       width: 100%; padding: 14px; border-radius: 8px; border: 2px solid var(--border);
@@ -208,26 +192,20 @@
     .btn-toggle-action.orange { background: #fff7ed; border-color: #fdba74; color: #c2410c; }
     .btn-toggle-action.orange.active { background: #fed7aa; border-color: #ea580c; color: #9a3412; }
 
-    /* THÉRAPEUTIQUE ALLERGIE */
+    /* THÉRAPEUTIQUE */
     .thera-box {
       border: 1.5px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 14px; background: #ffffff;
     }
     .thera-box.adrenaline-box { border-left: 6px solid var(--danger); background: #fef2f2; }
     .thera-box.salbutamol-box { border-left: 6px solid #f59e0b; background: #fffbeb; }
 
-    /* TABLEAU TEMPOREL CONSTANTES (T0, T+15, T+30) */
-    .table-suivi {
-      width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.9rem;
-    }
-    .table-suivi th, .table-suivi td {
-      border: 1px solid var(--border); padding: 8px; text-align: center;
-    }
+    /* TABLEAU SUIVI */
+    .table-suivi { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.9rem; }
+    .table-suivi th, .table-suivi td { border: 1px solid var(--border); padding: 8px; text-align: center; }
     .table-suivi th { background: #f1f5f9; font-weight: 800; color: var(--primary); }
-    .table-suivi input {
-      padding: 6px; font-size: 0.9rem; text-align: center; border: 1px solid var(--border); border-radius: 4px;
-    }
+    .table-suivi input { padding: 6px; font-size: 0.9rem; text-align: center; border: 1px solid var(--border); border-radius: 4px; }
 
-    /* SCORE AVPU */
+    /* AVPU */
     .avpu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 6px; }
     .avpu-btn {
       background: #ffffff; border: 2px solid var(--border); border-radius: 10px; padding: 14px 0;
@@ -262,12 +240,12 @@
     .btn-nav.secondary { background: #e2e8f0; color: var(--text); box-shadow: none; }
     .btn-nav.success { background: var(--success); box-shadow: 0 2px 4px rgba(22,163,74,0.25); }
 
-    /* ZONE TEXTE FINAL */
+    /* ZONES TEXTE */
     #cr-output, #resume-output {
       width: 100%; height: 400px; background: #0f172a; color: #f8fafc; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.88rem; line-height: 1.45; padding: 14px; border-radius: 8px; border: 1px solid #334155; white-space: pre-wrap;
     }
 
-    /* LISTE UMHP */
+    /* UMHP */
     .umhp-item {
       background: #ffffff; border: 1.5px solid var(--border); border-left: 5px solid var(--primary); border-radius: 8px; padding: 14px; margin-bottom: 12px; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
@@ -279,7 +257,7 @@
 
   <div class="container">
 
-    <!-- ================= PAGE ACCUEIL SAMU 13 ================= -->
+    <!-- ================= ACCUEIL ================= -->
     <div id="page-home" class="page active">
       <div class="home-top-half">
         <svg class="home-logo-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
@@ -300,7 +278,7 @@
       </div>
     </div>
 
-    <!-- ================= BARRE FIXE HAUT ================= -->
+    <!-- ================= HEADER ================= -->
     <div class="header-bar" id="app-header" style="display: none;">
       <div class="header-title" id="page-indicator">1. Identité</div>
       <div class="toggle-wrapper" id="p0-container">
@@ -312,7 +290,7 @@
       </div>
     </div>
 
-    <!-- ================= PAGE 1 : IDENTITÉ ================= -->
+    <!-- ================= PAGE 1 ================= -->
     <div id="page-1" class="page">
       <div class="card">
         <div class="field">
@@ -341,7 +319,7 @@
       </div>
     </div>
 
-    <!-- ================= PAGE 2 : ANAMNÈSE ================= -->
+    <!-- ================= PAGE 2 ================= -->
     <div id="page-2" class="page">
       <div class="card">
         <div class="field">
@@ -494,7 +472,7 @@
       </div>
     </div>
 
-    <!-- ================= PAGE SPÉCIFIQUE : ALLERGIE ================= -->
+    <!-- ================= PAGE ALLERGIE ================= -->
     <div id="page-allergie" class="page">
       <div class="card">
         <div class="section-label">Bilan Allergologique Initial</div>
@@ -615,7 +593,7 @@
       </div>
     </div>
 
-    <!-- ================= PAGE RÉGULATION : APPEL AU 15 / SAED ================= -->
+    <!-- ================= PAGE RÉGULATION ================= -->
     <div id="page-regu" class="page">
       <div class="card">
         <div class="section-label">Demande / Thérapeutique (D)</div>
@@ -654,7 +632,7 @@
       </div>
     </div>
 
-    <!-- ================= PAGE 6 : THÉRAPEUTIQUE (ALLERGIE) ================= -->
+    <!-- ================= PAGE THÉRAPEUTIQUE ALLERGIE ================= -->
     <div id="page-thera-allergie" class="page">
       <div class="card">
         <div class="section-label">Thérapeutique & Gestes d'urgence</div>
@@ -663,15 +641,15 @@
           💉 VVP
         </button>
 
-        <!-- ENCART CONDITIONNEL 1 : ADRÉNALINE SI GRAVITÉ -->
-        <div id="bloc-adrenaline-alg" class="card thera-box adrenaline-box" style="display: none; margin-bottom: 14px;">
+        <!-- ENCART ADRÉNALINE -->
+        <div id="bloc-adrenaline-alg" class="card thera-box adrenaline-box" style="display: none;">
           <button type="button" class="btn-toggle-action" id="btn-adr-alg" onclick="toggleAdrenaline(this)" style="background: #ffffff; border-color: #fca5a5; color: #991b1b; margin-bottom: 0;">
             Adrénaline 0,5 mg IM à répéter 1x si besoin à T+15 min
           </button>
         </div>
 
-        <!-- ENCART CONDITIONNEL 2 : SALBUTAMOL SI SIBILANTS SANS GRAVITÉ -->
-        <div id="bloc-salbutamol-alg" class="card thera-box salbutamol-box" style="display: none; margin-bottom: 14px;">
+        <!-- ENCART SALBUTAMOL -->
+        <div id="bloc-salbutamol-alg" class="card thera-box salbutamol-box" style="display: none;">
           <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 14px; text-align: center; font-weight: 800; color: #92400e; font-size: 1.05rem;">
             💨 Nébulisation Salbutamol 5 mg
           </div>
@@ -695,7 +673,7 @@
       </div>
     </div>
 
-    <!-- ================= PAGE SUIVI TEMPOREL (T0, T+15, T+30) ================= -->
+    <!-- ================= PAGE SUIVI TEMPOREL ================= -->
     <div id="page-suivi-allergie" class="page">
       <div class="card">
         <div class="section-label">Suivi Temporel & Réévaluation</div>
@@ -759,7 +737,7 @@
       </div>
     </div>
 
-    <!-- ================= PAGE : RÉSUMÉ FINAL INTERVENTION ================= -->
+    <!-- ================= PAGE RÉSUMÉ FINAL ================= -->
     <div id="page-resume" class="page">
       <div class="card">
         <div class="section-label">Bilan Complémentaire C15 (Résumé)</div>
@@ -778,7 +756,7 @@
       </div>
     </div>
 
-    <!-- ================= NOUVELLE PAGE : MES UMHP (HISTORIQUE) ================= -->
+    <!-- ================= PAGE MES UMHP ================= -->
     <div id="page-mes-umhp" class="page">
       <div class="card">
         <div class="section-label">Historique des interventions (Mémoire locale)</div>
@@ -986,7 +964,7 @@
       window.scrollTo(0, 0);
     }
 
-    // LOGIQUE ALLERGIE : GRAVITÉ & TYPE DE DEMANDE
+    // LOGIQUE ALLERGIE
     function checkAllergieGravite() {
       const gDra = document.getElementById('alg-g-dra').checked;
       const gInsp = document.getElementById('alg-g-insp').checked;
@@ -1212,7 +1190,7 @@ ${demandeText}
       });
     }
 
-    // BILAN COMPLÉMENTAIRE C15 (RÉSUMÉ FINAL)
+    // BILAN COMPLÉMENTAIRE C15
     function generateResumeFinal() {
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
