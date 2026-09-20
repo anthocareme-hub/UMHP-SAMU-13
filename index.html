@@ -212,8 +212,8 @@
     .thera-box {
       border: 1.5px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 14px; background: #ffffff;
     }
-    .thera-box. adrenaline-box { border-left: 6px solid var(--danger); background: #fef2f2; }
-    .thera-box. salbutamol-box { border-left: 6px solid #f59e0b; background: #fffbeb; }
+    .thera-box.adrenaline-box { border-left: 6px solid var(--danger); background: #fef2f2; }
+    .thera-box.salbutamol-box { border-left: 6px solid #f59e0b; background: #fffbeb; }
 
     /* TABLEAU TEMPOREL CONSTANTES (T0, T+15, T+30) */
     .table-suivi {
@@ -538,7 +538,6 @@
           <label class="checkbox-item"><input type="checkbox" id="alg-g-enceinte" onchange="checkAllergieGravite()"> Femme enceinte</label>
         </div>
 
-        <!-- ALERTE RENFORT SMUR -->
         <div id="alg-alerte-smur" class="alert-box alert-red" style="display: none; margin-top: 14px;">
           🚨 Demande de renfort SMUR à l'appel du 15
         </div>
@@ -547,18 +546,6 @@
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
-      </div>
-    </div>
-
-    <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS) ================= -->
-    <div id="page-motif-autre" class="page">
-      <div class="card" style="text-align: center; padding: 40px 16px;">
-        <h3 id="motif-autre-titre" style="margin-bottom: 12px;">Motif spécifique</h3>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">La page dédiée pour ce motif sera construite selon tes consignes.</p>
-        <div class="nav-actions">
-          <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
-          <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
-        </div>
       </div>
     </div>
 
@@ -623,7 +610,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(previousMotifPage)">⬅ Motif</button>
+        <button type="button" class="btn-nav secondary" onclick="goToPage('allergie')">⬅ Motif</button>
         <button type="button" class="btn-nav" onclick="goToPage('regu')">Appel au 15 ➔</button>
       </div>
     </div>
@@ -663,7 +650,7 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('constantes')">⬅ Constantes</button>
-        <button type="button" class="btn-nav" id="btn-suite-regu" onclick="routeApresRegu()">Thérapeutique ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('page-thera-allergie')">Thérapeutique ➔</button>
       </div>
     </div>
 
@@ -672,7 +659,6 @@
       <div class="card">
         <div class="section-label">Thérapeutique & Gestes d'urgence</div>
 
-        <!-- VVP TOUJOURS PRÉSENTE -->
         <button type="button" class="btn-toggle-action orange" id="btn-vvp-alg" onclick="toggleVvpAlg(this)">
           💉 VVP
         </button>
@@ -691,7 +677,6 @@
           </div>
         </div>
 
-        <!-- TRAITEMENTS COMMUNS À COCHER -->
         <div style="background: #f8fafc; border: 1.5px solid var(--border); border-radius: 8px; padding: 12px;">
           <label class="checkbox-item" style="margin-bottom: 12px;">
             <input type="checkbox" id="chk-polaramine">
@@ -811,8 +796,6 @@
     const moisNoms = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
     let previousMotifPage = 'allergie';
     let selectedAvpu = '';
-    let statutNouveauNe = 'Non évalué';
-    let oxygeneMode = '';
 
     window.addEventListener('DOMContentLoaded', () => {
       // DATE DE NAISSANCE
@@ -943,31 +926,10 @@
       if (!isP0 && motif === 'Allergie') {
         previousMotifPage = 'allergie';
         goToPage('allergie');
-      } else if (isP0 && motif === 'Accouchement') {
-        previousMotifPage = 'accouchement';
-        goToPage('accouchement');
-      } else if (isP0 && motif === 'Détresse respiratoire') {
-        previousMotifPage = 'detresse-respi';
-        goToPage('detresse-respi');
       } else {
         document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
         previousMotifPage = 'motif-autre';
         goToPage('motif-autre');
-      }
-    }
-
-    function routeApresRegu() {
-      const motif = document.getElementById('motif-select').value;
-      const isP0 = document.getElementById('toggle-p0').checked;
-
-      if (!isP0 && motif === 'Allergie') {
-        goToPage('page-thera-allergie');
-      } else if (isP0 && motif === 'Accouchement') {
-        goToPage('pec-mere');
-      } else if (isP0 && motif === 'Détresse respiratoire') {
-        goToPage('therapeutique');
-      } else {
-        goToPage('resume');
       }
     }
 
@@ -1003,14 +965,6 @@
       } else if (target === 'regu') {
         indicator.textContent = 'Appel au 15';
         p0Container.style.display = 'none';
-        
-        const motif = document.getElementById('motif-select').value;
-        const btnSuite = document.getElementById('btn-suite-regu');
-        if (motif === 'Allergie') {
-          btnSuite.textContent = 'Thérapeutique ➔';
-        } else {
-          btnSuite.textContent = 'Résumé final ➔';
-        }
         generateSAED();
       } else if (target === 'page-thera-allergie') {
         indicator.textContent = 'Thérapeutique Allergie';
@@ -1023,13 +977,6 @@
       } else if (target === 'resume') {
         indicator.textContent = 'Bilan C15 (Résumé)';
         p0Container.style.display = 'none';
-        const motif = document.getElementById('motif-select').value;
-        const btnBack = document.getElementById('btn-back-resume');
-        if (motif === 'Allergie') {
-          btnBack.onclick = () => goToPage('suivi-allergie');
-        } else {
-          btnBack.onclick = () => goToPage('regu');
-        }
         generateResumeFinal();
       } else if (target === 'mes-umhp') {
         indicator.textContent = 'Mes UMHP';
@@ -1314,7 +1261,6 @@ ${demandeText}
         const polDone = document.getElementById('chk-polaramine').checked ? 'Polaramine 5 mg IVL' : 'Non';
         const predDone = document.getElementById('chk-prednisolone').checked ? `Prednisolone ${poids} mg IVL` : 'Non';
 
-        // Suivi temporel
         const t0_pa = document.getElementById('suivi-pa-t0').value || '-';
         const t15_pa = document.getElementById('suivi-pa-15').value || '-';
         const t30_pa = document.getElementById('suivi-pa-30').value || '-';
@@ -1382,7 +1328,7 @@ ${specificSection}
       };
     }
 
-    // SAUVEGARDE EN MÉMOIRE LOCALE (LOCALSTORAGE)
+    // SAUVEGARDE EN MÉMOIRE LOCALE
     function saveCurrentIntervention() {
       const data = generateResumeFinal();
       let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
