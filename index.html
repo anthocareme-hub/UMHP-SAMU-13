@@ -902,6 +902,12 @@
       if (!isP0 && motif === 'Allergie') {
         previousMotifPage = 'allergie';
         goToPage('allergie');
+      } else if (isP0 && motif === 'Accouchement') {
+        previousMotifPage = 'accouchement';
+        goToPage('accouchement');
+      } else if (isP0 && motif === 'Détresse respiratoire') {
+        previousMotifPage = 'detresse-respi';
+        goToPage('detresse-respi');
       } else {
         document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
         previousMotifPage = 'motif-autre';
