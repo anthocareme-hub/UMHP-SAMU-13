@@ -238,6 +238,7 @@
 
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .row-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
 
     /* CHECKBOXES */
     .checkbox-item {
@@ -1391,19 +1392,73 @@
       <div class="card">
         <div class="section-label">Suivi Chronologique & Évolution</div>
 
-        <div class="field">
-          <label style="color: var(--primary);">Constantes T0 (Initiales)</label>
-          <input type="text" id="suivi-t0" readonly style="background: #f1f5f9;">
+        <!-- T0 -->
+        <div class="field" style="background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+          <label style="color: var(--primary); margin-bottom: 8px;">Constantes T0 (Initiales)</label>
+          <div class="row-4">
+            <div>
+              <label style="font-size: 0.75rem;">PAS</label>
+              <input type="text" id="t0-pas" readonly style="background: #ffffff; padding: 8px; font-size: 0.95rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">PAD</label>
+              <input type="text" id="t0-pad" readonly style="background: #ffffff; padding: 8px; font-size: 0.95rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">Pouls</label>
+              <input type="text" id="t0-pouls" readonly style="background: #ffffff; padding: 8px; font-size: 0.95rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">SpO2</label>
+              <input type="text" id="t0-spo2" readonly style="background: #ffffff; padding: 8px; font-size: 0.95rem;">
+            </div>
+          </div>
         </div>
 
-        <div class="field" style="margin-top: 14px;">
-          <label for="suivi-t15">Constantes T+15 min</label>
-          <input type="text" id="suivi-t15" placeholder="ex: PA 115/75, FC 82, SpO2 98%">
+        <!-- T+15 -->
+        <div class="field" style="margin-top: 14px; padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
+          <label style="color: var(--text); margin-bottom: 8px;">Constantes T+15 min</label>
+          <div class="row-4">
+            <div>
+              <label style="font-size: 0.75rem;">PAS</label>
+              <input type="number" inputmode="numeric" id="t15-pas" placeholder="120" style="padding: 8px; font-size: 0.95rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">PAD</label>
+              <input type="number" inputmode="numeric" id="t15-pad" placeholder="80" style="padding: 8px; font-size: 0.95rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">Pouls</label>
+              <input type="number" inputmode="numeric" id="t15-pouls" placeholder="80" style="padding: 8px; font-size: 0.95rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">SpO2</label>
+              <input type="number" inputmode="numeric" id="t15-spo2" placeholder="98" style="padding: 8px; font-size: 0.95rem;">
+            </div>
+          </div>
         </div>
 
-        <div class="field" style="margin-top: 14px;">
-          <label for="suivi-t30">Constantes T+30 min</label>
-          <input type="text" id="suivi-t30" placeholder="ex: PA 120/80, FC 78, SpO2 99%">
+        <!-- T+30 -->
+        <div class="field" style="margin-top: 14px; padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
+          <label style="color: var(--text); margin-bottom: 8px;">Constantes T+30 min</label>
+          <div class="row-4">
+            <div>
+              <label style="font-size: 0.75rem;">PAS</label>
+              <input type="number" inputmode="numeric" id="t30-pas" placeholder="120" style="padding: 8px; font-size: 0.95rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">PAD</label>
+              <input type="number" inputmode="numeric" id="t30-pad" placeholder="80" style="padding: 8px; font-size: 0.95rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">Pouls</label>
+              <input type="number" inputmode="numeric" id="t30-pouls" placeholder="80" style="padding: 8px; font-size: 0.95rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">SpO2</label>
+              <input type="number" inputmode="numeric" id="t30-spo2" placeholder="98" style="padding: 8px; font-size: 0.95rem;">
+            </div>
+          </div>
         </div>
 
         <hr class="divider">
@@ -2071,12 +2126,22 @@
       } else if (target === 'suivi-allergie') {
         indicator.textContent = 'Suivi Chronologique';
         p0Container.style.display = 'none';
-        let cInit = [];
-        if (document.getElementById('c-pa').value) cInit.push(`PA: ${document.getElementById('c-pa').value}`);
-        if (document.getElementById('c-fc').value) cInit.push(`FC: ${document.getElementById('c-fc').value} bpm`);
-        if (document.getElementById('c-spo2').value) cInit.push(`SpO2: ${document.getElementById('c-spo2').value}%`);
-        if (document.getElementById('c-fr').value) cInit.push(`FR: ${document.getElementById('c-fr').value}/min`);
-        document.getElementById('suivi-t0').value = cInit.length > 0 ? cInit.join(' | ') : 'Non renseignées';
+        
+        // Extraction et répartition automatique des constantes T0
+        const paVal = document.getElementById('c-pa').value.trim();
+        let pas = '', pad = '';
+        if (paVal.includes('/')) {
+          let parts = paVal.split('/');
+          pas = parts[0].trim();
+          pad = parts[1].trim();
+        } else {
+          pas = paVal;
+        }
+        document.getElementById('t0-pas').value = pas;
+        document.getElementById('t0-pad').value = pad;
+        document.getElementById('t0-pouls').value = document.getElementById('c-fc').value.trim();
+        document.getElementById('t0-spo2').value = document.getElementById('c-spo2').value.trim();
+
       } else if (target === 'pec-mere') {
         indicator.textContent = 'PEC de la mère';
         p0Container.style.display = 'none';
@@ -2760,6 +2825,10 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
         const pred = document.getElementById('alg-trt-prednisolone').checked ? 'Prednisolone IVL' : '';
         let trts = [pol, pred].filter(Boolean).join(', ');
 
+        const t0Str = `PAS: ${document.getElementById('t0-pas').value || '-'}, PAD: ${document.getElementById('t0-pad').value || '-'}, Pouls: ${document.getElementById('t0-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t0-spo2').value || '-'}`;
+        const t15Str = `PAS: ${document.getElementById('t15-pas').value || '-'}, PAD: ${document.getElementById('t15-pad').value || '-'}, Pouls: ${document.getElementById('t15-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t15-spo2').value || '-'}`;
+        const t30Str = `PAS: ${document.getElementById('t30-pas').value || '-'}, PAD: ${document.getElementById('t30-pad').value || '-'}, Pouls: ${document.getElementById('t30-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t30-spo2').value || '-'}`;
+
         specificSection = 
 `3. BILAN ALLERGOLOGIQUE & CLINIQUE
 - Début : ${alg.heure} | Facteur : ${alg.facteur} | Traitement pris : ${alg.traitementPris}
@@ -2774,9 +2843,9 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 - Traitements associés : ${trts || 'Aucun'}
 
 5. SUIVI CHRONOLOGIQUE & ÉVOLUTION
-- T0 : ${document.getElementById('suivi-t0').value}
-- T+15 : ${document.getElementById('suivi-t15').value || 'Non renseigné'}
-- T+30 : ${document.getElementById('suivi-t30').value || 'Non renseigné'}
+- T0 : ${t0Str}
+- T+15 : ${t15Str}
+- T+30 : ${t30Str}
 - Régression des symptômes : ${document.getElementById('alg-regression').checked ? 'OUI' : 'NON'}`;
       }
 
