@@ -345,6 +345,7 @@
     .thera-box.asthme { border-left: 6px solid #16a34a; }
     .thera-box.oap { border-left: 6px solid #0284c7; }
     .thera-box.noyade { border-left: 6px solid #0d9488; }
+    .thera-box.allergie { border-left: 6px solid #d97706; }
     .thera-title {
       font-weight: 800;
       font-size: 1rem;
@@ -767,18 +768,6 @@
         </div>
 
         <div class="field">
-          <label>Délai d'apparition</label>
-          <div class="row-2">
-            <select id="delai-valeur"></select>
-            <select id="delai-unite">
-              <option value="minutes">Minutes</option>
-              <option value="heures">Heures</option>
-              <option value="jours">Jours</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field">
           <label for="atcd-select">Antécédents</label>
           <select id="atcd-select" onchange="addAtcd(this)">
             <option value="" disabled selected>Ajouter un antécédent...</option>
@@ -1040,6 +1029,61 @@
       </div>
     </div>
 
+    <!-- ================= PAGE SPÉCIFIQUE : ALLERGIE ================= -->
+    <div id="page-allergie" class="page">
+      <div class="card">
+        <div class="section-label">Bilan Allergologique</div>
+
+        <div class="field">
+          <label>Heure de début</label>
+          <div class="row-2">
+            <select id="alg-debut-hh"></select>
+            <select id="alg-debut-mm"></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="alg-facteur">Facteur déclenchant</label>
+          <input type="text" id="alg-facteur" placeholder="ex: Piqure d'hyménoptère, aliment, médicament...">
+        </div>
+
+        <div class="field">
+          <label for="alg-traitement-pris">Traitement pris</label>
+          <input type="text" id="alg-traitement-pris" placeholder="ex: Antihistaminique personnel, auto-injecteur...">
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label">Signes cliniques</div>
+        <div class="field">
+          <label class="checkbox-item"><input type="checkbox" id="alg-signe-urticaire"> Urticaire / démangeaisons</label>
+          <label class="checkbox-item"><input type="checkbox" id="alg-signe-oedeme"> Œdème muqueuses</label>
+          <label class="checkbox-item" onclick="checkAllergieGravite()"><input type="checkbox" id="alg-signe-sibilants"> Dyspnée avec sibilants</label>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label" style="color: var(--danger);">Signes de gravité</div>
+        <div class="field" onchange="checkAllergieGravite()">
+          <label class="checkbox-item"><input type="checkbox" id="alg-grav-dra"> DRA (Détresse respiratoire aiguë)</label>
+          <label class="checkbox-item"><input type="checkbox" id="alg-grav-insp"> Dyspnée inspiratoire</label>
+          <label class="checkbox-item"><input type="checkbox" id="alg-grav-conscience"> Troubles de la conscience / malaise</label>
+          <label class="checkbox-item"><input type="checkbox" id="alg-grav-hemo"> Défaillance hémodynamique</label>
+          <label class="checkbox-item"><input type="checkbox" id="alg-grav-digestifs"> Signes digestifs</label>
+          <label class="checkbox-item"><input type="checkbox" id="alg-grav-enceinte"> Femme enceinte</label>
+        </div>
+
+        <div id="alg-renfort-msg" class="alert-box alert-red" style="display: none; margin-top: 14px;">
+          Demande de renfort SMUR à l'appel du 15
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
+      </div>
+    </div>
+
     <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS) ================= -->
     <div id="page-motif-autre" class="page">
       <div class="card" style="text-align: center; padding: 40px 16px;">
@@ -1285,6 +1329,78 @@
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Bilan régulation</button>
         <button type="button" class="btn-nav" onclick="goToPage('resume')">Bilan complémentaire C15 ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= PAGE : THÉRAPEUTIQUE (ALLERGIE) ================= -->
+    <div id="page-therapeutique-allergie" class="page">
+      <div class="card thera-box allergie">
+        <div class="thera-title" style="color: #b45309;">
+          <span>PROTOCOLE ALLERGIE & ANAPHYLAXIE</span>
+        </div>
+
+        <!-- Bloc Adrénaline conditionnel -->
+        <div id="alg-bloc-adrenaline" style="display: none; margin-bottom: 14px;">
+          <button type="button" class="btn-toggle-action orange" id="btn-adrenaline" onclick="toggleAdrenaline(this)">
+            Adrénaline 0,5 mg IM à répéter 1x si besoin à T+15 min
+          </button>
+        </div>
+
+        <!-- Bloc Nébulisation Salbutamol conditionnel -->
+        <div id="alg-bloc-salbutamol" style="display: none; margin-bottom: 14px; background: #fef3c7; border: 2px solid #f59e0b; padding: 14px; border-radius: 8px; text-align: center; font-weight: 800; color: #b45309;">
+          💨 Nébulisation salbutamol 5 mg
+        </div>
+
+        <!-- VVP standard -->
+        <button type="button" class="btn-toggle-action orange" id="btn-vvp-allergie" onclick="toggleVvpAllergie(this)">
+          💉 VVP
+        </button>
+
+        <!-- Traitements associés -->
+        <div class="field" style="margin-top: 14px;">
+          <label class="checkbox-item"><input type="checkbox" id="alg-trt-polaramine"> Polaramine 5 mg / 20 min IVL</label>
+          <label class="checkbox-item"><input type="checkbox" id="alg-trt-prednisolone"> Prednisolone 1 mg/kg / 20 min IVL</label>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav" onclick="goToPage('suivi-allergie')">Constantes ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= PAGE : SUIVI CHRONOLOGIQUE (ALLERGIE) ================= -->
+    <div id="page-suivi-allergie" class="page">
+      <div class="card">
+        <div class="section-label">Suivi Chronologique & Évolution</div>
+
+        <div class="field">
+          <label style="color: var(--primary);">Constantes T0 (Initiales)</label>
+          <input type="text" id="suivi-t0" readonly style="background: #f1f5f9;">
+        </div>
+
+        <div class="field" style="margin-top: 14px;">
+          <label for="suivi-t15">Constantes T+15 min</label>
+          <input type="text" id="suivi-t15" placeholder="ex: PA 115/75, FC 82, SpO2 98%">
+        </div>
+
+        <div class="field" style="margin-top: 14px;">
+          <label for="suivi-t30">Constantes T+30 min</label>
+          <input type="text" id="suivi-t30" placeholder="ex: PA 120/80, FC 78, SpO2 99%">
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label class="checkbox-item">
+            <input type="checkbox" id="alg-regression"> Régression des symptômes
+          </label>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('therapeutique-allergie')">⬅ Thérapeutique</button>
+        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
       </div>
     </div>
 
@@ -1723,14 +1839,6 @@
         poidsSelect.appendChild(opt);
       }
 
-      // DÉLAI D'APPARITION ANAMNÈSE (1-15)
-      const delaiSelect = document.getElementById('delai-valeur');
-      for (let i = 1; i <= 15; i++) {
-        const opt = document.createElement('option');
-        opt.value = i; opt.textContent = i;
-        delaiSelect.appendChild(opt);
-      }
-
       // HOSPIT RÉCENTE
       const hospitMois = document.getElementById('hospit-mois');
       moisNoms.forEach((m, idx) => {
@@ -1763,6 +1871,8 @@
 
       const accDebutHH = document.getElementById('acc-debut-hh');
       const accDebutMM = document.getElementById('acc-debut-mm');
+      const algDebutHH = document.getElementById('alg-debut-hh');
+      const algDebutMM = document.getElementById('alg-debut-mm');
       const now = new Date();
       for (let h = 0; h < 24; h++) {
         const opt = document.createElement('option');
@@ -1770,6 +1880,7 @@
         opt.value = val; opt.textContent = `${val} h`;
         if (h === now.getHours()) opt.selected = true;
         accDebutHH.appendChild(opt);
+        if(algDebutHH) algDebutHH.appendChild(opt.cloneNode(true));
       }
       for (let m = 0; m < 60; m++) {
         const opt = document.createElement('option');
@@ -1777,6 +1888,7 @@
         opt.value = val; opt.textContent = `${val} min`;
         if (m === now.getMinutes()) opt.selected = true;
         accDebutMM.appendChild(opt);
+        if(algDebutMM) algDebutMM.appendChild(opt.cloneNode(true));
       }
 
       const accContracDuree = document.getElementById('acc-contractions-duree-valeur');
@@ -1841,6 +1953,9 @@
       } else if (motif === 'Détresse respiratoire') {
         previousMotifPage = 'detresse-respi';
         goToPage('detresse-respi');
+      } else if (motif === 'Allergie') {
+        previousMotifPage = 'allergie';
+        goToPage('allergie');
       } else {
         document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
         previousMotifPage = 'motif-autre';
@@ -1854,6 +1969,8 @@
         goToPage('pec-mere');
       } else if (motif === 'Détresse respiratoire') {
         goToPage('therapeutique');
+      } else if (motif === 'Allergie') {
+        goToPage('therapeutique-allergie');
       } else {
         goToPage('resume');
       }
@@ -1888,6 +2005,10 @@
       } else if (target === 'detresse-respi') {
         indicator.textContent = '3. Détresse respiratoire';
         p0Container.style.display = 'none';
+      } else if (target === 'allergie') {
+        indicator.textContent = '3. Allergie';
+        p0Container.style.display = 'none';
+        checkAllergieGravite();
       } else if (target === 'motif-autre') {
         indicator.textContent = '3. Motif spécifique';
         p0Container.style.display = 'none';
@@ -1903,6 +2024,8 @@
           btnSuite.textContent = 'Thérapeutique ➔';
         } else if (motif === 'Accouchement') {
           btnSuite.textContent = 'Prise en charge ➔';
+        } else if (motif === 'Allergie') {
+          btnSuite.textContent = 'Thérapeutique ➔';
         } else {
           btnSuite.textContent = 'Résumé final ➔';
         }
@@ -1912,6 +2035,20 @@
         p0Container.style.display = 'none';
         updateTheraDoses();
         checkPasOap();
+      } else if (target === 'therapeutique-allergie') {
+        indicator.textContent = 'Thérapeutique Allergie';
+        p0Container.style.display = 'none';
+        updateAllergieTheraUI();
+      } else if (target === 'suivi-allergie') {
+        indicator.textContent = 'Suivi Chronologique';
+        p0Container.style.display = 'none';
+        // Remplir T0 automatiquement avec les constantes prises
+        let cInit = [];
+        if (document.getElementById('c-pa').value) cInit.push(`PA: ${document.getElementById('c-pa').value}`);
+        if (document.getElementById('c-fc').value) cInit.push(`FC: ${document.getElementById('c-fc').value} bpm`);
+        if (document.getElementById('c-spo2').value) cInit.push(`SpO2: ${document.getElementById('c-spo2').value}%`);
+        if (document.getElementById('c-fr').value) cInit.push(`FR: ${document.getElementById('c-fr').value}/min`);
+        document.getElementById('suivi-t0').value = cInit.length > 0 ? cInit.join(' | ') : 'Non renseignées';
       } else if (target === 'pec-mere') {
         indicator.textContent = 'PEC de la mère';
         p0Container.style.display = 'none';
@@ -1927,6 +2064,8 @@
           btnBack.onclick = () => goToPage('pec-enfant');
         } else if (motif === 'Détresse respiratoire') {
           btnBack.onclick = () => goToPage('therapeutique');
+        } else if (motif === 'Allergie') {
+          btnBack.onclick = () => goToPage('suivi-allergie');
         } else {
           btnBack.onclick = () => goToPage('regu');
         }
@@ -1937,6 +2076,58 @@
       }
 
       window.scrollTo(0, 0);
+    }
+
+    // LOGIQUE ALLERGIE - GRAVITÉ ET TYPE DE DEMANDE
+    function checkAllergieGravite() {
+      const dra = document.getElementById('alg-grav-dra').checked;
+      const insp = document.getElementById('alg-grav-insp').checked;
+      const conscience = document.getElementById('alg-grav-conscience').checked;
+      const hemo = document.getElementById('alg-grav-hemo').checked;
+      const digestifs = document.getElementById('alg-grav-digestifs').checked;
+      const enceinte = document.getElementById('alg-grav-enceinte').checked;
+
+      const hasGravite = dra || insp || conscience || hemo || digestifs || enceinte;
+
+      const msg = document.getElementById('alg-renfort-msg');
+      const demandeSelect = document.getElementById('demande-type');
+
+      if (msg) msg.style.display = hasGravite ? 'block' : 'none';
+
+      if (demandeSelect) {
+        if (hasGravite) {
+          demandeSelect.value = 'Renfort SMUR';
+        } else {
+          demandeSelect.value = 'PSIS Allergie';
+        }
+      }
+    }
+
+    function updateAllergieTheraUI() {
+      const dra = document.getElementById('alg-grav-dra').checked;
+      const insp = document.getElementById('alg-grav-insp').checked;
+      const conscience = document.getElementById('alg-grav-conscience').checked;
+      const hemo = document.getElementById('alg-grav-hemo').checked;
+      const digestifs = document.getElementById('alg-grav-digestifs').checked;
+      const enceinte = document.getElementById('alg-grav-enceinte').checked;
+      const hasGravite = dra || insp || conscience || hemo || digestifs || enceinte;
+
+      const blocAdren = document.getElementById('alg-bloc-adrenaline');
+      if (blocAdren) blocAdren.style.display = hasGravite ? 'block' : 'none';
+
+      const sibilants = document.getElementById('alg-signe-sibilants').checked;
+      const blocSalbu = document.getElementById('alg-bloc-salbutamol');
+      if (blocSalbu) blocSalbu.style.display = sibilants ? 'block' : 'none';
+    }
+
+    function toggleAdrenaline(btn) {
+      btn.classList.toggle('active');
+      btn.textContent = btn.classList.contains('active') ? '✓ Adrénaline 0,5 fait' : 'Adrénaline 0,5mg IM à répéter 1x si besoin à T+15 min';
+    }
+
+    function toggleVvpAllergie(btn) {
+      btn.classList.toggle('active');
+      btn.textContent = btn.classList.contains('active') ? '✓ VVP Posée' : '💉 VVP';
     }
 
     // GESTION THÉRAPEUTIQUE (DÉTRESSE RESPIRATOIRE)
@@ -2243,6 +2434,30 @@
       };
     }
 
+    // CLINIQUE ALLERGIE
+    function getAllergieData() {
+      let signes = [];
+      if (document.getElementById('alg-signe-urticaire').checked) signes.push('Urticaire/démangeaisons');
+      if (document.getElementById('alg-signe-oedeme').checked) signes.push('Œdème muqueuses');
+      if (document.getElementById('alg-signe-sibilants').checked) signes.push('Dyspnée avec sibilants');
+
+      let gravites = [];
+      if (document.getElementById('alg-grav-dra').checked) gravites.push('DRA');
+      if (document.getElementById('alg-grav-insp').checked) gravites.push('Dyspnée inspiratoire');
+      if (document.getElementById('alg-grav-conscience').checked) gravites.push('Troubles conscience/malaise');
+      if (document.getElementById('alg-grav-hemo').checked) gravites.push('Défaillance hémodynamique');
+      if (document.getElementById('alg-grav-digestifs').checked) gravites.push('Signes digestifs');
+      if (document.getElementById('alg-grav-enceinte').checked) gravites.push('Femme enceinte');
+
+      return {
+        heure: `${document.getElementById('alg-debut-hh').value}:${document.getElementById('alg-debut-mm').value}`,
+        facteur: document.getElementById('alg-facteur').value.trim() || 'Non renseigné',
+        traitementPris: document.getElementById('alg-traitement-pris').value.trim() || 'Aucun',
+        signes: signes.length > 0 ? signes.join(', ') : 'Aucun',
+        gravites: gravites.length > 0 ? gravites.join(', ') : 'Aucun signe de gravité'
+      };
+    }
+
     // TRANSMISSION SAED
     function generateSAED() {
       const isP0 = document.getElementById('toggle-p0').checked;
@@ -2250,7 +2465,6 @@
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
       const poids = document.getElementById('patient-poids').value;
       const motif = document.getElementById('motif-select').value;
-      const delai = `${document.getElementById('delai-valeur').value} ${document.getElementById('delai-unite').value}`;
 
       const atcd = getTagsText('atcd-tags');
       const ttt = getTagsText('ttt-tags');
@@ -2284,6 +2498,13 @@
 `- Signes de gravité : ${dr.signes}
 - Auscultation : ${dr.auscult}
 - Gestes réflexes entrepris : ${dr.gestes}`;
+      } else if (motif === 'Allergie') {
+        const alg = getAllergieData();
+        evalMotif =
+`- Heure de début : ${alg.heure} | Facteur : ${alg.facteur}
+- Traitement pris avant : ${alg.traitementPris}
+- Signes cliniques : ${alg.signes}
+- Signes de gravité : ${alg.gravites}`;
       } else {
         evalMotif = `- Bilan clinique spécifique : ${motif}`;
       }
@@ -2323,7 +2544,7 @@
 [S] SITUATION
 Patient : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
 Degré d'urgence : ${isP0 ? 'P0 (Urgence vitale)' : 'Non P0'}
-Motif : ${motif} (évoluant depuis : ${delai})
+Motif : ${motif}
 
 [A] ANTECEDENTS & TERRAIN
 - ATCD : ${atcd}
@@ -2357,7 +2578,6 @@ ${demandeText}
       const poids = document.getElementById('patient-poids').value;
       const isP0 = document.getElementById('toggle-p0').checked;
       const motif = document.getElementById('motif-select').value;
-      const delai = `${document.getElementById('delai-valeur').value} ${document.getElementById('delai-unite').value}`;
 
       let cInit = [];
       if (document.getElementById('c-pa').value) cInit.push(`PA: ${document.getElementById('c-pa').value}`);
@@ -2473,6 +2693,32 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 - VVP : ${vvpThera}
 - Thérapeutiques appliquées : ${theraList.length > 0 ? theraList.join(', ') : 'Aucune cochée'}
 - Réévaluation sous surveillance scope : ${scopeTxt}`;
+      } else if (motif === 'Allergie') {
+        const alg = getAllergieData();
+        const vvpAll = document.getElementById('btn-vvp-allergie').classList.contains('active') ? 'Oui' : 'Non';
+        const adren = document.getElementById('btn-adrenaline') && document.getElementById('btn-adrenaline').classList.contains('active') ? 'Adrénaline 0.5mg administrée' : 'Non administrée';
+        const salbu = document.getElementById('alg-signe-sibilants').checked ? 'Nébulisation salbutamol 5mg réalisée' : 'Non concerné';
+        const pol = document.getElementById('alg-trt-polaramine').checked ? 'Polaramine 5mg IVL' : '';
+        const pred = document.getElementById('alg-trt-prednisolone').checked ? 'Prednisolone IVL' : '';
+        let trts = [pol, pred].filter(Boolean).join(', ');
+
+        specificSection = 
+`3. BILAN ALLERGOLOGIQUE & CLINIQUE
+- Début : ${alg.heure} | Facteur : ${alg.facteur} | Traitement pris : ${alg.traitementPris}
+- Signes cliniques : ${alg.signes}
+- Signes de gravité : ${alg.gravites}
+
+4. THÉRAPEUTIQUE ALLERGIE
+- VVP : ${vvpAll}
+- Adrénaline IM : ${adren}
+- Salbutamol : ${salbu}
+- Traitements associés : ${trts || 'Aucun'}
+
+5. SUIVI CHRONOLOGIQUE & ÉVOLUTION
+- T0 : ${document.getElementById('suivi-t0').value}
+- T+15 : ${document.getElementById('suivi-t15').value || 'Non renseigné'}
+- T+30 : ${document.getElementById('suivi-t30').value || 'Non renseigné'}
+- Régression des symptômes : ${document.getElementById('alg-regression').checked ? 'OUI' : 'NON'}`;
       }
 
       const resumeTxt = 
@@ -2483,7 +2729,7 @@ RAPPORT D'INTERVENTION SMUR / PSIS - SAMU 13
 1. PATIENT & SITUATION
 - Identité : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
 - Statut : ${isP0 ? 'P0 (Urgence vitale)' : 'Non P0'}
-- Motif : ${motif} (depuis ${delai})
+- Motif : ${motif}
 - ATCD : ${getTagsText('atcd-tags')}
 - Traitements : ${getTagsText('ttt-tags')}
 - Allergies : ${getTagsText('allergies-tags')}
@@ -2493,7 +2739,7 @@ ${cInit.length > 0 ? cInit.join(' | ') : 'Non renseignés'}
 
 ${specificSection}
 
-5. RÉGULATION CENTRE 15 / BILAN COMPLÉMENTAIRE
+6. RÉGULATION CENTRE 15 / BILAN COMPLÉMENTAIRE
 - Demande : ${demType}
 - Prescriptions / Consignes : ${demTxt}
 ==============================================`;
