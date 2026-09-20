@@ -527,6 +527,42 @@
       </div>
     </div>
 
+    <!-- ================= PAGE ACCOUCHEMENT ================= -->
+    <div id="page-accouchement" class="page">
+      <div class="card">
+        <div class="section-label">Bilan Obstétrical</div>
+        <p style="color: var(--text-muted); margin-bottom: 14px;">Protocole Accouchement actif.</p>
+      </div>
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= PAGE DÉTRESSE RESPIRATOIRE ================= -->
+    <div id="page-detresse-respi" class="page">
+      <div class="card">
+        <div class="section-label">Bilan Détresse Respiratoire</div>
+        <p style="color: var(--text-muted); margin-bottom: 14px;">Protocole Détresse Respiratoire actif.</p>
+      </div>
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= PAGE MOTIF AUTRE ================= -->
+    <div id="page-motif-autre" class="page">
+      <div class="card" style="text-align: center; padding: 40px 16px;">
+        <h3 id="motif-autre-titre" style="margin-bottom: 12px;">Motif spécifique</h3>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">La page dédiée pour ce motif sera construite selon tes consignes.</p>
+        <div class="nav-actions">
+          <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+          <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ================= PAGE CONSTANTES ================= -->
     <div id="page-constantes" class="page">
       <div class="card">
@@ -588,7 +624,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage('allergie')">⬅ Motif</button>
+        <button type="button" class="btn-nav secondary" onclick="goToPage(previousMotifPage)">⬅ Motif</button>
         <button type="button" class="btn-nav" onclick="goToPage('regu')">Appel au 15 ➔</button>
       </div>
     </div>
@@ -628,7 +664,7 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('constantes')">⬅ Constantes</button>
-        <button type="button" class="btn-nav" onclick="goToPage('page-thera-allergie')">Thérapeutique ➔</button>
+        <button type="button" class="btn-nav" onclick="routeApresRegu()">Thérapeutique ➔</button>
       </div>
     </div>
 
@@ -915,6 +951,17 @@
       }
     }
 
+    function routeApresRegu() {
+      const motif = document.getElementById('motif-select').value;
+      const isP0 = document.getElementById('toggle-p0').checked;
+
+      if (!isP0 && motif === 'Allergie') {
+        goToPage('page-thera-allergie');
+      } else {
+        goToPage('resume');
+      }
+    }
+
     function goToPage(target) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
@@ -940,6 +987,12 @@
         p0Container.style.display = 'flex';
       } else if (target === 'allergie') {
         indicator.textContent = '3. Bilan Allergie';
+        p0Container.style.display = 'none';
+      } else if (target === 'accouchement') {
+        indicator.textContent = '3. Accouchement';
+        p0Container.style.display = 'none';
+      } else if (target === 'detresse-respi') {
+        indicator.textContent = '3. Détresse respiratoire';
         p0Container.style.display = 'none';
       } else if (target === 'constantes') {
         indicator.textContent = 'Constantes';
@@ -1280,7 +1333,7 @@ ${demandeText}
 
       const resumeTxt = 
 `==============================================
-BILAN COMPLÉMENTAIRE C15 : ALLERGIE
+BILAN COMPLÉMENTAIRE C15 : ${motif}
 ==============================================
 
 1. PATIENT & SITUATION
