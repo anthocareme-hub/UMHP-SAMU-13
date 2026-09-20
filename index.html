@@ -347,6 +347,7 @@
     .thera-box.oap { border-left: 6px solid #0284c7; }
     .thera-box.noyade { border-left: 6px solid #0d9488; }
     .thera-box.allergie { border-left: 6px solid #d97706; }
+    .thera-box.hypo { border-left: 6px solid #f59e0b; }
     .thera-title {
       font-weight: 800;
       font-size: 1rem;
@@ -354,6 +355,44 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    /* ALGO HYPO CLIQUABLE STYLING */
+    .algo-flow-card {
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .algo-branch-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .algo-branch-btn.active {
+      background: #0284c7;
+      border-color: #0284c7;
+      color: #ffffff;
+    }
+    .algo-sub-box {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 10px;
+      display: none;
+    }
+    .algo-sub-box.active {
+      display: block;
     }
 
     /* SÉLECTEUR 4 BLOCS OXYGÈNE */
@@ -896,7 +935,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(1)">⬅ Identité</button>
+        <button type="button" class="btn-nav secondary" onclick="goToPage(1)">🏠 Accueil</button>
         <button type="button" class="btn-nav" onclick="routeMotifPage()">Suivant ➔</button>
       </div>
     </div>
@@ -1102,6 +1141,51 @@
       </div>
     </div>
 
+    <!-- ================= PAGE SPÉCIFIQUE : HYPOGLYCÉMIE ================= -->
+    <div id="page-hypoglycemie" class="page">
+      <div class="card">
+        <div class="section-label">Bilan Hypoglycémie</div>
+
+        <div class="field">
+          <label style="color: var(--danger); font-weight: 800;">⚠️ ATTENTION : Présence pompe à insuline ?</label>
+          <div class="row-2" style="margin-top: 8px;">
+            <button type="button" class="btn-toggle-action" id="btn-pompe-non" onclick="setPompeStatut('NON')">NON</button>
+            <button type="button" class="btn-toggle-action orange" id="btn-pompe-oui" onclick="setPompeStatut('OUI, ÉTEINTE')">OUI, ÉTEINTE</button>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label">Autre cause de coma ?</div>
+        <div class="field">
+          <label class="checkbox-item"><input type="checkbox" id="hypo-cause-ebriete"> Suspicion d'ébriété</label>
+          <label class="checkbox-item"><input type="checkbox" id="hypo-cause-toxiques"> Suspicion de prise de toxiques</label>
+          <label class="checkbox-item"><input type="checkbox" id="hypo-cause-tc"> Traumatisme crânien</label>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label" style="color: var(--danger);">Signes de gravité</div>
+        <div class="field" onchange="checkHypoGravite()">
+          <label class="checkbox-item"><input type="checkbox" id="hypo-grav-convulsion"> Convulsion</label>
+          <label class="checkbox-item"><input type="checkbox" id="hypo-grav-pdc"> Perte de connaissance</label>
+          <label class="checkbox-item"><input type="checkbox" id="hypo-grav-deglutir"> Impossibilité de déglutir</label>
+        </div>
+
+        <!-- Bouton / Bloc PLS conditionnel -->
+        <div id="hypo-bloc-pls" style="display: none; margin-top: 14px;">
+          <button type="button" class="btn-toggle-action orange" id="btn-pls" onclick="togglePls(this)" style="background: #fee2e2; border-color: #ef4444; color: #991b1b; font-size: 1.1rem; padding: 16px;">
+            METTRE EN POSITION LATÉRALE DE SÉCURITÉ
+          </button>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
+      </div>
+    </div>
+
     <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS) ================= -->
     <div id="page-motif-autre" class="page">
       <div class="card" style="text-align: center; padding: 40px 16px;">
@@ -1144,7 +1228,7 @@
         <div class="row-2 field">
           <div>
             <label for="c-hgt">HGT (g/L)</label>
-            <input type="number" step="0.01" inputmode="decimal" id="c-hgt" placeholder="ex: 1.10">
+            <input type="number" step="0.01" inputmode="decimal" id="c-hgt" placeholder="ex: 0.45">
           </div>
           <div>
             <label for="c-temp">Température (°C)</label>
@@ -1192,14 +1276,14 @@
             <option value="PSIS Dyspnée">PSIS Dyspnée</option>
             <option value="PSIS Antalgie">PSIS Antalgie</option>
             <option value="PSIS Allergie">PSIS Allergie</option>
-            <option value="PSIS Brûlure">PSIS Brûlure</option>
             <option value="PSIS Hypoglycémie">PSIS Hypoglycémie</option>
+            <option value="PSIS Brûlure">PSIS Brûlure</option>
           </select>
         </div>
 
         <div class="field">
           <label for="saed-demande">Précisions régulation & actions</label>
-          <textarea id="saed-demande" rows="2" placeholder="ex: Accord protocole détresse respi, avis médical pour corticothérapie / diurétique..." oninput="generateSAED()"></textarea>
+          <textarea id="saed-demande" rows="2" placeholder="ex: Accord protocole hypoglycémie, avis médical..." oninput="generateSAED()"></textarea>
         </div>
       </div>
 
@@ -1357,24 +1441,20 @@
           <span>PROTOCOLE ALLERGIE & ANAPHYLAXIE</span>
         </div>
 
-        <!-- Bloc Adrénaline conditionnel -->
         <div id="alg-bloc-adrenaline" style="display: none; margin-bottom: 14px;">
           <button type="button" class="btn-toggle-action orange" id="btn-adrenaline" onclick="toggleAdrenaline(this)">
             Adrénaline 0,5 mg IM à répéter 1x si besoin à T+15 min
           </button>
         </div>
 
-        <!-- Bloc Nébulisation Salbutamol conditionnel -->
         <div id="alg-bloc-salbutamol" style="display: none; margin-bottom: 14px; background: #fef3c7; border: 2px solid #f59e0b; padding: 14px; border-radius: 8px; text-align: center; font-weight: 800; color: #b45309;">
           💨 Nébulisation salbutamol 5 mg
         </div>
 
-        <!-- VVP standard -->
         <button type="button" class="btn-toggle-action orange" id="btn-vvp-allergie" onclick="toggleVvpAllergie(this)">
           💉 VVP
         </button>
 
-        <!-- Traitements associés -->
         <div class="field" style="margin-top: 14px;">
           <label class="checkbox-item"><input type="checkbox" id="alg-trt-polaramine"> Polaramine 5 mg / 20 min IVL</label>
           <label class="checkbox-item"><input type="checkbox" id="alg-trt-prednisolone"> Prednisolone 1 mg/kg / 20 min IVL</label>
@@ -1384,6 +1464,81 @@
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('suivi-allergie')">Constantes ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= PAGE : THÉRAPEUTIQUE (HYPOGLYCÉMIE) ================= -->
+    <div id="page-therapeutique-hypo" class="page">
+      <div class="card thera-box hypo">
+        <div class="thera-title" style="color: #b45309;">
+          <span>PROTOCOLE THÉRAPEUTIQUE HYPOGLYCÉMIE</span>
+        </div>
+
+        <!-- Choix Principal Per Os Possible / Impossible -->
+        <div class="algo-flow-card">
+          <div class="row-2">
+            <button type="button" class="algo-branch-btn" id="btn-peros-pos" onclick="selectPerOs('possible')">PER OS POSSIBLE</button>
+            <button type="button" class="algo-branch-btn" id="btn-peros-imp" onclick="selectPerOs('impossible')">PER OS IMPOSSIBLE</button>
+          </div>
+
+          <!-- Branche PER OS POSSIBLE -->
+          <div id="sub-peros-pos" class="algo-sub-box">
+            <button type="button" class="btn-toggle-action orange" id="btn-sucres" onclick="toggleAlgoAction(this)">
+              🍬 Sucres rapides administrés
+            </button>
+            
+            <div style="background: #dcfce7; border: 1.5px solid #86efac; color: #166534; padding: 10px; border-radius: 6px; font-weight: 800; text-align: center; margin-top: 10px;">
+              Objectif glycémie > 4 mmol/L (0,7 g/L)
+            </div>
+
+            <!-- Alternative Glucagon si dispo -->
+            <div style="background: #fef3c7; border: 1.5px solid #fde047; padding: 10px; border-radius: 6px; margin-top: 10px;">
+              <div style="font-weight: 800; color: #b45309; font-size: 0.9rem; margin-bottom: 6px;">GLUCAGON SI DISPONIBLE (patient ou VSSUAP) :</div>
+              <label class="checkbox-item"><input type="checkbox" id="gluco-baqsimi"> BAQSIMI® IN : 1 dose dans 1 narine</label>
+              <label class="checkbox-item"><input type="checkbox" id="gluco-glucagen"> GLUCAGEN® : 1 mg IM</label>
+            </div>
+          </div>
+
+          <!-- Branche PER OS IMPOSSIBLE -->
+          <div id="sub-peros-imp" class="algo-sub-box">
+            <div style="background: #e0f2fe; border: 1.5px solid #7dd3fc; color: #0369a1; padding: 10px; border-radius: 6px; font-weight: 800; margin-bottom: 10px;">
+              💉 2 ampoules G30% (10ml) IVD + 250 ml G10% IVL
+            </div>
+            <button type="button" class="btn-toggle-action orange" id="btn-perfusion-iv" onclick="toggleAlgoAction(this)">
+              ✓ G30% + G10% administrés
+            </button>
+
+            <div style="margin-top: 12px; font-weight: 700; color: var(--text);">Réévaluation glycémique à 3-5 min :</div>
+            <div class="row-2" style="margin-top: 8px;">
+              <button type="button" class="algo-branch-btn" id="btn-conscience-oui" onclick="selectConscienceResult('retour')">Retour à la conscience</button>
+              <button type="button" class="algo-branch-btn" id="btn-conscience-non" onclick="selectConscienceResult('troubles')">Troubles de conscience</button>
+            </div>
+
+            <!-- Sous-branche Troubles de conscience -->
+            <div id="sub-troubles-conscience" style="display: none; background: #fee2e2; border: 1.5px solid #fca5a5; padding: 10px; border-radius: 6px; margin-top: 10px;">
+              <button type="button" class="btn-toggle-action orange" id="btn-titration-g30" onclick="toggleAlgoAction(this)" style="background: #fee2e2; color: #991b1b; border-color: #ef4444;">
+                💉 2 ampoules G30% en titration
+              </button>
+              <div style="background: #dcfce7; border: 1.5px solid #86efac; color: #166534; padding: 8px; border-radius: 6px; font-weight: 800; text-align: center; margin-top: 8px; font-size: 0.9rem;">
+                Objectif glycémie > 4 mmol/L (0,7 g/L) + correction troubles neurologiques
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- ECG 18 DÉRIVATIONS (Commun à l'issue) -->
+        <div class="field">
+          <button type="button" class="btn-toggle-action" id="btn-ecg18" onclick="toggleAlgoAction(this)">
+            📈 ECG 18 Dérivations (ECG 18 D) réalisé
+          </button>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Appel au 15</button>
+        <button type="button" class="btn-nav" onclick="goToPage('resume')">Bilan complémentaire C15 ➔</button>
       </div>
     </div>
 
@@ -1875,6 +2030,7 @@
     let selectedAvpu = '';
     let statutNouveauNe = 'Non évalué';
     let oxygeneMode = '';
+    let pompeInsulineStatut = 'NON';
 
     window.addEventListener('DOMContentLoaded', () => {
       // DATE DE NAISSANCE
@@ -2040,6 +2196,9 @@
       } else if (motif === 'Allergie') {
         previousMotifPage = 'allergie';
         goToPage('allergie');
+      } else if (motif === 'Hypoglycémie') {
+        previousMotifPage = 'hypoglycemie';
+        goToPage('hypoglycemie');
       } else {
         document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
         previousMotifPage = 'motif-autre';
@@ -2055,6 +2214,8 @@
         goToPage('therapeutique');
       } else if (motif === 'Allergie') {
         goToPage('therapeutique-allergie');
+      } else if (motif === 'Hypoglycémie') {
+        goToPage('therapeutique-hypo');
       } else {
         goToPage('resume');
       }
@@ -2093,6 +2254,10 @@
         indicator.textContent = '3. Allergie';
         p0Container.style.display = 'none';
         checkAllergieGravite();
+      } else if (target === 'hypoglycemie') {
+        indicator.textContent = '3. Hypoglycémie';
+        p0Container.style.display = 'none';
+        checkHypoGravite();
       } else if (target === 'motif-autre') {
         indicator.textContent = '3. Motif spécifique';
         p0Container.style.display = 'none';
@@ -2110,6 +2275,8 @@
           btnSuite.textContent = 'Prise en charge ➔';
         } else if (motif === 'Allergie') {
           btnSuite.textContent = 'Thérapeutique ➔';
+        } else if (motif === 'Hypoglycémie') {
+          btnSuite.textContent = 'Thérapeutique ➔';
         } else {
           btnSuite.textContent = 'Résumé final ➔';
         }
@@ -2123,11 +2290,13 @@
         indicator.textContent = 'Thérapeutique Allergie';
         p0Container.style.display = 'none';
         updateAllergieTheraUI();
+      } else if (target === 'therapeutique-hypo') {
+        indicator.textContent = 'Thérapeutique Hypoglycémie';
+        p0Container.style.display = 'none';
       } else if (target === 'suivi-allergie') {
         indicator.textContent = 'Suivi Chronologique';
         p0Container.style.display = 'none';
         
-        // Extraction et répartition automatique des constantes T0
         const paVal = document.getElementById('c-pa').value.trim();
         let pas = '', pad = '';
         if (paVal.includes('/')) {
@@ -2159,6 +2328,8 @@
           btnBack.onclick = () => goToPage('therapeutique');
         } else if (motif === 'Allergie') {
           btnBack.onclick = () => goToPage('suivi-allergie');
+        } else if (motif === 'Hypoglycémie') {
+          btnBack.onclick = () => goToPage('therapeutique-hypo');
         } else {
           btnBack.onclick = () => goToPage('regu');
         }
@@ -2169,6 +2340,84 @@
       }
 
       window.scrollTo(0, 0);
+    }
+
+    // LOGIQUE HYPOGLYCÉMIE
+    function setPompeStatut(val) {
+      pompeInsulineStatut = val;
+      const btnNon = document.getElementById('btn-pompe-non');
+      const btnOui = document.getElementById('btn-pompe-oui');
+      if (val === 'NON') {
+        btnNon.classList.add('active');
+        btnOui.classList.remove('active');
+      } else {
+        btnOui.classList.add('active');
+        btnNon.classList.remove('active');
+      }
+    }
+
+    function checkHypoGravite() {
+      const convulsion = document.getElementById('hypo-grav-convulsion').checked;
+      const pdc = document.getElementById('hypo-grav-pdc').checked;
+      const deglutir = document.getElementById('hypo-grav-deglutir').checked;
+
+      const hasGravite = convulsion || pdc || deglutir;
+      const blocPls = document.getElementById('hypo-bloc-pls');
+      if (blocPls) blocPls.style.display = hasGravite ? 'block' : 'none';
+    }
+
+    function togglePls(btn) {
+      btn.classList.toggle('active');
+      btn.textContent = btn.classList.contains('active') ? '✓ MIS EN PLS' : 'METTRE EN POSITION LATÉRALE DE SÉCURITÉ';
+    }
+
+    // LOGIQUE ALGO THÉRAPEUTIQUE HYPO
+    function selectPerOs(type) {
+      const btnPos = document.getElementById('btn-peros-pos');
+      const btnImp = document.getElementById('btn-peros-imp');
+      const subPos = document.getElementById('sub-peros-pos');
+      const subImp = document.getElementById('sub-peros-imp');
+
+      if (type === 'possible') {
+        btnPos.classList.add('active');
+        btnImp.classList.remove('active');
+        subPos.classList.add('active');
+        subImp.classList.remove('active');
+      } else {
+        btnImp.classList.add('active');
+        btnPos.classList.remove('active');
+        subImp.classList.add('active');
+        subPos.classList.remove('active');
+      }
+    }
+
+    function selectConscienceResult(res) {
+      const btnOui = document.getElementById('btn-conscience-oui');
+      const btnNon = document.getElementById('btn-conscience-non');
+      const subTroubles = document.getElementById('sub-troubles-conscience');
+
+      if (res === 'retour') {
+        btnOui.classList.add('active');
+        btnNon.classList.remove('active');
+        subTroubles.style.display = 'none';
+      } else {
+        btnNon.classList.add('active');
+        btnOui.classList.remove('active');
+        subTroubles.style.display = 'block';
+      }
+    }
+
+    function toggleAlgoAction(btn) {
+      btn.classList.toggle('active');
+      if (btn.id === 'btn-sucres') {
+        btn.textContent = btn.classList.contains('active') ? '✓ Sucres rapides administrés' : '🍬 Sucres rapides administrés';
+      } else if (btn.id === 'btn-perfusion-iv') {
+        btn.textContent = btn.classList.contains('active') ? '✓ G30% + G10% administrés' : '✓ G30% + G10% administrés';
+      } else if (btn.id === 'btn-titration-g30') {
+        btn.textContent = btn.classList.contains('active') ? '✓ 2 ampoules G30% en titration faites' : '💉 2 ampoules G30% en titration';
+      } else if (btn.id === 'btn-ecg18') {
+        btn.textContent = btn.classList.contains('active') ? '✓ ECG 18 Dérivations réalisé' : '📈 ECG 18 Dérivations (ECG 18 D) réalisé';
+      }
     }
 
     // LOGIQUE ALLERGIE - GRAVITÉ ET BLOCS CONDITIONNELS
@@ -2196,12 +2445,10 @@
         }
       }
 
-      // Bloc respiratoire (sibilants, DRA, dyspnée inspiratoire)
       const blocRespi = document.getElementById('alg-bloc-respi-gravite');
       const showRespi = dra || insp || sibilants;
       if (blocRespi) blocRespi.style.display = showRespi ? 'block' : 'none';
 
-      // Bloc hémodynamique / conscience
       const blocHemo = document.getElementById('alg-bloc-hemo-gravite');
       const showHemo = conscience || hemo;
       if (blocHemo) blocHemo.style.display = showHemo ? 'block' : 'none';
@@ -2580,6 +2827,51 @@
       };
     }
 
+    // CLINIQUE HYPOGLYCÉMIE
+    function getHypoglycemieData() {
+      let causes = [];
+      if (document.getElementById('hypo-cause-ebriete').checked) causes.push("Suspicion d'ébriété");
+      if (document.getElementById('hypo-cause-toxiques').checked) causes.push("Suspicion prise de toxiques");
+      if (document.getElementById('hypo-cause-tc').checked) causes.push("Traumatisme crânien");
+
+      let gravites = [];
+      if (document.getElementById('hypo-grav-convulsion').checked) gravites.push("Convulsion");
+      if (document.getElementById('hypo-grav-pdc').checked) gravites.push("Perte de connaissance");
+      if (document.getElementById('hypo-grav-deglutir').checked) gravites.push("Impossibilité de déglutir");
+
+      const plsFait = document.getElementById('btn-pls') && document.getElementById('btn-pls').classList.contains('active') ? 'OUI (MIS EN PLS)' : 'NON';
+
+      // Thérapeutique hypo données
+      let theraRes = [];
+      const perOsPos = document.getElementById('btn-peros-pos').classList.contains('active');
+      const perOsImp = document.getElementById('btn-peros-imp').classList.contains('active');
+      if (perOsPos) {
+        theraRes.push("Branche: Per Os Possible");
+        if (document.getElementById('btn-sucres').classList.contains('active')) theraRes.push("Sucres rapides administrés");
+        if (document.getElementById('gluco-baqsimi').checked) theraRes.push("Baqsimi IN 1 dose");
+        if (document.getElementById('gluco-glucagen').checked) theraRes.push("Glucagen 1mg IM");
+      } else if (perOsImp) {
+        theraRes.push("Branche: Per Os Impossible");
+        if (document.getElementById('btn-perfusion-iv').classList.contains('active')) theraRes.push("2 amp G30% IVD + 250ml G10% IVL");
+        if (document.getElementById('btn-conscience-oui').classList.contains('active')) theraRes.push("Retour à la conscience à 3-5 min");
+        if (document.getElementById('btn-conscience-non').classList.contains('active')) {
+          theraRes.push("Troubles de conscience persistants");
+          if (document.getElementById('btn-titration-g30').classList.contains('active')) theraRes.push("2 amp G30% en titration");
+        }
+      }
+      if (document.getElementById('btn-ecg18').classList.contains('active')) {
+        theraRes.push("ECG 18 Dérivations réalisé");
+      }
+
+      return {
+        pompe: pompeInsulineStatut,
+        causes: causes.length > 0 ? causes.join(', ') : 'Aucune',
+        gravites: gravites.length > 0 ? gravites.join(', ') : 'Aucun',
+        pls: plsFait,
+        thera: theraRes.length > 0 ? theraRes.join(' | ') : 'Non renseigné'
+      };
+    }
+
     // TRANSMISSION SAED
     function generateSAED() {
       const isP0 = document.getElementById('toggle-p0').checked;
@@ -2628,6 +2920,13 @@
 - Signes cliniques : ${alg.signes}
 - Signes de gravité : ${alg.gravites}
 - Actions protocolaires : ${alg.actions}`;
+      } else if (motif === 'Hypoglycémie') {
+        const hypo = getHypoglycemieData();
+        evalMotif =
+`- Présence pompe à insuline : ${hypo.pompe}
+- Autre cause de coma : ${hypo.causes}
+- Signes de gravité : ${hypo.gravites}
+- Position latérale de sécurité (PLS) : ${hypo.pls}`;
       } else {
         evalMotif = `- Bilan clinique spécifique : ${motif}`;
       }
@@ -2847,6 +3146,18 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 - T+15 : ${t15Str}
 - T+30 : ${t30Str}
 - Régression des symptômes : ${document.getElementById('alg-regression').checked ? 'OUI' : 'NON'}`;
+      } else if (motif === 'Hypoglycémie') {
+        const hypo = getHypoglycemieData();
+
+        specificSection = 
+`3. BILAN CLINIQUE HYPOGLYCÉMIE
+- Pompe à insuline : ${hypo.pompe}
+- Autre cause de coma : ${hypo.causes}
+- Signes de gravité : ${hypo.gravites}
+- Position latérale de sécurité (PLS) : ${hypo.pls}
+
+4. THÉRAPEUTIQUE HYPOGLYCÉMIE (ALGORITHME)
+- Conduite suivie : ${hypo.thera}`;
       }
 
       const resumeTxt = 
