@@ -1477,14 +1477,14 @@
           </div>
         </div>
 
-        <!-- Bloc Glucagon (Apparaît toujours après choix) -->
+        <!-- Bloc Glucagon unique (apparaît dès qu'un choix est fait) -->
         <div id="hypo-bloc-glucagon" style="display: none; background: #fef3c7; border: 1.5px solid #fde047; padding: 12px; border-radius: 8px; margin-bottom: 14px;">
           <div style="font-weight: 800; color: #b45309; font-size: 0.95rem; margin-bottom: 8px;">Glucagon si disponible :</div>
           <label class="checkbox-item"><input type="checkbox" id="gluco-baqsimi"> BAQSIMI® : 1 dose dans une narine</label>
           <label class="checkbox-item"><input type="checkbox" id="gluco-glucagen"> GLUCAGEN® : 1 mg IM</label>
         </div>
 
-        <!-- Branche OUI (Per os possible) -->
+        <!-- BRANCHE OUI -->
         <div id="hypo-sub-oui" class="algo-sub-box">
           <button type="button" class="btn-toggle-action orange" id="btn-resucrage-pos" onclick="toggleHypoAction(this, 'resucrage-pos')">
             Sucres rapides (jus de fruit / G30%) - Objectif glycémie > 0,7 g/L
@@ -1496,7 +1496,7 @@
           </div>
         </div>
 
-        <!-- Branche NON (Per os impossible) -->
+        <!-- BRANCHE NON -->
         <div id="hypo-sub-non" class="algo-sub-box">
           <button type="button" class="btn-toggle-action orange" id="btn-vvp-hypo" onclick="toggleHypoAction(this, 'vvp')">
             Pose de VVP
@@ -1515,19 +1515,16 @@
               <button type="button" class="algo-branch-btn" id="btn-rep-non" onclick="selectRepriseConscience('non')">NON</button>
             </div>
 
-            <!-- Si OUI reprise conscience -->
             <div id="hypo-reprise-oui-msg" style="display: none; background: #dcfce7; border: 1.5px solid #86efac; color: #166534; padding: 10px; border-radius: 6px; font-weight: 800; text-align: center; margin-top: 10px; font-size: 0.9rem;">
               Poursuite du resucrage per-os jusqu'à glycémie > 0,7 g/L
             </div>
 
-            <!-- Si NON reprise conscience -->
             <div id="hypo-reprise-non-bloc" style="display: none; margin-top: 10px;">
               <button type="button" class="btn-toggle-action orange" id="btn-2amp-g30" onclick="toggleHypoAction(this, '2amp-g30')">
                 2 ampoules de G30% IVD
               </button>
             </div>
 
-            <!-- ECG final pour la branche non -->
             <div id="hypo-bloc-ecg-non" style="display: none; margin-top: 10px;">
               <button type="button" class="btn-toggle-action" id="btn-ecg-non" onclick="toggleHypoAction(this, 'ecg-non')">
                 ECG 18 dérivations
@@ -1638,43 +1635,56 @@
       <div class="card">
         <div class="section-label">Surveillance & Paramètres Vitaux</div>
 
-        <div class="row-2 field">
-          <div>
-            <label for="hypo-surv-pas">PAS (mmHg)</label>
-            <input type="number" inputmode="numeric" id="hypo-surv-pas" placeholder="ex: 120">
+        <!-- T0 (Initiales) -->
+        <div class="field" style="background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 14px;">
+          <label style="color: var(--primary); margin-bottom: 6px;">T0 (Constantes Initiales)</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="hypo-t0-pa" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="text" id="hypo-t0-pouls" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">HGT</label><input type="text" id="hypo-t0-hgt" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
           </div>
-          <div>
-            <label for="hypo-surv-pad">PAD (mmHg)</label>
-            <input type="number" inputmode="numeric" id="hypo-surv-pad" placeholder="ex: 80">
-          </div>
-        </div>
-
-        <div class="row-2 field">
-          <div>
-            <label for="hypo-surv-pouls">Pouls (bpm)</label>
-            <input type="number" inputmode="numeric" id="hypo-surv-pouls" placeholder="ex: 78">
-          </div>
-          <div>
-            <label for="hypo-surv-spo2">SpO2 (%)</label>
-            <input type="number" inputmode="numeric" id="hypo-surv-spo2" placeholder="ex: 98">
+          <div class="row-2" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="text" id="hypo-t0-spo2" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label><input type="text" id="hypo-t0-avpu" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
           </div>
         </div>
 
-        <div class="row-2 field">
-          <div>
-            <label for="hypo-surv-hgt">HGT (g/L)</label>
-            <input type="number" step="0.01" inputmode="decimal" id="hypo-surv-hgt" placeholder="ex: 0.95">
+        <!-- T+5 -->
+        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border); margin-bottom: 14px;">
+          <label style="color: var(--text); margin-bottom: 6px;">T+5 min</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="hypo-t5-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="hypo-t5-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">HGT</label><input type="number" step="0.01" inputmode="decimal" id="hypo-t5-hgt" placeholder="0.80" style="padding: 6px; font-size: 0.9rem;"></div>
           </div>
-          <div>
-            <label for="hypo-surv-avpu">Score AVPU</label>
-            <select id="hypo-surv-avpu">
-              <option value="A">A - Alerte</option>
-              <option value="V">V - Verbal</option>
-              <option value="P">P - Pain (Douleur)</option>
-              <option value="U">U - Unresponsive (Inconscient)</option>
-            </select>
+          <div class="row-2" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="hypo-t5-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label>
+              <select id="hypo-t5-avpu" style="padding: 6px; font-size: 0.9rem;">
+                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
+              </select>
+            </div>
           </div>
         </div>
+
+        <!-- T+10 -->
+        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
+          <label style="color: var(--text); margin-bottom: 6px;">T+10 min</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="hypo-t10-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="hypo-t10-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">HGT</label><input type="number" step="0.01" inputmode="decimal" id="hypo-t10-hgt" placeholder="0.90" style="padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-2" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="hypo-t10-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label>
+              <select id="hypo-t10-avpu" style="padding: 6px; font-size: 0.9rem;">
+                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div class="nav-actions">
@@ -2366,6 +2376,14 @@
       } else if (target === 'suivi-hypo') {
         indicator.textContent = 'Surveillance Hypoglycémie';
         p0Container.style.display = 'none';
+        
+        // Remplir T0 automatiquement avec les constantes initiales
+        document.getElementById('hypo-t0-pa').value = document.getElementById('c-pa').value.trim() || '-';
+        document.getElementById('hypo-t0-pouls').value = (document.getElementById('c-fc').value.trim() ? document.getElementById('c-fc').value.trim() + ' bpm' : '-');
+        document.getElementById('hypo-t0-hgt').value = (document.getElementById('c-hgt').value.trim() ? document.getElementById('c-hgt').value.trim() + ' g/L' : '-');
+        document.getElementById('hypo-t0-spo2').value = (document.getElementById('c-spo2').value.trim() ? document.getElementById('c-spo2').value.trim() + '%' : '-');
+        document.getElementById('hypo-t0-avpu').value = selectedAvpu || '-';
+
       } else if (target === 'pec-mere') {
         indicator.textContent = 'PEC de la mère';
         p0Container.style.display = 'none';
@@ -2404,9 +2422,9 @@
       const btnOui = document.getElementById('btn-pompe-oui');
       if (val === 'NON') {
         btnNon.classList.add('active');
-        btnOui.classList.remove('active', 'orange');
+        btnOui.classList.remove('active');
       } else {
-        btnOui.classList.add('active', 'orange');
+        btnOui.classList.add('active');
         btnNon.classList.remove('active');
       }
     }
@@ -2419,6 +2437,16 @@
       const hasGravite = convulsion || pdc || deglutir;
       const blocPls = document.getElementById('hypo-bloc-pls');
       if (blocPls) blocPls.style.display = hasGravite ? 'block' : 'none';
+
+      // Type de demande automatique réglé sur "Renfort" si gravité cochée, sinon "PSIS Hypoglycémie"
+      const demandeSelect = document.getElementById('demande-type');
+      if (demandeSelect) {
+        if (hasGravite) {
+          demandeSelect.value = 'Renfort SMUR';
+        } else {
+          demandeSelect.value = 'PSIS Hypoglycémie';
+        }
+      }
     }
 
     function togglePls(btn) {
@@ -2426,7 +2454,7 @@
       btn.textContent = btn.classList.contains('active') ? '✓ MIS EN PLS' : 'METTRE EN POSITION LATÉRALE DE SÉCURITÉ';
     }
 
-    // NOUVELLE LOGIQUE THÉRAPEUTIQUE HYPO
+    // LOGIQUE THÉRAPEUTIQUE HYPO (REFONDUE)
     function selectHypoPerOs(res) {
       const btnOui = document.getElementById('btn-peros-oui');
       const btnNon = document.getElementById('btn-peros-non');
@@ -2908,7 +2936,6 @@
 
       const plsFait = document.getElementById('btn-pls') && document.getElementById('btn-pls').classList.contains('active') ? 'OUI (MIS EN PLS)' : 'NON';
 
-      // Données thérapeutiques hypo
       let theraRes = [];
       const perOsOui = document.getElementById('btn-peros-oui').classList.contains('active-green');
       const perOsNon = document.getElementById('btn-peros-non').classList.contains('active-red');
@@ -3218,12 +3245,9 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 - Régression des symptômes : ${document.getElementById('alg-regression').checked ? 'OUI' : 'NON'}`;
       } else if (motif === 'Hypoglycémie') {
         const hypo = getHypoglycemieData();
-        const survPas = document.getElementById('hypo-surv-pas').value || '-';
-        const survPad = document.getElementById('hypo-surv-pad').value || '-';
-        const survPouls = document.getElementById('hypo-surv-pouls').value || '-';
-        const survSpo2 = document.getElementById('hypo-surv-spo2').value || '-';
-        const survHgt = document.getElementById('hypo-surv-hgt').value || '-';
-        const survAvpu = document.getElementById('hypo-surv-avpu').value || '-';
+        const t0Str = `PA: ${document.getElementById('hypo-t0-pa').value}, Pouls: ${document.getElementById('hypo-t0-pouls').value}, HGT: ${document.getElementById('hypo-t0-hgt').value}, SpO2: ${document.getElementById('hypo-t0-spo2').value}, AVPU: ${document.getElementById('hypo-t0-avpu').value}`;
+        const t5Str = `PA: ${document.getElementById('hypo-t5-pa').value || '-'}, Pouls: ${document.getElementById('hypo-t5-pouls').value || '-'} bpm, HGT: ${document.getElementById('hypo-t5-hgt').value || '-'} g/L, SpO2: ${document.getElementById('hypo-t5-spo2').value || '-'}%, AVPU: ${document.getElementById('hypo-t5-avpu').value}`;
+        const t10Str = `PA: ${document.getElementById('hypo-t10-pa').value || '-'}, Pouls: ${document.getElementById('hypo-t10-pouls').value || '-'} bpm, HGT: ${document.getElementById('hypo-t10-hgt').value || '-'} g/L, SpO2: ${document.getElementById('hypo-t10-spo2').value || '-'}%, AVPU: ${document.getElementById('hypo-t10-avpu').value}`;
 
         specificSection = 
 `3. BILAN CLINIQUE HYPOGLYCÉMIE
@@ -3236,8 +3260,9 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 - Conduite suivie : ${hypo.thera}
 
 5. SURVEILLANCE & CONSTANTES
-- PA : ${survPas}/${survPad} mmHg | Pouls : ${survPouls} bpm | SpO2 : ${survSpo2}%
-- HGT : ${survHgt} g/L | AVPU : ${survAvpu}`;
+- T0 : ${t0Str}
+- T+5 min : ${t5Str}
+- T+10 min : ${t10Str}`;
       }
 
       const resumeTxt = 
