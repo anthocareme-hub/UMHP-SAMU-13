@@ -1058,7 +1058,17 @@
         <div class="field">
           <label class="checkbox-item"><input type="checkbox" id="alg-signe-urticaire"> Urticaire / démangeaisons</label>
           <label class="checkbox-item"><input type="checkbox" id="alg-signe-oedeme"> Œdème muqueuses</label>
-          <label class="checkbox-item" onclick="checkAllergieGravite()"><input type="checkbox" id="alg-signe-sibilants"> Dyspnée avec sibilants</label>
+          <label class="checkbox-item"><input type="checkbox" id="alg-signe-sibilants" onchange="checkAllergieGravite()"> Dyspnée avec sibilants</label>
+        </div>
+
+        <!-- Bloc conditionnel Respiratoire -->
+        <div id="alg-bloc-respi-gravite" style="display: none; background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 14px;">
+          <div style="font-weight: 800; margin-bottom: 6px;">Protocole Respiratoire :</div>
+          <p>• Position 1/2 assis</p>
+          <div class="field" style="margin-top: 8px; margin-bottom: 0;">
+            <label for="alg-o2-debit" style="color: #991b1b; font-size: 0.9rem;">Débit d'O2 (L/min)</label>
+            <select id="alg-o2-debit" style="background-color: #ffffff;"></select>
+          </div>
         </div>
 
         <hr class="divider">
@@ -1071,6 +1081,13 @@
           <label class="checkbox-item"><input type="checkbox" id="alg-grav-hemo"> Défaillance hémodynamique</label>
           <label class="checkbox-item"><input type="checkbox" id="alg-grav-digestifs"> Signes digestifs</label>
           <label class="checkbox-item"><input type="checkbox" id="alg-grav-enceinte"> Femme enceinte</label>
+        </div>
+
+        <!-- Bloc conditionnel Circulatoire / Conscience -->
+        <div id="alg-bloc-hemo-gravite" style="display: none; background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; padding: 12px; border-radius: 8px; margin-top: 14px; margin-bottom: 14px;">
+          <div style="font-weight: 800; margin-bottom: 6px;">Protocole Circulatoire / Conscience :</div>
+          <p>• Position allongée jambes relevées</p>
+          <p>• ECG 18 dérivations</p>
         </div>
 
         <div id="alg-renfort-msg" class="alert-box alert-red" style="display: none; margin-top: 14px;">
@@ -1839,6 +1856,18 @@
         poidsSelect.appendChild(opt);
       }
 
+      // ROULETTE DÉBIT O2 ALLERGIE (1 à 15 L/min)
+      const o2Select = document.getElementById('alg-o2-debit');
+      if (o2Select) {
+        for (let i = 1; i <= 15; i++) {
+          const opt = document.createElement('option');
+          opt.value = i;
+          opt.textContent = `${i} L/min`;
+          if (i === 3) opt.selected = true;
+          o2Select.appendChild(opt);
+        }
+      }
+
       // HOSPIT RÉCENTE
       const hospitMois = document.getElementById('hospit-mois');
       moisNoms.forEach((m, idx) => {
@@ -2042,7 +2071,6 @@
       } else if (target === 'suivi-allergie') {
         indicator.textContent = 'Suivi Chronologique';
         p0Container.style.display = 'none';
-        // Remplir T0 automatiquement avec les constantes prises
         let cInit = [];
         if (document.getElementById('c-pa').value) cInit.push(`PA: ${document.getElementById('c-pa').value}`);
         if (document.getElementById('c-fc').value) cInit.push(`FC: ${document.getElementById('c-fc').value} bpm`);
@@ -2078,7 +2106,7 @@
       window.scrollTo(0, 0);
     }
 
-    // LOGIQUE ALLERGIE - GRAVITÉ ET TYPE DE DEMANDE
+    // LOGIQUE ALLERGIE - GRAVITÉ ET BLOCS CONDITIONNELS
     function checkAllergieGravite() {
       const dra = document.getElementById('alg-grav-dra').checked;
       const insp = document.getElementById('alg-grav-insp').checked;
@@ -2086,6 +2114,7 @@
       const hemo = document.getElementById('alg-grav-hemo').checked;
       const digestifs = document.getElementById('alg-grav-digestifs').checked;
       const enceinte = document.getElementById('alg-grav-enceinte').checked;
+      const sibilants = document.getElementById('alg-signe-sibilants').checked;
 
       const hasGravite = dra || insp || conscience || hemo || digestifs || enceinte;
 
@@ -2101,6 +2130,18 @@
           demandeSelect.value = 'PSIS Allergie';
         }
       }
+
+      // Bloc respiratoire (sibilants, DRA, dyspnée inspiratoire)
+      const blocRespi = document.getElementById('alg-bloc-respi-gravite');
+      const showRespi = dra || insp || sibilants;
+      if (blocRespi) blocRespi.style.display = showRespi ? 'block' : 'none';
+
+      // Bloc hémodynamique / conscience
+      const blocHemo = document.getElementById('alg-bloc-hemo-gravite');
+      const showHemo = conscience || hemo;
+      if (blocHemo) blocHemo.style.display = showHemo ? 'block' : 'none';
+
+      updateAllergieTheraUI();
     }
 
     function updateAllergieTheraUI() {
@@ -2449,12 +2490,28 @@
       if (document.getElementById('alg-grav-digestifs').checked) gravites.push('Signes digestifs');
       if (document.getElementById('alg-grav-enceinte').checked) gravites.push('Femme enceinte');
 
+      let actionsConditionnelles = [];
+      const dra = document.getElementById('alg-grav-dra').checked;
+      const insp = document.getElementById('alg-grav-insp').checked;
+      const sibilants = document.getElementById('alg-signe-sibilants').checked;
+      if (dra || insp || sibilants) {
+        const debitO2 = document.getElementById('alg-o2-debit').value;
+        actionsConditionnelles.push(`Position 1/2 assis + O2 à ${debitO2} L/min`);
+      }
+
+      const conscience = document.getElementById('alg-grav-conscience').checked;
+      const hemo = document.getElementById('alg-grav-hemo').checked;
+      if (conscience || hemo) {
+        actionsConditionnelles.push('Position allongée jambes relevées + ECG 18 dérivations');
+      }
+
       return {
         heure: `${document.getElementById('alg-debut-hh').value}:${document.getElementById('alg-debut-mm').value}`,
         facteur: document.getElementById('alg-facteur').value.trim() || 'Non renseigné',
         traitementPris: document.getElementById('alg-traitement-pris').value.trim() || 'Aucun',
         signes: signes.length > 0 ? signes.join(', ') : 'Aucun',
-        gravites: gravites.length > 0 ? gravites.join(', ') : 'Aucun signe de gravité'
+        gravites: gravites.length > 0 ? gravites.join(', ') : 'Aucun signe de gravité',
+        actions: actionsConditionnelles.length > 0 ? actionsConditionnelles.join(' | ') : 'Aucune'
       };
     }
 
@@ -2504,7 +2561,8 @@
 `- Heure de début : ${alg.heure} | Facteur : ${alg.facteur}
 - Traitement pris avant : ${alg.traitementPris}
 - Signes cliniques : ${alg.signes}
-- Signes de gravité : ${alg.gravites}`;
+- Signes de gravité : ${alg.gravites}
+- Actions protocolaires : ${alg.actions}`;
       } else {
         evalMotif = `- Bilan clinique spécifique : ${motif}`;
       }
@@ -2707,6 +2765,7 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 - Début : ${alg.heure} | Facteur : ${alg.facteur} | Traitement pris : ${alg.traitementPris}
 - Signes cliniques : ${alg.signes}
 - Signes de gravité : ${alg.gravites}
+- Actions réflexes : ${alg.actions}
 
 4. THÉRAPEUTIQUE ALLERGIE
 - VVP : ${vvpAll}
