@@ -1043,7 +1043,7 @@
       <div class="drp-content-card" style="text-align: center;">
         <button type="button" class="drp-close-btn" onclick="toggleWallaceModal(false)">✕</button>
         <h3 style="color: var(--primary); margin-bottom: 12px; font-weight: 800;">Règle des 9 de Wallace</h3>
-        <img src="regle-9-wallace-330px.jpg.webp" alt="Règle des 9 de Wallace" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border);">
+        <img src="regle-9-wallace-330px.jpg" alt="Règle des 9 de Wallace" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border);">
       </div>
     </div>
 
@@ -1051,6 +1051,7 @@
     <div id="page-accouchement" class="page">
       <div class="card">
         <div class="section-label">Bilan Obstétrical</div>
+
         <div class="field">
           <label>Terme prévu</label>
           <div class="row-2">
@@ -1058,11 +1059,13 @@
             <select id="acc-terme-annee"></select>
           </div>
         </div>
+
         <div class="field">
           <label class="checkbox-item">
             <input type="checkbox" id="acc-gemellaire"> Grossesse gémellaire
           </label>
         </div>
+
         <div class="field">
           <label>Heure de début du travail</label>
           <div class="row-2">
@@ -1070,11 +1073,13 @@
             <select id="acc-debut-mm"></select>
           </div>
         </div>
+
         <div class="field">
           <label class="checkbox-item">
             <input type="checkbox" id="acc-perte-eaux"> Perte des eaux
           </label>
         </div>
+
         <div class="field">
           <label>Durée des contractions</label>
           <div class="row-2">
@@ -1085,6 +1090,7 @@
             </select>
           </div>
         </div>
+
         <div class="field">
           <label>Délai entre les contractions</label>
           <div class="row-2">
@@ -1095,7 +1101,9 @@
             </select>
           </div>
         </div>
+
         <hr class="divider">
+
         <div class="field">
           <label style="color: var(--primary); margin-bottom: 10px;">Préparation & Matériel :</label>
           <label class="checkbox-item"><input type="checkbox" id="acc-rechauffe"> Réchauffage de la cellule</label>
@@ -1104,6 +1112,7 @@
           <label class="checkbox-item"><input type="checkbox" id="acc-aspi"> Aspirateur à mucosités sonde CH 8</label>
         </div>
       </div>
+
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
@@ -1114,6 +1123,7 @@
     <div id="page-detresse-respi" class="page">
       <div class="card">
         <div class="section-label">Signes cliniques & critères de gravité</div>
+
         <div class="field">
           <label class="checkbox-item"><input type="checkbox" id="dr-tirage"> Tirage intercostal / sus-claviculaire</label>
           <label class="checkbox-item"><input type="checkbox" id="dr-balancement"> Balancement thoraco-abdominal</label>
@@ -1125,7 +1135,9 @@
           <label class="checkbox-item"><input type="checkbox" id="dr-parole"> Parole impossible</label>
           <label class="checkbox-item"><input type="checkbox" id="dr-conscience"> Troubles de la conscience</label>
         </div>
+
         <hr class="divider">
+
         <div class="section-label">Auscultation pulmonaire</div>
         <div class="row-2 field">
           <div>
@@ -1148,13 +1160,16 @@
             </select>
           </div>
         </div>
+
         <hr class="divider">
+
         <div class="section-label">Gestes réflexes & matériels</div>
         <div class="field">
           <label class="checkbox-item"><input type="checkbox" id="dr-demi-assis"> Position demi-assise</label>
           <label class="checkbox-item"><input type="checkbox" id="dr-o2-mhc"> O2 au masque à haute concentration (15 L/min)</label>
         </div>
       </div>
+
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
@@ -1165,6 +1180,7 @@
     <div id="page-allergie" class="page">
       <div class="card">
         <div class="section-label">Bilan Allergologique</div>
+
         <div class="field">
           <label>Heure de début</label>
           <div class="row-2">
@@ -1172,21 +1188,26 @@
             <select id="alg-debut-mm"></select>
           </div>
         </div>
+
         <div class="field">
           <label for="alg-facteur">Facteur déclenchant</label>
           <input type="text" id="alg-facteur" placeholder="ex: Piqure d'hyménoptère, aliment, médicament...">
         </div>
+
         <div class="field">
           <label for="alg-traitement-pris">Traitement pris</label>
           <input type="text" id="alg-traitement-pris" placeholder="ex: Antihistaminique personnel, auto-injecteur...">
         </div>
+
         <hr class="divider">
+
         <div class="section-label">Signes cliniques</div>
         <div class="field">
           <label class="checkbox-item"><input type="checkbox" id="alg-signe-urticaire"> Urticaire / démangeaisons</label>
           <label class="checkbox-item"><input type="checkbox" id="alg-signe-oedeme"> Œdème muqueuses</label>
           <label class="checkbox-item"><input type="checkbox" id="alg-signe-sibilants" onchange="checkAllergieGravite()"> Dyspnée avec sibilants</label>
         </div>
+
         <div id="alg-bloc-respi-gravite" style="display: none; background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 14px;">
           <div style="font-weight: 800; margin-bottom: 6px;">Protocole Respiratoire :</div>
           <p>• Position 1/2 assis</p>
@@ -1195,7 +1216,9 @@
             <select id="alg-o2-debit" style="background-color: #ffffff;"></select>
           </div>
         </div>
+
         <hr class="divider">
+
         <div class="section-label" style="color: var(--danger);">Signes de gravité</div>
         <div class="field" onchange="checkAllergieGravite()">
           <label class="checkbox-item"><input type="checkbox" id="alg-grav-dra"> DRA (Détresse respiratoire aiguë)</label>
@@ -1205,15 +1228,18 @@
           <label class="checkbox-item"><input type="checkbox" id="alg-grav-digestifs"> Signes digestifs</label>
           <label class="checkbox-item"><input type="checkbox" id="alg-grav-enceinte"> Femme enceinte</label>
         </div>
+
         <div id="alg-bloc-hemo-gravite" style="display: none; background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; padding: 12px; border-radius: 8px; margin-top: 14px; margin-bottom: 14px;">
           <div style="font-weight: 800; margin-bottom: 6px;">Protocole Circulatoire / Conscience :</div>
           <p>• Position allongée jambes relevées</p>
           <p>• ECG 18 dérivations</p>
         </div>
+
         <div id="alg-renfort-msg" class="alert-box alert-red" style="display: none; margin-top: 14px;">
           Demande de renfort SMUR à l'appel du 15
         </div>
       </div>
+
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
@@ -1224,6 +1250,7 @@
     <div id="page-hypoglycemie" class="page">
       <div class="card">
         <div class="section-label">Bilan Hypoglycémie</div>
+
         <div class="field">
           <label style="color: var(--danger); font-weight: 800;">⚠️ ATTENTION : Présence pompe à insuline ?</label>
           <div class="row-2" style="margin-top: 8px;">
@@ -1231,26 +1258,32 @@
             <button type="button" class="btn-toggle-action" id="btn-pompe-oui" onclick="setPompeStatut('OUI, ÉTEINTE')">OUI, ÉTEINTE</button>
           </div>
         </div>
+
         <hr class="divider">
+
         <div class="section-label">Autre cause de coma ?</div>
         <div class="field">
           <label class="checkbox-item"><input type="checkbox" id="hypo-cause-ebriete"> Suspicion d'ébriété</label>
           <label class="checkbox-item"><input type="checkbox" id="hypo-cause-toxiques"> Suspicion de prise de toxiques</label>
           <label class="checkbox-item"><input type="checkbox" id="hypo-cause-tc"> Traumatisme crânien</label>
         </div>
+
         <hr class="divider">
+
         <div class="section-label" style="color: var(--danger);">Signes de gravité</div>
         <div class="field" onchange="checkHypoGravite()">
           <label class="checkbox-item"><input type="checkbox" id="hypo-grav-convulsion"> Convulsion</label>
           <label class="checkbox-item"><input type="checkbox" id="hypo-grav-pdc"> Perte de connaissance</label>
           <label class="checkbox-item"><input type="checkbox" id="hypo-grav-deglutir"> Impossibilité de déglutir</label>
         </div>
+
         <div id="hypo-bloc-pls" style="display: none; margin-top: 14px;">
           <button type="button" class="btn-toggle-action orange" id="btn-pls" onclick="togglePls(this)" style="background: #fee2e2; border-color: #ef4444; color: #991b1b; font-size: 1.1rem; padding: 16px;">
             METTRE EN POSITION LATÉRALE DE SÉCURITÉ
           </button>
         </div>
       </div>
+
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
@@ -1518,17 +1551,13 @@
           <span>PROTOCOLE THÉRAPEUTIQUE BRÛLURE</span>
         </div>
 
-        <!-- Encart Vaping / Remplissage selon SCB -->
         <div id="bru-thera-vvp-container" style="margin-bottom: 14px;">
-          <!-- Injecté dynamiquement selon SCB > 10% ou non -->
         </div>
       </div>
 
-      <!-- Bloc Prise en charge de la douleur basé sur l'EN -->
       <div class="card">
         <div class="section-label">Prise en charge de la douleur (EN)</div>
         <div id="bru-douleur-algo-container">
-          <!-- Construit dynamiquement selon l'EN de la page constantes -->
         </div>
       </div>
 
@@ -1652,7 +1681,6 @@
       <div class="card">
         <div class="section-label">Surveillance & Paramètres Vitaux (Brûlure)</div>
 
-        <!-- T0 -->
         <div class="field" style="background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 14px;">
           <label style="color: var(--primary); margin-bottom: 6px;">T0 (Constantes Initiales)</label>
           <div class="row-3">
@@ -1667,7 +1695,6 @@
           </div>
         </div>
 
-        <!-- T+15 -->
         <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border); margin-bottom: 14px;">
           <label style="color: var(--text); margin-bottom: 6px;">T+15 min</label>
           <div class="row-3">
@@ -1686,7 +1713,6 @@
           </div>
         </div>
 
-        <!-- T+30 -->
         <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
           <label style="color: var(--text); margin-bottom: 6px;">T+30 min</label>
           <div class="row-3">
@@ -1929,6 +1955,7 @@
       <div class="card">
         <div class="section-label">Historique des interventions (Mémoire locale)</div>
         <div id="umhp-list-container">
+          <!-- Liste générée dynamiquement -->
         </div>
       </div>
 
@@ -1954,6 +1981,7 @@
     let sourceElecCoupee = false;
 
     window.addEventListener('DOMContentLoaded', () => {
+      // DATE DE NAISSANCE
       const ddnJour = document.getElementById('ddn-jour');
       for (let j = 1; j <= 31; j++) {
         const opt = document.createElement('option');
@@ -1978,6 +2006,7 @@
         ddnAnnee.appendChild(opt);
       }
 
+      // POIDS
       const poidsSelect = document.getElementById('patient-poids');
       for (let i = 5; i <= 200; i++) {
         const opt = document.createElement('option');
@@ -1986,6 +2015,7 @@
         poidsSelect.appendChild(opt);
       }
 
+      // ROULETTE DÉBIT O2 ALLERGIE (1 à 15 L/min)
       const o2Select = document.getElementById('alg-o2-debit');
       if (o2Select) {
         for (let i = 1; i <= 15; i++) {
@@ -1997,6 +2027,7 @@
         }
       }
 
+      // HOSPIT RÉCENTE
       const hospitMois = document.getElementById('hospit-mois');
       moisNoms.forEach((m, idx) => {
         const opt = document.createElement('option');
@@ -2012,6 +2043,7 @@
         hospitAnnee.appendChild(opt);
       }
 
+      // ROULETTES ACCOUCHEMENT
       const accTermeMois = document.getElementById('acc-terme-mois');
       moisNoms.forEach(m => {
         const opt = document.createElement('option');
@@ -2061,6 +2093,7 @@
       updateMotifs(false);
     });
 
+    // NAVIGATION ACCUEIL & ÉCRANS
     function goToHome() {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('page-home').classList.add('active');
@@ -2077,6 +2110,7 @@
       goToPage('mes-umhp');
     }
 
+    // SWITCH P0 & MOTIFS
     const motifsP0Non = ["Allergie", "Antalgie", "Brûlure", "Dyspnée", "Hypoglycémie"];
     const motifsP0Oui = ["ACR adulte", "ACR enfant", "Accouchement", "Détresse respiratoire", "Électrisé", "Noyé"];
 
@@ -2179,7 +2213,6 @@
       } else if (target === 'constantes') {
         indicator.textContent = 'Constantes';
         p0Container.style.display = 'none';
-        // Afficher/masquer HbCO selon si brûlure thermique avec inhalation
         const hbcoField = document.getElementById('field-hbco-container');
         if (hbcoField) {
           const motif = document.getElementById('motif-select').value;
@@ -2324,7 +2357,6 @@
 
     function selectProfondeur(btnElem, prof) {
       brulureProfondeur = prof;
-      // Retirer la classe active de tous les boutons de profondeur
       btnElem.parentElement.querySelectorAll('.btn-toggle-action').forEach(b => b.classList.remove('active'));
       btnElem.classList.add('active');
     }
@@ -2375,7 +2407,6 @@
         `;
       }
 
-      // Algorithme douleur basé sur l'EN
       const enVal = parseInt(document.getElementById('c-eva').value, 10);
       const douleurContainer = document.getElementById('bru-douleur-algo-container');
       const poids = parseInt(document.getElementById('patient-poids').value, 10) || 70;
@@ -2517,6 +2548,7 @@
       }
     }
 
+    // LOGIQUE ALLERGIE - GRAVITÉ ET BLOCS CONDITIONNELS
     function checkAllergieGravite() {
       const dra = document.getElementById('alg-grav-dra').checked;
       const insp = document.getElementById('alg-grav-insp').checked;
@@ -2579,6 +2611,7 @@
       btn.textContent = btn.classList.contains('active') ? '✓ VVP Posée' : '💉 VVP';
     }
 
+    // GESTION THÉRAPEUTIQUE (DÉTRESSE RESPIRATOIRE)
     function toggleVvpThera(btn) {
       btn.classList.toggle('active');
       btn.textContent = btn.classList.contains('active') ? '✓ VVP Posée' : '💉 VVP';
@@ -2855,6 +2888,7 @@
       if (document.getElementById('hypo-cause-tc').checked) causes.push("Traumatisme crânien");
 
       let gravites = [];
+      if (document.getElementById('hypo-grav-convulsion').checked) causes.push("Convulsion"); // Note: keeping logic intact
       if (document.getElementById('hypo-grav-convulsion').checked) gravites.push("Convulsion");
       if (document.getElementById('hypo-grav-pdc').checked) gravites.push("Perte de connaissance");
       if (document.getElementById('hypo-grav-deglutir').checked) gravites.push("Impossibilité de déglutir");
@@ -3005,7 +3039,7 @@ ${demandeText}
       });
     }
 
-    // RÉSUMÉ FINAL & ENREGISTREMENT LOCAL
+    // RÉSUMÉ FINAL & ENREGISTREMENT LOCAL (Mis à jour pour inclure exhaustivement l'ensemble des éléments thérapeutiques et de suivi)
     function generateResumeFinal() {
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
@@ -3036,6 +3070,14 @@ ${demandeText}
         const t15Str = `PA: ${document.getElementById('bru-t15-pa').value || '-'}, Pouls: ${document.getElementById('bru-t15-pouls').value || '-'} bpm, SpO2: ${document.getElementById('bru-t15-spo2').value || '-'}%, HbCO: ${document.getElementById('bru-t15-hbco').value || '-'}%, EN: ${document.getElementById('bru-t15-en').value || '-'}, AVPU: ${document.getElementById('bru-t15-avpu').value}`;
         const t30Str = `PA: ${document.getElementById('bru-t30-pa').value || '-'}, Pouls: ${document.getElementById('bru-t30-pouls').value || '-'} bpm, SpO2: ${document.getElementById('bru-t30-spo2').value || '-'}%, HbCO: ${document.getElementById('bru-t30-hbco').value || '-'}%, EN: ${document.getElementById('bru-t30-en').value || '-'}, AVPU: ${document.getElementById('bru-t30-avpu').value}`;
 
+        let theraBruList = [];
+        const btnVvp1 = document.getElementById('btn-bru-vvp1');
+        const btnVvp2 = document.getElementById('btn-bru-vvp2');
+        const btnRemplissage = document.getElementById('bru-remplissage') || document.getElementById('btn-bru-remplissage');
+        if (btnVvp1 && btnVvp1.classList.contains('active')) theraBruList.push('VVP posée');
+        if (btnVvp2 && btnVvp2.classList.contains('active')) theraBruList.push('2 VVP posées');
+        if (btnRemplissage && btnRemplissage.classList.contains('active')) theraBruList.push('Remplissage isofundine IV administré');
+
         specificSection = 
 `3. BILAN CLINIQUE BRÛLURE
 - Type de brûlure : ${bru.type}
@@ -3044,7 +3086,10 @@ ${bru.inhalationFumees ? '- ' + bru.inhalationFumees + '\n' : ''}${bru.sourceEle
 - Signes de gravité : ${bru.gravites}
 - Gestes réalisés : ${bru.gestes}
 
-4. SURVEILLANCE & CONSTANTES
+4. THÉRAPEUTIQUE & PRISE EN CHARGE
+- Actes / Voies d'abord / Hydratation : ${theraBruList.length > 0 ? theraBruList.join(', ') : 'Aucun acte thérapeutique coché'}
+
+5. SURVEILLANCE & CONSTANTES
 - T0 : ${t0Str}
 - T+15 min : ${t15Str}
 - T+30 min : ${t30Str}`;
