@@ -282,18 +282,6 @@
       color: var(--danger);
       border: 1.5px solid #fca5a5;
     }
-    .alert-surveillance-danger {
-      background: #fee2e2;
-      color: #991b1b;
-      border: 2px solid #ef4444;
-      font-size: 1.15rem;
-      font-weight: 900;
-      text-align: center;
-      padding: 16px;
-      border-radius: 8px;
-      margin: 16px 0;
-      letter-spacing: 0.5px;
-    }
 
     .btn-toggle-action {
       width: 100%;
@@ -936,7 +924,7 @@
       <div class="wallace-content-card">
         <button type="button" class="wallace-close-btn" onclick="toggleWallaceModal(false)">✕</button>
         <h3 style="color: var(--primary); margin-bottom: 12px; font-weight: 800; font-size: 1.1rem;">Règle de Wallace</h3>
-        <img src="image_3a7e9e.png" alt="Règle de Wallace" style="width: 100%; height: auto; border-radius: 8px;">
+        <img src="regle-9-wallace-330px.jpg.webp" alt="Règle de Wallace" style="width: 100%; height: auto; border-radius: 8px;">
       </div>
     </div>
 
@@ -967,7 +955,7 @@
           </div>
         </div>
 
-        <!-- Pavé HbCO conditionnel (si fumées) -->
+        <!-- Pavé HbCO conditionnel (si thermique ET inhalation fumées) -->
         <div class="row-2 field" id="field-hbco-container" style="display: none;">
           <div>
             <label for="c-hbco" style="color: var(--danger);">HbCO (%)</label>
@@ -1053,7 +1041,7 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('constantes')">⬅ Constantes</button>
-        <button type="button" class="btn-nav" id="btn-suite-regu" onclick="goToPage('therapeutique-brulure')">Thérapeutique ➔</button>
+        <button type="button" class="btn-nav" id="btn-suite-regu" onclick="routeApresRegu()">Thérapeutique ➔</button>
       </div>
     </div>
 
@@ -1158,7 +1146,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" id="btn-back-resume" onclick="goToPage('therapeutique-brulure')">⬅ Prise en charge</button>
+        <button type="button" class="btn-nav secondary" id="btn-back-resume" onclick="routeApresRegu()">⬅ Prise en charge</button>
         <button type="button" class="btn-nav secondary" onclick="goToHome()">🏠 Accueil</button>
       </div>
     </div>
@@ -1181,7 +1169,7 @@
 
   <script>
     const moisNoms = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-    let previousMotifPage = 'brulure';
+    let previousMotifPage = 'detresse-respi';
     let selectedAvpu = '';
     let burnTypeData = {
       type: '',
@@ -1286,13 +1274,41 @@
     }
 
     function routeMotifPage() {
+      const isP0 = document.getElementById('toggle-p0').checked;
       const motif = document.getElementById('motif-select').value;
-      if (motif === 'Brûlure') {
+
+      if (!isP0 && motif === 'Brûlure') {
         previousMotifPage = 'brulure';
         goToPage('brulure');
       } else {
-        previousMotifPage = 'brulure';
-        goToPage('brulure');
+        // Redirection vers les autres motifs existants d'origine
+        if (motif === 'Accouchement') {
+          previousMotifPage = 'accouchement';
+          goToPage('accouchement');
+        } else if (motif === 'Détresse respiratoire') {
+          previousMotifPage = 'detresse-respi';
+          goToPage('detresse-respi');
+        } else if (motif === 'Allergie') {
+          previousMotifPage = 'allergie';
+          goToPage('allergie');
+        } else if (motif === 'Hypoglycémie') {
+          previousMotifPage = 'hypoglycemie';
+          goToPage('hypoglycemie');
+        } else {
+          previousMotifPage = 'detresse-respi';
+          goToPage('detresse-respi');
+        }
+      }
+    }
+
+    function routeApresRegu() {
+      const isP0 = document.getElementById('toggle-p0').checked;
+      const motif = document.getElementById('motif-select').value;
+
+      if (!isP0 && motif === 'Brûlure') {
+        goToPage('therapeutique-brulure');
+      } else {
+        goToPage('resume');
       }
     }
 
@@ -1426,9 +1442,13 @@
       const hbcoContainer = document.getElementById('field-hbco-container');
       const tempStdContainer = document.getElementById('field-temp-normal-container');
 
-      if (burnTypeData.inhalationFumee) {
+      const isP0 = document.getElementById('toggle-p0').checked;
+      const motif = document.getElementById('motif-select').value;
+      const isBrulureBranch = (!isP0 && motif === 'Brûlure');
+
+      if (isBrulureBranch && burnTypeData.type === 'thermique' && burnTypeData.inhalationFumee) {
         hbcoContainer.style.display = 'grid';
-        tempStdContainer.style.display = 'grid'; // conserve T° dans un autre bloc
+        tempStdContainer.style.display = 'grid';
       } else {
         hbcoContainer.style.display = 'none';
         tempStdContainer.style.display = 'grid';
@@ -1530,8 +1550,12 @@
       document.getElementById('burn-t0-pouls').value = (document.getElementById('c-fc').value.trim() ? document.getElementById('c-fc').value.trim() + ' bpm' : '-');
       document.getElementById('burn-t0-spo2').value = (document.getElementById('c-spo2').value.trim() ? document.getElementById('c-spo2').value.trim() + '%' : '-');
       
+      const isP0 = document.getElementById('toggle-p0').checked;
+      const motif = document.getElementById('motif-select').value;
+      const isBrulureBranch = (!isP0 && motif === 'Brûlure');
+
       const hbcoVal = document.getElementById('c-hbco') ? document.getElementById('c-hbco').value.trim() : '';
-      document.getElementById('burn-t0-hbco').value = burnTypeData.inhalationFumee && hbcoVal ? hbcoVal + '%' : 'N/A';
+      document.getElementById('burn-t0-hbco').value = (isBrulureBranch && burnTypeData.type === 'thermique' && burnTypeData.inhalationFumee && hbcoVal) ? hbcoVal + '%' : 'N/A';
       document.getElementById('burn-t0-en').value = document.getElementById('c-eva').value.trim() || '-';
       document.getElementById('burn-t0-avpu').value = selectedAvpu || '-';
     }
@@ -1543,25 +1567,31 @@
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
       const poids = document.getElementById('patient-poids').value;
       const motif = document.getElementById('motif-select').value;
+      const isBrulureBranch = (!isP0 && motif === 'Brûlure');
 
       const atcd = getTagsText('atcd-tags');
       const ttt = getTagsText('ttt-tags');
       const allergies = getTagsText('allergies-tags');
       const hospit = getTagsText('hospit-tags');
 
-      let gestesBrulure = [];
-      if (document.getElementById('burn-geste-refroidissement').checked) gestesBrulure.push("Refroidissement à l'eau tiède");
-      if (document.getElementById('burn-geste-vetements').checked) gestesBrulure.push("Retrait vêtements non adhérents");
-      if (document.getElementById('burn-geste-protection').checked) gestesBrulure.push("Protection zones brûlées");
-      if (document.getElementById('burn-geste-rechauffage').checked) gestesBrulure.push("Réchauffage patient + cellule AR");
-      if (document.getElementById('burn-geste-brulstop').checked) gestesBrulure.push("Pose et retrait Brulstop à 15 min");
+      let evalMotif = '';
+      if (isBrulureBranch) {
+        let gestesBrulure = [];
+        if (document.getElementById('burn-geste-refroidissement').checked) gestesBrulure.push("Refroidissement à l'eau tiède");
+        if (document.getElementById('burn-geste-vetements').checked) gestesBrulure.push("Retrait vêtements non adhérents");
+        if (document.getElementById('burn-geste-protection').checked) gestesBrulure.push("Protection zones brûlées");
+        if (document.getElementById('burn-geste-rechauffage').checked) gestesBrulure.push("Réchauffage patient + cellule AR");
+        if (document.getElementById('burn-geste-brulstop').checked) gestesBrulure.push("Pose et retrait Brulstop à 15 min");
 
-      let evalMotif = 
+        evalMotif = 
 `- Type de brûlure : ${burnTypeData.type || 'Non renseigné'}
 - Inhalation de fumées : ${burnTypeData.inhalationFumee ? 'OUI' : 'NON'}
 - Profondeur : ${burnTypeData.profondeur || 'Non renseignée'}
 - Surface corporelle brûlée (SCB) : ${burnTypeData.scb}%
 - Gestes réalisés : ${gestesBrulure.length > 0 ? gestesBrulure.join(', ') : 'Aucun'}`;
+      } else {
+        evalMotif = `- Bilan clinique spécifique : ${motif}`;
+      }
 
       let constList = [];
       const pa = document.getElementById('c-pa').value.trim();
@@ -1578,7 +1608,7 @@
       if (fc) constList.push(`FC: ${fc} bpm`);
       if (spo2) constList.push(`SpO2: ${spo2}%`);
       if (fr) constList.push(`FR: ${fr}/min`);
-      if (hbco && burnTypeData.inhalationFumee) constList.push(`HbCO: ${hbco}%`);
+      if (isBrulureBranch && burnTypeData.type === 'thermique' && burnTypeData.inhalationFumee && hbco) constList.push(`HbCO: ${hbco}%`);
       if (hgt) constList.push(`HGT: ${hgt} g/L`);
       if (temp) constList.push(`T°: ${temp}°C`);
       if (eva) constList.push(`EN: ${eva}/10`);
@@ -1681,13 +1711,16 @@ ${demandeText}
       const poids = document.getElementById('patient-poids').value;
       const isP0 = document.getElementById('toggle-p0').checked;
       const motif = document.getElementById('motif-select').value;
+      const isBrulureBranch = (!isP0 && motif === 'Brûlure');
 
       let cInit = [];
       if (document.getElementById('c-pa').value) cInit.push(`PA: ${document.getElementById('c-pa').value}`);
       if (document.getElementById('c-fc').value) cInit.push(`FC: ${document.getElementById('c-fc').value} bpm`);
       if (document.getElementById('c-spo2').value) cInit.push(`SpO2: ${document.getElementById('c-spo2').value}%`);
       if (document.getElementById('c-fr').value) cInit.push(`FR: ${document.getElementById('c-fr').value}/min`);
-      if (document.getElementById('c-hbco') && document.getElementById('c-hbco').value && burnTypeData.inhalationFumee) cInit.push(`HbCO: ${document.getElementById('c-hbco').value}%`);
+      if (isBrulureBranch && burnTypeData.type === 'thermique' && burnTypeData.inhalationFumee && document.getElementById('c-hbco') && document.getElementById('c-hbco').value) {
+        cInit.push(`HbCO: ${document.getElementById('c-hbco').value}%`);
+      }
       if (document.getElementById('c-hgt').value) cInit.push(`HGT: ${document.getElementById('c-hgt').value} g/L`);
       if (document.getElementById('c-eva').value) cInit.push(`EN: ${document.getElementById('c-eva').value}/10`);
       if (document.getElementById('c-trc').value) cInit.push(`TRC: ${document.getElementById('c-trc').value}s`);
@@ -1696,17 +1729,19 @@ ${demandeText}
       const demType = document.getElementById('demande-type').value;
       const demTxt = document.getElementById('saed-demande').value.trim() || 'Aucune précision textuelle';
 
-      let gestesBrulure = [];
-      if (document.getElementById('burn-geste-refroidissement').checked) gestesBrulure.push("Refroidissement eau tiède");
-      if (document.getElementById('burn-geste-vetements').checked) gestesBrulure.push("Retrait vêtements");
-      if (document.getElementById('burn-geste-protection').checked) gestesBrulure.push("Protection zones");
-      if (document.getElementById('burn-geste-rechauffage').checked) gestesBrulure.push("Réchauffage + cellule AR");
-      if (document.getElementById('burn-geste-brulstop').checked) gestesBrulure.push("Brulstop 15 min");
+      let specificSection = '';
+      if (isBrulureBranch) {
+        let gestesBrulure = [];
+        if (document.getElementById('burn-geste-refroidissement').checked) gestesBrulure.push("Refroidissement eau tiède");
+        if (document.getElementById('burn-geste-vetements').checked) gestesBrulure.push("Retrait vêtements");
+        if (document.getElementById('burn-geste-protection').checked) gestesBrulure.push("Protection zones");
+        if (document.getElementById('burn-geste-rechauffage').checked) gestesBrulure.push("Réchauffage + cellule AR");
+        if (document.getElementById('burn-geste-brulstop').checked) gestesBrulure.push("Brulstop 15 min");
 
-      const t15Str = `PA: ${document.getElementById('burn-t15-pa').value || '-'}, Pouls: ${document.getElementById('burn-t15-pouls').value || '-'} bpm, SpO2: ${document.getElementById('burn-t15-spo2').value || '-'}%, HbCO: ${document.getElementById('burn-t15-hbco').value || '-'}%, EN: ${document.getElementById('burn-t15-en').value || '-'}, AVPU: ${document.getElementById('burn-t15-avpu').value}`;
-      const t30Str = `PA: ${document.getElementById('burn-t30-pa').value || '-'}, Pouls: ${document.getElementById('burn-t30-pouls').value || '-'} bpm, SpO2: ${document.getElementById('burn-t30-spo2').value || '-'}%, HbCO: ${document.getElementById('burn-t30-hbco').value || '-'}%, EN: ${document.getElementById('burn-t30-en').value || '-'}, AVPU: ${document.getElementById('burn-t30-avpu').value}`;
+        const t15Str = `PA: ${document.getElementById('burn-t15-pa').value || '-'}, Pouls: ${document.getElementById('burn-t15-pouls').value || '-'} bpm, SpO2: ${document.getElementById('burn-t15-spo2').value || '-'}%, HbCO: ${document.getElementById('burn-t15-hbco').value || '-'}%, EN: ${document.getElementById('burn-t15-en').value || '-'}, AVPU: ${document.getElementById('burn-t15-avpu').value}`;
+        const t30Str = `PA: ${document.getElementById('burn-t30-pa').value || '-'}, Pouls: ${document.getElementById('burn-t30-pouls').value || '-'} bpm, SpO2: ${document.getElementById('burn-t30-spo2').value || '-'}%, HbCO: ${document.getElementById('burn-t30-hbco').value || '-'}%, EN: ${document.getElementById('burn-t30-en').value || '-'}, AVPU: ${document.getElementById('burn-t30-avpu').value}`;
 
-      const specificSection = `3. PROTOCOLE BRÛLURE
+        specificSection = `3. PROTOCOLE BRÛLURE
 - Type : ${burnTypeData.type || 'Non renseigné'}
 - Inhalation de fumées : ${burnTypeData.inhalationFumee ? 'OUI' : 'NON'}
 - Profondeur : ${burnTypeData.profondeur || 'Non renseignée'}
@@ -1717,6 +1752,10 @@ ${demandeText}
 - T0 : ${cInit.join(' | ')}
 - T+15 min : ${t15Str}
 - T+30 min : ${t30Str}`;
+      } else {
+        specificSection = `3. BILAN CLINIQUE
+- Prise en charge standard selon le motif (${motif}).`;
+      }
 
       const resumeTxt = `==============================================
 RAPPORT D'INTERVENTION SMUR / PSIS - SAMU 13
@@ -1788,7 +1827,7 @@ ${specificSection}
           <div class="umhp-item-meta">📅 ${item.date}</div>
           <div style="margin-top: 8px; display: flex; gap: 8px;">
             <button type="button" style="flex:1; padding: 6px; font-size: 0.85rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--primary); background: #f0f9ff; color: var(--primary); cursor: pointer;" onclick="event.stopPropagation(); viewUmhpDetail(${item.id})">Consulter</button>
-            <button type="button" style="padding: 6px 12px; font-size: 0.85rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--danger); background: #fef2f2; color: var(--danger); cursor: pointer;" onclick="event.stopPropagation(); deleteUmhp(${item.id})">Supprimer</button>
+            <button type="button" style="padding: 6px 12px; font-size: 0.85rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--danger); background: #fef2f2; color: var(--danger); cursor: pointer;" onclick="event.stopPropagation(); deleteUmhp(${item.id})";>Supprimer</button>
           </div>
         `;
         container.appendChild(div);
