@@ -348,7 +348,6 @@
     .thera-box.noyade { border-left: 6px solid #0d9488; }
     .thera-box.allergie { border-left: 6px solid #d97706; }
     .thera-box.hypo { border-left: 6px solid #f59e0b; }
-    .thera-box.brulure { border-left: 6px solid #dc2626; }
     .thera-title {
       font-weight: 800;
       font-size: 1rem;
@@ -450,8 +449,8 @@
       cursor: pointer;
     }
 
-    /* MODALE DRP & WALLACE */
-    #modal-drp, #modal-wallace {
+    /* MODALE DRP */
+    #modal-drp {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -738,6 +737,7 @@
     <!-- ================= PAGE ACCUEIL SAMU 13 ================= -->
     <div id="page-home" class="page active">
       <div class="home-top-half">
+        <!-- Reproduction vectorielle fidèle du logo SAMU 13 -->
         <svg class="home-logo-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
           <circle cx="200" cy="200" r="190" fill="none" stroke="#f59e0b" stroke-width="14"/>
           <text x="200" y="198" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="105" fill="#005ea8" text-anchor="middle" letter-spacing="-3">SAMU</text>
@@ -941,109 +941,105 @@
     <!-- ================= PAGE SPÉCIFIQUE : BRÛLURE ================= -->
     <div id="page-brulure" class="page">
       <div class="card">
-        <div class="section-label">Type de Brûlure</div>
+        <div class="section-label">1. Type de brûlure</div>
         <div class="row-2 field">
-          <button type="button" class="btn-toggle-action" id="btn-bru-chimique" onclick="selectTypeBrulure('chimique')">Chimique</button>
-          <button type="button" class="btn-toggle-action" id="btn-bru-thermique" onclick="selectTypeBrulure('thermique')">Thermique</button>
+          <button type="button" class="btn-toggle-action" id="btn-type-chimique" onclick="selectTypeBrulure('chimique')">Chimique</button>
+          <button type="button" class="btn-toggle-action" id="btn-type-thermique" onclick="selectTypeBrulure('thermique')">Thermique</button>
         </div>
         <div class="row-2 field">
-          <button type="button" class="btn-toggle-action" id="btn-bru-electrique" onclick="selectTypeBrulure('electrique')">Électrique</button>
-          <button type="button" class="btn-toggle-action" id="btn-bru-rayonnement" onclick="selectTypeBrulure('rayonnement')">Rayonnement</button>
+          <button type="button" class="btn-toggle-action" id="btn-type-electrique" onclick="selectTypeBrulure('electrique')">Électrique</button>
+          <button type="button" class="btn-toggle-action" id="btn-type-rayonnement" onclick="selectTypeBrulure('rayonnement')">Rayonnement</button>
         </div>
 
-        <!-- Encart Chimique -->
-        <div id="bru-encart-chimique" style="display: none; background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 14px; font-weight: 800; text-align: center;">
+        <!-- Encarts conditionnels par type -->
+        <div id="encart-chimique" style="display:none;" class="alert-box alert-red">
           Attention port d'EPI, retrait de la source et des vêtements contaminés
         </div>
 
-        <!-- Encart Thermique -->
-        <div id="bru-encart-thermique" style="display: none; background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; padding: 12px; border-radius: 8px; margin-bottom: 14px;">
-          <div style="font-weight: 800; margin-bottom: 8px; text-align: center;">Si incendie, le patient a-t-il inhalé des fumées ?</div>
+        <div id="encart-thermique" style="display:none;" class="thera-box" style="border-left: 6px solid var(--danger);">
+          <div style="font-weight: 800; color: var(--danger); margin-bottom: 8px;">Si incendie, le patient a-t-il inhalé des fumées ?</div>
           <div class="row-2">
-            <button type="button" class="algo-branch-btn" id="btn-fumees-oui" onclick="selectInhalationFumees('oui')">OUI</button>
-            <button type="button" class="algo-branch-btn" id="btn-fumees-non" onclick="selectInhalationFumees('non')">NON</button>
+            <button type="button" class="btn-toggle-action red" id="btn-fumee-oui" onclick="selectFumeeInhalation(true)">OUI</button>
+            <button type="button" class="btn-toggle-action" id="btn-fumee-non" onclick="selectFumeeInhalation(false)">NON</button>
           </div>
-          <div id="bru-encart-fumees-oui" style="display: none; margin-top: 10px; background: #ffffff; border: 1.5px solid #ef4444; padding: 10px; border-radius: 6px; font-weight: 800; text-align: center;">
-            O2 15L au MHC + RAD
+          <div id="encart-fumee-oui" style="display:none; margin-top: 10px;" class="alert-box alert-red">
+            O2 15L au MHC + RAD (HbCO activée dans les constantes)
           </div>
         </div>
 
-        <!-- Encart Électrique -->
-        <div id="bru-encart-electrique" style="display: none; margin-bottom: 14px;">
-          <button type="button" class="btn-toggle-action orange" id="btn-source-electrique" onclick="toggleSourceElectrique(this)">
-            Attention, assurez vous que la source éléctrique ai bien été coupée
-          </button>
+        <div id="encart-electrique" style="display:none;" class="alert-box alert-red" style="cursor:pointer;" onclick="toggleSourceElectrique(this)">
+          Attention, assurez vous que la source électrique ait bien été coupée
         </div>
       </div>
 
-      <!-- Second bloc : Profondeur des brûlures -->
       <div class="card">
-        <div class="section-label">Profondeur des Brûlures</div>
-        <div class="btn-toggle-action" onclick="selectProfondeur(this, '1er degré')">
-          <strong>1er degré :</strong> La peau est rouge, sèche et douloureuse, sans cloques
-        </div>
-        <div class="btn-toggle-action" onclick="selectProfondeur(this, '2e degré superficiel')">
-          <strong>2e degré superficiel :</strong> La peau est rouge, très douloureuse et présente des cloques transparentes avec un socle suintant
-        </div>
-        <div class="btn-toggle-action" onclick="selectProfondeur(this, '2e degré profond')">
-          <strong>2e degré profond :</strong> La peau est endommagée plus en profondeur sous les cloques, avec une base souvent pâle et une sensibilité parfois diminuée.
-        </div>
-        <div class="btn-toggle-action" onclick="selectProfondeur(this, '3e degré')">
-          <strong>3e degré :</strong> La peau est détruite en totalité (aspect cartonné, brun ou noir) sans douleur ressentie sur la zone
+        <div class="section-label">2. Profondeur des brûlures</div>
+        <div style="display:flex; flex-direction:column; gap:8px;" id="profondeur-container">
+          <div class="thera-box" style="cursor:pointer; margin-bottom:0;" onclick="selectProfondeur(this, '1er degré')">
+            <strong>1er degré :</strong> La peau est rouge, sèche et douloureuse, sans cloques
+          </div>
+          <div class="thera-box" style="cursor:pointer; margin-bottom:0;" onclick="selectProfondeur(this, '2e degré superficiel')">
+            <strong>2e degré superficiel :</strong> La peau est rouge, très douloureuse et présente des cloques transparentes avec un socle suintant
+          </div>
+          <div class="thera-box" style="cursor:pointer; margin-bottom:0;" onclick="selectProfondeur(this, '2e degré profond')">
+            <strong>2e degré profond :</strong> La peau est endommagée plus en profondeur sous les cloques, avec une base souvent pâle et une sensibilité parfois diminuée.
+          </div>
+          <div class="thera-box" style="cursor:pointer; margin-bottom:0;" onclick="selectProfondeur(this, '3e degré')">
+            <strong>3e degré :</strong> La peau est détruite en totalité (aspect cartonné, brun ou noir) sans douleur ressentie sur la zone
+          </div>
         </div>
       </div>
 
-      <!-- Troisième bloc : Règle de Wallace & SCB -->
       <div class="card">
-        <div class="section-label">Surface Corporelle Brûlée (SCB)</div>
-        <button type="button" class="btn-toggle-action secondary" onclick="toggleWallaceModal(true)" style="background: #e0f2fe; border-color: #7dd3fc; color: #0369a1; margin-bottom: 12px;">
-          📖 Rappel : Règle de Wallace (Cliquer pour voir l'image)
-        </button>
-
-        <div class="field">
-          <label for="bru-scb-val">Surface corporelle brûlée (%)</label>
-          <input type="number" inputmode="numeric" id="bru-scb-val" placeholder="ex: 15" oninput="checkBrulureGravite()">
+        <div class="section-label">3. Surface corporelle brûlée (SCB)</div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Cliquez sur les parties touchées (Règle des 9 de Wallace approx.) :</p>
+        <div class="row-2 field">
+          <button type="button" class="btn-toggle-action orange scb-part" data-val="9" onclick="toggleScbPart(this)">Tête / Cou (9%)</button>
+          <button type="button" class="btn-toggle-action orange scb-part" data-val="18" onclick="toggleScbPart(this)">Tronc Antérieur (18%)</button>
+        </div>
+        <div class="row-2 field">
+          <button type="button" class="btn-toggle-action orange scb-part" data-val="18" onclick="toggleScbPart(this)">Tronc Postérieur (18%)</button>
+          <button type="button" class="btn-toggle-action orange scb-part" data-val="9" onclick="toggleScbPart(this)">Membre Sup. Droit (9%)</button>
+        </div>
+        <div class="row-2 field">
+          <button type="button" class="btn-toggle-action orange scb-part" data-val="9" onclick="toggleScbPart(this)">Membre Sup. Gauche (9%)</button>
+          <button type="button" class="btn-toggle-action orange scb-part" data-val="18" onclick="toggleScbPart(this)">Membre Inf. Droit (18%)</button>
+        </div>
+        <div class="row-2 field">
+          <button type="button" class="btn-toggle-action orange scb-part" data-val="18" onclick="toggleScbPart(this)">Membre Inf. Gauche (18%)</button>
+          <button type="button" class="btn-toggle-action orange scb-part" data-val="1" onclick="toggleScbPart(this)">Périnée / OGE (1%)</button>
+        </div>
+        <div style="background: var(--primary); color: #fff; text-align: center; padding: 12px; border-radius: 8px; font-weight: 800; font-size: 1.1rem; margin-top: 12px;">
+          Surface corporelle brûlée calculée : <span id="scb-total-display">0</span> %
         </div>
       </div>
 
-      <!-- Quatrième bloc : Signes de gravité -->
       <div class="card">
-        <div class="section-label" style="color: var(--danger);">Signes de Gravité</div>
+        <div class="section-label" style="color: var(--danger);">4. Signes de gravité</div>
         <div class="field" onchange="checkBrulureGravite()">
-          <label class="checkbox-item"><input type="checkbox" id="bru-grav-cervico"> Brûlure cervico faciale</label>
-          <label class="checkbox-item"><input type="checkbox" id="bru-grav-circulaire"> Brûlure circulaire</label>
-          <label class="checkbox-item"><input type="checkbox" id="bru-grav-inhalation"> Brûlure par inhalation</label>
+          <label class="checkbox-item"><input type="checkbox" id="brul-grav-cervico"> Brûlure cervico-faciale</label>
+          <label class="checkbox-item"><input type="checkbox" id="brul-grav-circulaire"> Brûlure circulaire</label>
+          <label class="checkbox-item"><input type="checkbox" id="brul-grav-inhalation"> Brûlure par inhalation</label>
         </div>
-
-        <div id="bru-encart-renfort" class="alert-box alert-red" style="display: none; margin-top: 10px;">
+        <div id="brul-renfort-msg" class="alert-box alert-red" style="display: none; margin-top: 10px;">
           Discuter renfort SMUR à l'appel
         </div>
       </div>
 
-      <!-- Dernier bloc : Gestes réalisés -->
       <div class="card">
-        <div class="section-label">Gestes Réalisés</div>
+        <div class="section-label">5. Gestes réalisés</div>
         <div class="field">
-          <label class="checkbox-item"><input type="checkbox" id="bru-geste-refroidissement"> Refroidissement à l'eau tiède</label>
-          <label class="checkbox-item"><input type="checkbox" id="bru-geste-vetements"> Retrait des vetements non adhérents</label>
-          <label class="checkbox-item"><input type="checkbox" id="bru-geste-protection"> Protection des zones brulées</label>
-          <label class="checkbox-item"><input type="checkbox" id="bru-geste-rechauffage"> Réchauffage du patient + cellule AR</label>
-          <label class="checkbox-item"><input type="checkbox" id="bru-geste-brulstop"> Pose et retrait des brulstop à 15 min (sauf zones fonctionnelles et esthétiques)</label>
+          <label class="checkbox-item"><input type="checkbox" id="geste-refroidissement"> Refroidissement à l'eau tiède</label>
+          <label class="checkbox-item"><input type="checkbox" id="geste-retrait-vet"> Retrait des vêtements non adhérents</label>
+          <label class="checkbox-item"><input type="checkbox" id="geste-protection"> Protection des zones brûlées</label>
+          <label class="checkbox-item"><input type="checkbox" id="geste-rechauffage"> Réchauffage du patient + cellule AR</label>
+          <label class="checkbox-item"><input type="checkbox" id="geste-brulstop"> Pose et retrait des brûlstop à 15 min (sauf zones fonctionnelles et esthétiques)</label>
         </div>
       </div>
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
-      </div>
-    </div>
-
-    <!-- ================= MODALE WALLACE ================= -->
-    <div id="modal-wallace">
-      <div class="drp-content-card" style="text-align: center;">
-        <button type="button" class="drp-close-btn" onclick="toggleWallaceModal(false)">✕</button>
-        <h3 style="color: var(--primary); margin-bottom: 12px; font-weight: 800;">Règle des 9 de Wallace</h3>
-        <img src="regle-9-wallace-330px.jpg" alt="Règle des 9 de Wallace" style="max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border);">
       </div>
     </div>
 
@@ -1351,10 +1347,10 @@
           </div>
         </div>
 
-        <!-- Champ HbCO conditionnel (si brûlure thermique avec inhalation de fumées) -->
+        <!-- HbCO conditionnel si brûlure + fumées -->
         <div class="field" id="field-hbco-container" style="display: none;">
           <label for="c-hbco">HbCO (%)</label>
-          <input type="number" inputmode="numeric" id="c-hbco" placeholder="ex: 10">
+          <input type="number" step="0.1" inputmode="decimal" id="c-hbco" placeholder="ex: 5.0">
         </div>
 
         <div class="field" style="margin-top: 10px;">
@@ -1383,17 +1379,17 @@
           <label for="demande-type">Type de demande</label>
           <select id="demande-type" onchange="generateSAED()">
             <option value="Renfort SMUR">Renfort SMUR</option>
-            <option value="PSIS Brûlure">PSIS Brûlure</option>
             <option value="PSIS Dyspnée">PSIS Dyspnée</option>
             <option value="PSIS Antalgie">PSIS Antalgie</option>
             <option value="PSIS Allergie">PSIS Allergie</option>
             <option value="PSIS Hypoglycémie">PSIS Hypoglycémie</option>
+            <option value="PSIS Brûlure">PSIS Brûlure</option>
           </select>
         </div>
 
         <div class="field">
           <label for="saed-demande">Précisions régulation & actions</label>
-          <textarea id="saed-demande" rows="2" placeholder="ex: Accord protocole brûlure, avis médical..." oninput="generateSAED()"></textarea>
+          <textarea id="saed-demande" rows="2" placeholder="ex: Accord protocole hypoglycémie, avis médical..." oninput="generateSAED()"></textarea>
         </div>
       </div>
 
@@ -1410,6 +1406,94 @@
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('constantes')">⬅ Constantes</button>
         <button type="button" class="btn-nav" id="btn-suite-regu" onclick="routeApresRegu()">Thérapeutique ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= PAGE : THÉRAPEUTIQUE (BRÛLURE) ================= -->
+    <div id="page-therapeutique-brulure" class="page">
+      <div class="card">
+        <div class="section-label">Voie Veineuse & Remplissage</div>
+        
+        <div id="brul-vvp-container">
+          <!-- Dynamique selon SCB > 10% -->
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Prise en charge de la douleur (EN)</div>
+        <div id="brul-douleur-container">
+          <!-- Rempli dynamiquement selon l'EN -->
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Appel au 15</button>
+        <button type="button" class="btn-nav" onclick="goToPage('suivi-brulure')">Surveillance ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= PAGE : SUIVI CHRONOLOGIQUE (BRÛLURE) ================= -->
+    <div id="page-suivi-brulure" class="page">
+      <div class="card">
+        <div class="section-label">Surveillance Brûlure (T0, T+15, T+30)</div>
+
+        <!-- T0 -->
+        <div class="field" style="background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 14px;">
+          <label style="color: var(--primary); margin-bottom: 6px;">T0 (Constantes Initiales)</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="brul-t0-pa" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="text" id="brul-t0-pouls" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="text" id="brul-t0-spo2" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">HbCO</label><input type="text" id="brul-t0-hbco" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">EN</label><input type="text" id="brul-t0-en" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label><input type="text" id="brul-t0-avpu" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+        </div>
+
+        <!-- T+15 -->
+        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border); margin-bottom: 14px;">
+          <label style="color: var(--text); margin-bottom: 6px;">T+15 min</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="brul-t15-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="brul-t15-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="brul-t15-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">HbCO</label><input type="number" step="0.1" inputmode="decimal" id="brul-t15-hbco" placeholder="4.0" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">EN</label><input type="number" min="0" max="10" inputmode="numeric" id="brul-t15-en" placeholder="3" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label>
+              <select id="brul-t15-avpu" style="padding: 6px; font-size: 0.9rem;">
+                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- T+30 -->
+        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
+          <label style="color: var(--text); margin-bottom: 6px;">T+30 min</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="brul-t30-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="brul-t30-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="brul-t30-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">HbCO</label><input type="number" step="0.1" inputmode="decimal" id="brul-t30-hbco" placeholder="2.0" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">EN</label><input type="number" min="0" max="10" inputmode="numeric" id="brul-t30-en" placeholder="1" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label>
+              <select id="brul-t30-avpu" style="padding: 6px; font-size: 0.9rem;">
+                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('therapeutique-brulure')">⬅ Thérapeutique</button>
+        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
       </div>
     </div>
 
@@ -1544,29 +1628,6 @@
       </div>
     </div>
 
-    <!-- ================= PAGE : THÉRAPEUTIQUE (BRÛLURE) ================= -->
-    <div id="page-therapeutique-brulure" class="page">
-      <div class="card thera-box brulure">
-        <div class="thera-title" style="color: #dc2626;">
-          <span>PROTOCOLE THÉRAPEUTIQUE BRÛLURE</span>
-        </div>
-
-        <div id="bru-thera-vvp-container" style="margin-bottom: 14px;">
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-label">Prise en charge de la douleur (EN)</div>
-        <div id="bru-douleur-algo-container">
-        </div>
-      </div>
-
-      <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Appel au 15</button>
-        <button type="button" class="btn-nav" onclick="goToPage('suivi-brulure')">Surveillance ➔</button>
-      </div>
-    </div>
-
     <!-- ================= PAGE : THÉRAPEUTIQUE (ALLERGIE) ================= -->
     <div id="page-therapeutique-allergie" class="page">
       <div class="card thera-box allergie">
@@ -1615,12 +1676,14 @@
           </div>
         </div>
 
+        <!-- Bloc Glucagon unique (apparaît dès qu'un choix est fait) -->
         <div id="hypo-bloc-glucagon" style="display: none; background: #fef3c7; border: 1.5px solid #fde047; padding: 12px; border-radius: 8px; margin-bottom: 14px;">
           <div style="font-weight: 800; color: #b45309; font-size: 0.95rem; margin-bottom: 8px;">Glucagon si disponible :</div>
           <label class="checkbox-item"><input type="checkbox" id="gluco-baqsimi"> BAQSIMI® : 1 dose dans une narine</label>
           <label class="checkbox-item"><input type="checkbox" id="gluco-glucagen"> GLUCAGEN® : 1 mg IM</label>
         </div>
 
+        <!-- BRANCHE OUI -->
         <div id="hypo-sub-oui" class="algo-sub-box">
           <button type="button" class="btn-toggle-action orange" id="btn-resucrage-pos" onclick="toggleHypoAction(this, 'resucrage-pos')">
             Sucres rapides (jus de fruit / G30%) - Objectif glycémie > 0,7 g/L
@@ -1632,6 +1695,7 @@
           </div>
         </div>
 
+        <!-- BRANCHE NON -->
         <div id="hypo-sub-non" class="algo-sub-box">
           <button type="button" class="btn-toggle-action orange" id="btn-vvp-hypo" onclick="toggleHypoAction(this, 'vvp')">
             Pose de VVP
@@ -1676,74 +1740,12 @@
       </div>
     </div>
 
-    <!-- ================= PAGE : SUIVI CHRONOLOGIQUE (BRÛLURE) ================= -->
-    <div id="page-suivi-brulure" class="page">
-      <div class="card">
-        <div class="section-label">Surveillance & Paramètres Vitaux (Brûlure)</div>
-
-        <div class="field" style="background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 14px;">
-          <label style="color: var(--primary); margin-bottom: 6px;">T0 (Constantes Initiales)</label>
-          <div class="row-3">
-            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="bru-t0-pa" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">Pouls</label><input type="text" id="bru-t0-pouls" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">SpO2</label><input type="text" id="bru-t0-spo2" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
-          </div>
-          <div class="row-3" style="margin-top: 6px;">
-            <div><label style="font-size: 0.75rem;">HbCO</label><input type="text" id="bru-t0-hbco" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">EN</label><input type="text" id="bru-t0-en" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">AVPU</label><input type="text" id="bru-t0-avpu" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
-          </div>
-        </div>
-
-        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border); margin-bottom: 14px;">
-          <label style="color: var(--text); margin-bottom: 6px;">T+15 min</label>
-          <div class="row-3">
-            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="bru-t15-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="bru-t15-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="bru-t15-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
-          </div>
-          <div class="row-3" style="margin-top: 6px;">
-            <div><label style="font-size: 0.75rem;">HbCO</label><input type="number" inputmode="numeric" id="bru-t15-hbco" placeholder="5" style="padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">EN</label><input type="number" min="0" max="10" inputmode="numeric" id="bru-t15-en" placeholder="3" style="padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">AVPU</label>
-              <select id="bru-t15-avpu" style="padding: 6px; font-size: 0.9rem;">
-                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
-          <label style="color: var(--text); margin-bottom: 6px;">T+30 min</label>
-          <div class="row-3">
-            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="bru-t30-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="bru-t30-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="bru-t30-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
-          </div>
-          <div class="row-3" style="margin-top: 6px;">
-            <div><label style="font-size: 0.75rem;">HbCO</label><input type="number" inputmode="numeric" id="bru-t30-hbco" placeholder="3" style="padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">EN</label><input type="number" min="0" max="10" inputmode="numeric" id="bru-t30-en" placeholder="1" style="padding: 6px; font-size: 0.9rem;"></div>
-            <div><label style="font-size: 0.75rem;">AVPU</label>
-              <select id="bru-t30-avpu" style="padding: 6px; font-size: 0.9rem;">
-                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage('therapeutique-brulure')">⬅ Thérapeutique</button>
-        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
-      </div>
-    </div>
-
     <!-- ================= PAGE : SUIVI CHRONOLOGIQUE (ALLERGIE) ================= -->
     <div id="page-suivi-allergie" class="page">
       <div class="card">
         <div class="section-label">Suivi Chronologique & Évolution</div>
 
+        <!-- T0 -->
         <div class="field" style="background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
           <label style="color: var(--primary); margin-bottom: 8px;">Constantes T0 (Initiales)</label>
           <div class="row-4">
@@ -1766,6 +1768,7 @@
           </div>
         </div>
 
+        <!-- T+15 -->
         <div class="field" style="margin-top: 14px; padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
           <label style="color: var(--text); margin-bottom: 8px;">Constantes T+15 min</label>
           <div class="row-4">
@@ -1788,6 +1791,7 @@
           </div>
         </div>
 
+        <!-- T+30 -->
         <div class="field" style="margin-top: 14px; padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
           <label style="color: var(--text); margin-bottom: 8px;">Constantes T+30 min</label>
           <div class="row-4">
@@ -1830,6 +1834,7 @@
       <div class="card">
         <div class="section-label">Surveillance & Paramètres Vitaux</div>
 
+        <!-- T0 (Initiales) -->
         <div class="field" style="background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 14px;">
           <label style="color: var(--primary); margin-bottom: 6px;">T0 (Constantes Initiales)</label>
           <div class="row-3">
@@ -1843,6 +1848,7 @@
           </div>
         </div>
 
+        <!-- T+5 -->
         <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border); margin-bottom: 14px;">
           <label style="color: var(--text); margin-bottom: 6px;">T+5 min</label>
           <div class="row-3">
@@ -1860,6 +1866,7 @@
           </div>
         </div>
 
+        <!-- T+10 -->
         <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
           <label style="color: var(--text); margin-bottom: 6px;">T+10 min</label>
           <div class="row-3">
@@ -1931,6 +1938,318 @@
       </div>
     </div>
 
+    <!-- ================= PAGE : PRISE EN CHARGE DE LA MÈRE ================= -->
+    <div id="page-pec-mere" class="page">
+      <div class="card">
+        <div class="section-label">Gestes Initiaux</div>
+        <button type="button" class="btn-toggle-action" id="btn-vvp-mere" onclick="toggleVvpMere(this)">
+          💉 Pose de VVP
+        </button>
+
+        <div class="field">
+          <label for="select-pertes">Pertes sanguines estimées</label>
+          <select id="select-pertes" onchange="onPertesChange()">
+            <option value="inf500">&lt; 500 ml</option>
+            <option value="sup500">&gt; 500 ml</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="bloc-pertes-vert" class="card">
+        <div class="alert-box alert-green">
+          Surveillance continue patiente scopée
+        </div>
+        <label style="color: var(--primary); margin-bottom: 8px;">Constantes toutes les 10 minutes :</label>
+        <div class="row-2 field">
+          <div>
+            <label for="c10-pa">Pression artérielle</label>
+            <input type="text" inputmode="numeric" id="c10-pa" placeholder="ex: 115/75">
+          </div>
+          <div>
+            <label for="c10-fc">Fréquence card. (bpm)</label>
+            <input type="number" inputmode="numeric" id="c10-fc" placeholder="ex: 82">
+          </div>
+        </div>
+        <div class="row-2 field">
+          <div>
+            <label for="c10-spo2">SpO2 (%)</label>
+            <input type="number" inputmode="numeric" id="c10-spo2" placeholder="ex: 98">
+          </div>
+          <div>
+            <label for="c10-fr">Fréquence respi (/min)</label>
+            <input type="number" inputmode="numeric" id="c10-fr" placeholder="ex: 15">
+          </div>
+        </div>
+        <div class="row-2 field">
+          <div>
+            <label for="c10-temp">Température (°C)</label>
+            <input type="number" step="0.1" inputmode="decimal" id="c10-temp" placeholder="ex: 37.0">
+          </div>
+          <div>
+            <label for="c10-hgt">HGT (g/L)</label>
+            <input type="number" step="0.01" inputmode="decimal" id="c10-hgt" placeholder="ex: 1.05">
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Appel au 15</button>
+          <button type="button" class="btn-nav" onclick="goToPage('pec-enfant')">Prise en charge de l'enfant ➔</button>
+        </div>
+      </div>
+
+      <div id="bloc-pertes-rouge" class="card" style="display: none;">
+        <div class="alert-box alert-red">
+          🚨 Appel immédiat du médecin régulateur
+        </div>
+
+        <div class="field">
+          <label style="color: var(--danger); margin-bottom: 8px;">Gestes d'urgence immédiats :</label>
+          <label class="checkbox-item"><input type="checkbox" id="geste-mhc"> O2 au MHC</label>
+          <label class="checkbox-item"><input type="checkbox" id="geste-massage"> Massage utérin à deux mains</label>
+          <label class="checkbox-item"><input type="checkbox" id="geste-vvp2"> VVP x 2</label>
+        </div>
+
+        <hr class="divider">
+
+        <label style="color: var(--primary); margin-bottom: 8px;">Constantes de choc / hémorragie :</label>
+        <div class="row-2 field">
+          <div>
+            <label for="choc-fc">Pouls (bpm)</label>
+            <input type="number" inputmode="numeric" id="choc-fc" placeholder="ex: 115">
+          </div>
+          <div>
+            <label for="choc-ta">Tension</label>
+            <input type="text" inputmode="numeric" id="choc-ta" placeholder="ex: 90/60">
+          </div>
+        </div>
+        <div class="row-2 field">
+          <div>
+            <label for="choc-sat">Sat (%)</label>
+            <input type="number" inputmode="numeric" id="choc-sat" placeholder="ex: 94">
+          </div>
+          <div>
+            <label for="choc-hb">Hb (g/L)</label>
+            <input type="number" step="0.1" inputmode="decimal" id="choc-hb" placeholder="ex: 8.5">
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label for="select-prescription">Prescription médicale (ajouter)</label>
+          <select id="select-prescription" onchange="addPrescription(this)">
+            <option value="" disabled selected>Choisir une prescription...</option>
+            <option value="Isofundine 500 ml en débit libre">Isofundine 500 ml en débit libre</option>
+            <option value="Acide tranexamique 1 g / 20 min IVL">Acide tranexamique 1 g / 20 min IVL</option>
+            <option value="Ocytocine 10 UI/h IVSE">Ocytocine 10 UI/h IVSE</option>
+            <option value="Augmentin 2 g / 20 min IVL">Augmentin 2 g / 20 min IVL</option>
+            <option value="Noradrénaline selon prescription médicale">Noradrénaline selon prescription médicale</option>
+          </select>
+          <div class="tag-container" id="prescription-tags"></div>
+        </div>
+
+        <div class="alert-surveillance-danger">
+          SURVEILLANCE DES CONSTANTES +++
+        </div>
+
+        <div class="nav-actions">
+          <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Appel au 15</button>
+          <button type="button" class="btn-nav" onclick="goToPage('pec-enfant')">Prise en charge de l'enfant ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= PAGE : PRISE EN CHARGE DU NOUVEAU-NÉ ================= -->
+    <div id="page-pec-enfant" class="page">
+      <div class="card">
+        <div class="section-label">Adaptation à la vie extra-utérine</div>
+
+        <div class="algo-step-card">
+          <label style="font-size: 1rem; margin-bottom: 6px;">
+            Respiration spontanée / Cri vigoureux / Tonus vif ?
+          </label>
+          <div class="algo-choice-grid">
+            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation('Initiale : cri vigoureux et tonus vif')">
+              ✓ Bonne adaptation
+            </button>
+            <button type="button" class="algo-btn red" onclick="actionEchecInit()">
+              ⚠ 1 critère de mauvaise adaptation ?
+            </button>
+          </div>
+        </div>
+
+        <div id="nn-step-stimul" class="algo-step-card" style="display: none;">
+          <div style="background: #fffbeb; border: 1.5px solid #fef08a; color: #92400e; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+            <strong>Sécher, stimuler</strong> : frotter vigoureusement le dos + plante des pieds.
+          </div>
+          <label style="font-size: 0.9rem;">Réévaluation après stimulation :</label>
+          <div class="algo-choice-grid">
+            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation('Récupération après séchage et stimulation')">
+              ✓ Bonne adaptation
+            </button>
+            <button type="button" class="algo-btn red" onclick="actionEchecStimul()">
+              Échec (anomalie respi / hypotonie)
+            </button>
+          </div>
+        </div>
+
+        <div id="nn-step-bavu5" class="algo-step-card red-border" style="display: none;">
+          <div style="background: #e0f2fe; border: 1.5px solid #7dd3fc; color: #0369a1; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+            <div style="font-weight: 800; font-size: 1rem; margin-bottom: 6px;">🚨 APPEL MÉDECIN RÉGULATEUR</div>
+            <p>• Clamper / couper le cordon</p>
+            <p>• Mettre le nouveau-né à plat sur plan dur</p>
+            <p>• <strong>Libérer les VAS :</strong> tête en position neutre +/- aspiration douce buccale et nasale (CH 8, max -100 mmHg)</p>
+            <p>• Scoper l'enfant</p>
+            <p>• <strong>5 insufflations de 2-3 secondes au BAVU sans O2</strong></p>
+          </div>
+
+          <label style="font-size: 0.9rem;">Réévaluation après 5 insufflations :</label>
+          <div class="algo-choice-grid">
+            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation('Récupération après 5 insufflations BAVU')">
+              ✓ Bonne adaptation
+            </button>
+            <button type="button" class="algo-btn red" onclick="actionEchecBavu5()">
+              Échec (anomalie respi / hypotonie / FC &lt; 100)
+            </button>
+          </div>
+        </div>
+
+        <div id="nn-step-bavu10" class="algo-step-card" style="display: none;">
+          <div style="background: #f0f9ff; border: 1.5px solid #38bdf8; color: #0284c7; padding: 10px; border-radius: 6px; margin-bottom: 10px; font-weight: 800;">
+            👉 10 insufflations BAVU sans O2
+          </div>
+
+          <label style="font-size: 0.9rem;">Évaluation de la Fréquence Cardiaque :</label>
+          <div class="algo-choice-grid">
+            <button type="button" class="algo-btn" style="background: #e0f2fe; color: #0369a1; border-color: #7dd3fc;" onclick="actionFc60100()">
+              FC entre 60 et 100 bpm
+            </button>
+            <button type="button" class="algo-btn red" onclick="actionFcInf60()">
+              FC &lt; 60 bpm (Arrêt / Bradycardie critique)
+            </button>
+          </div>
+        </div>
+
+        <div id="nn-sub-15insuff" class="algo-step-card" style="display: none;">
+          <div style="background: #f0f9ff; border: 1.5px solid #7dd3fc; color: #0369a1; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+            <p>• <strong>15 insufflations sans O2</strong></p>
+            <p>• Réévaluer la FC</p>
+          </div>
+          <div class="algo-choice-grid">
+            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation('Récupération après 15 insufflations')">
+              ✓ Bonne adaptation
+            </button>
+            <button type="button" class="algo-btn red" onclick="actionFcInf60()">
+              FC &lt; 60 bpm ➔ RCP 3/1
+            </button>
+          </div>
+        </div>
+
+        <div id="nn-sub-rcp" class="algo-step-card red-border" style="display: none;">
+          <div style="background: #fee2e2; border: 2px solid #ef4444; color: #991b1b; padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+            <div style="font-weight: 900; font-size: 1.05rem; margin-bottom: 6px;">🚨 RCP 3/1</div>
+            <p>• <strong>Insufflation sous O2 15 L/min</strong></p>
+            <p>• <strong>MCE :</strong> pouces des 2 mains placées côte à côte et encerclant le thorax</p>
+            <p>• Rythme : <strong>100 - 120 cpm</strong></p>
+            <p>• <strong>Réévaluer la FC toutes les 30 secondes</strong></p>
+          </div>
+          <div class="algo-choice-grid">
+            <button type="button" class="algo-btn green" onclick="actionBonneAdaptation('Récupération post-RCP')">
+              ✓ Récupération (bonne adaptation)
+            </button>
+            <button type="button" class="algo-btn red" onclick="alert('Poursuivre RCP 3/1 - Réévaluation dans 30 secondes')">
+              Persistance FC &lt; 60 bpm
+            </button>
+          </div>
+        </div>
+
+        <div id="bloc-grand-carre-vert" class="algo-box-green-details" style="display: none;">
+          <h4>✓ Prise en charge Bonne Adaptation</h4>
+          <p>• <strong>Clampage du cordon</strong> à 15 cm de l'enfant en posant 2 clamps de BAR ou 2 pinces Kocher. Couper entre les clamps. Désinfecter à la Chlorhexidine. Emballer cordon et clamp avec des compresses stériles / fixer avec une bande.</p>
+          <br>
+          <p>• <strong>Réchauffer l'enfant :</strong> sécher le nouveau-né + bonnet + sac Neohelp + le placer sur le thorax de la mère + les couvrir avec une couverture de survie.</p>
+          <p>• <em>Si nécessité :</em> désobstruer prudemment (sonde CH 8 - max -100 mmHg).</p>
+
+          <div class="apgar-tool-card">
+            <div style="font-weight: 800; color: var(--text); margin-bottom: 8px; font-size: 0.95rem;">
+              Score d'APGAR (1, 3 et 5 minutes)
+            </div>
+
+            <div class="apgar-nav">
+              <button type="button" class="apgar-tab-btn active" id="tab-1m" onclick="switchApgarTab('1m')">1 min</button>
+              <button type="button" class="apgar-tab-btn" id="tab-3m" onclick="switchApgarTab('3m')">3 min</button>
+              <button type="button" class="apgar-tab-btn" id="tab-5m" onclick="switchApgarTab('5m')">5 min</button>
+            </div>
+
+            <div class="apgar-summary-line">
+              <span>1 min : <b id="res-1m">-</b></span>
+              <span>3 min : <b id="res-3m">-</b></span>
+              <span>5 min : <b id="res-5m">-</b></span>
+            </div>
+
+            <div class="apgar-crit-group">
+              <label>Fréquence cardiaque</label>
+              <select class="apgar-input" onchange="calculateApgar()">
+                <option value="0">0 - Absente</option>
+                <option value="1">1 - &lt; 100 bpm</option>
+                <option value="2" selected>2 - &ge; 100 bpm</option>
+              </select>
+            </div>
+
+            <div class="apgar-crit-group">
+              <label>Respiration</label>
+              <select class="apgar-input" onchange="calculateApgar()">
+                <option value="0">0 - Absente</option>
+                <option value="1">1 - Lente, irrégulière</option>
+                <option value="2" selected>2 - Vigoureuse, cri franc</option>
+              </select>
+            </div>
+
+            <div class="apgar-crit-group">
+              <label>Tonus musculaire</label>
+              <select class="apgar-input" onchange="calculateApgar()">
+                <option value="0">0 - Flasque</option>
+                <option value="1">1 - Légère flexion des extrémités</option>
+                <option value="2" selected>2 - Mouvements actifs, tonus vif</option>
+              </select>
+            </div>
+
+            <div class="apgar-crit-group">
+              <label>Réactivité aux stimulations</label>
+              <select class="apgar-input" onchange="calculateApgar()">
+                <option value="0">0 - Nulle</option>
+                <option value="1">1 - Grimace / faible réaction</option>
+                <option value="2" selected>2 - Cri, toux, éternuement</option>
+              </select>
+            </div>
+
+            <div class="apgar-crit-group">
+              <label>Coloration</label>
+              <select class="apgar-input" onchange="calculateApgar()">
+                <option value="0">0 - Pâle ou cyanosé global</option>
+                <option value="1">1 - Corps rose, extrémités bleutées</option>
+                <option value="2" selected>2 - Entièrement rose</option>
+              </select>
+            </div>
+
+            <div class="apgar-score-display">
+              Total (<span id="apgar-cur-label">1 min</span>) : <span id="apgar-cur-score" style="color: #38bdf8;">10 / 10</span>
+            </div>
+          </div>
+
+          <div class="alert-spo2-rappel">
+            POSE SpO2
+          </div>
+        </div>
+
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('pec-mere')">⬅ PEC Mère</button>
+        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+      </div>
+    </div>
+
     <!-- ================= PAGE : RÉSUMÉ FINAL INTERVENTION ================= -->
     <div id="page-resume" class="page">
       <div class="card">
@@ -1976,9 +2295,9 @@
 
     // Variables spécifiques Brûlure
     let brulureType = '';
-    let brulureInhalationFumees = '';
+    let fumeeInhalation = false;
     let brulureProfondeur = '';
-    let sourceElecCoupee = false;
+    let totalScb = 0;
 
     window.addEventListener('DOMContentLoaded', () => {
       // DATE DE NAISSANCE
@@ -2159,15 +2478,17 @@
 
     function routeApresRegu() {
       const motif = document.getElementById('motif-select').value;
-      if (motif === 'Détresse respiratoire') {
+      if (motif === 'Accouchement') {
+        goToPage('pec-mere');
+      } else if (motif === 'Détresse respiratoire') {
         goToPage('therapeutique');
-      } else if (motif === 'Brûlure') {
-        buildBrulureTheraPage();
-        goToPage('therapeutique-brulure');
       } else if (motif === 'Allergie') {
         goToPage('therapeutique-allergie');
       } else if (motif === 'Hypoglycémie') {
         goToPage('therapeutique-hypo');
+      } else if (motif === 'Brûlure') {
+        setupBrulureTherapeutiqueUI();
+        goToPage('therapeutique-brulure');
       } else {
         goToPage('resume');
       }
@@ -2196,8 +2517,8 @@
       } else if (target === 2) {
         indicator.textContent = '2. Anamnèse';
         p0Container.style.display = 'flex';
-      } else if (target === 'brulure') {
-        indicator.textContent = '3. Brûlure';
+      } else if (target === 'accouchement') {
+        indicator.textContent = '3. Accouchement';
         p0Container.style.display = 'none';
       } else if (target === 'detresse-respi') {
         indicator.textContent = '3. Détresse respiratoire';
@@ -2210,30 +2531,34 @@
         indicator.textContent = '3. Hypoglycémie';
         p0Container.style.display = 'none';
         checkHypoGravite();
+      } else if (target === 'brulure') {
+        indicator.textContent = '3. Brûlure';
+        p0Container.style.display = 'none';
+      } else if (target === 'motif-autre') {
+        indicator.textContent = '3. Motif spécifique';
+        p0Container.style.display = 'none';
       } else if (target === 'constantes') {
         indicator.textContent = 'Constantes';
         p0Container.style.display = 'none';
+        // Afficher ou masquer HbCO selon fumée inhalation brûlure
         const hbcoField = document.getElementById('field-hbco-container');
         if (hbcoField) {
-          const motif = document.getElementById('motif-select').value;
-          if (motif === 'Brûlure' && brulureType === 'thermique' && brulureInhalationFumees === 'oui') {
-            hbcoField.style.display = 'block';
-          } else {
-            hbcoField.style.display = 'none';
-          }
+          hbcoField.style.display = (document.getElementById('motif-select').value === 'Brûlure' && fumeeInhalation) ? 'block' : 'none';
         }
       } else if (target === 'regu') {
         indicator.textContent = 'Appel au 15';
         p0Container.style.display = 'none';
         const motif = document.getElementById('motif-select').value;
         const btnSuite = document.getElementById('btn-suite-regu');
-        if (motif === 'Brûlure') {
+        if (motif === 'Détresse respiratoire') {
           btnSuite.textContent = 'Thérapeutique ➔';
-        } else if (motif === 'Détresse respiratoire') {
-          btnSuite.textContent = 'Thérapeutique ➔';
+        } else if (motif === 'Accouchement') {
+          btnSuite.textContent = 'Prise en charge ➔';
         } else if (motif === 'Allergie') {
           btnSuite.textContent = 'Thérapeutique ➔';
         } else if (motif === 'Hypoglycémie') {
+          btnSuite.textContent = 'Thérapeutique ➔';
+        } else if (motif === 'Brûlure') {
           btnSuite.textContent = 'Thérapeutique ➔';
         } else {
           btnSuite.textContent = 'Résumé final ➔';
@@ -2244,9 +2569,6 @@
         p0Container.style.display = 'none';
         updateTheraDoses();
         checkPasOap();
-      } else if (target === 'therapeutique-brulure') {
-        indicator.textContent = 'Thérapeutique Brûlure';
-        p0Container.style.display = 'none';
       } else if (target === 'therapeutique-allergie') {
         indicator.textContent = 'Thérapeutique Allergie';
         p0Container.style.display = 'none';
@@ -2254,18 +2576,13 @@
       } else if (target === 'therapeutique-hypo') {
         indicator.textContent = 'Thérapeutique Hypoglycémie';
         p0Container.style.display = 'none';
-      } else if (target === 'suivi-brulure') {
-        indicator.textContent = 'Surveillance Brûlure';
+      } else if (target === 'therapeutique-brulure') {
+        indicator.textContent = 'Thérapeutique Brûlure';
         p0Container.style.display = 'none';
-        document.getElementById('bru-t0-pa').value = document.getElementById('c-pa').value.trim() || '-';
-        document.getElementById('bru-t0-pouls').value = (document.getElementById('c-fc').value.trim() ? document.getElementById('c-fc').value.trim() + ' bpm' : '-');
-        document.getElementById('bru-t0-spo2').value = (document.getElementById('c-spo2').value.trim() ? document.getElementById('c-spo2').value.trim() + '%' : '-');
-        document.getElementById('bru-t0-hbco').value = (document.getElementById('c-hbco') && document.getElementById('c-hbco').value.trim() ? document.getElementById('c-hbco').value.trim() + '%' : '-');
-        document.getElementById('bru-t0-en').value = (document.getElementById('c-eva').value.trim() ? document.getElementById('c-eva').value.trim() + '/10' : '-');
-        document.getElementById('bru-t0-avpu').value = selectedAvpu || '-';
       } else if (target === 'suivi-allergie') {
         indicator.textContent = 'Suivi Chronologique';
         p0Container.style.display = 'none';
+        
         const paVal = document.getElementById('c-pa').value.trim();
         let pas = '', pad = '';
         if (paVal.includes('/')) {
@@ -2279,27 +2596,47 @@
         document.getElementById('t0-pad').value = pad;
         document.getElementById('t0-pouls').value = document.getElementById('c-fc').value.trim();
         document.getElementById('t0-spo2').value = document.getElementById('c-spo2').value.trim();
+
       } else if (target === 'suivi-hypo') {
         indicator.textContent = 'Surveillance Hypoglycémie';
         p0Container.style.display = 'none';
+        
         document.getElementById('hypo-t0-pa').value = document.getElementById('c-pa').value.trim() || '-';
         document.getElementById('hypo-t0-pouls').value = (document.getElementById('c-fc').value.trim() ? document.getElementById('c-fc').value.trim() + ' bpm' : '-');
         document.getElementById('hypo-t0-hgt').value = (document.getElementById('c-hgt').value.trim() ? document.getElementById('c-hgt').value.trim() + ' g/L' : '-');
         document.getElementById('hypo-t0-spo2').value = (document.getElementById('c-spo2').value.trim() ? document.getElementById('c-spo2').value.trim() + '%' : '-');
         document.getElementById('hypo-t0-avpu').value = selectedAvpu || '-';
+      } else if (target === 'suivi-brulure') {
+        indicator.textContent = 'Surveillance Brûlure';
+        p0Container.style.display = 'none';
+
+        document.getElementById('brul-t0-pa').value = document.getElementById('c-pa').value.trim() || '-';
+        document.getElementById('brul-t0-pouls').value = (document.getElementById('c-fc').value.trim() ? document.getElementById('c-fc').value.trim() + ' bpm' : '-');
+        document.getElementById('brul-t0-spo2').value = (document.getElementById('c-spo2').value.trim() ? document.getElementById('c-spo2').value.trim() + '%' : '-');
+        document.getElementById('brul-t0-hbco').value = (document.getElementById('c-hbco') && document.getElementById('c-hbco').value.trim() ? document.getElementById('c-hbco').value.trim() + '%' : '-');
+        document.getElementById('brul-t0-en').value = (document.getElementById('c-eva').value.trim() ? document.getElementById('c-eva').value.trim() + '/10' : '-');
+        document.getElementById('brul-t0-avpu').value = selectedAvpu || '-';
+      } else if (target === 'pec-mere') {
+        indicator.textContent = 'PEC de la mère';
+        p0Container.style.display = 'none';
+      } else if (target === 'pec-enfant') {
+        indicator.textContent = 'PEC du nouveau-né';
+        p0Container.style.display = 'none';
       } else if (target === 'resume') {
         indicator.textContent = 'Résumé global';
         p0Container.style.display = 'none';
         const motif = document.getElementById('motif-select').value;
         const btnBack = document.getElementById('btn-back-resume');
-        if (motif === 'Brûlure') {
-          btnBack.onclick = () => goToPage('suivi-brulure');
+        if (motif === 'Accouchement') {
+          btnBack.onclick = () => goToPage('pec-enfant');
         } else if (motif === 'Détresse respiratoire') {
           btnBack.onclick = () => goToPage('therapeutique');
         } else if (motif === 'Allergie') {
           btnBack.onclick = () => goToPage('suivi-allergie');
         } else if (motif === 'Hypoglycémie') {
           btnBack.onclick = () => goToPage('suivi-hypo');
+        } else if (motif === 'Brûlure') {
+          btnBack.onclick = () => goToPage('suivi-brulure');
         } else {
           btnBack.onclick = () => goToPage('regu');
         }
@@ -2316,137 +2653,129 @@
     function selectTypeBrulure(type) {
       brulureType = type;
       ['chimique', 'thermique', 'electrique', 'rayonnement'].forEach(t => {
-        const btn = document.getElementById(`btn-bru-${t}`);
-        if (btn) btn.classList.toggle('active', t === type);
+        const btn = document.getElementById(`btn-type-${t}`);
+        if (btn) btn.classList.remove('active');
+        const encart = document.getElementById(`encart-${t}`);
+        if (encart) encart.style.display = 'none';
       });
 
-      document.getElementById('bru-encart-chimique').style.display = (type === 'chimique') ? 'block' : 'none';
-      document.getElementById('bru-encart-thermique').style.display = (type === 'thermique') ? 'block' : 'none';
-      document.getElementById('bru-encart-electrique').style.display = (type === 'electrique') ? 'block' : 'none';
+      const activeBtn = document.getElementById(`btn-type-${type}`);
+      if (activeBtn) activeBtn.classList.add('active');
 
-      if (type !== 'thermique') {
-        brulureInhalationFumees = '';
-        document.getElementById('bru-encart-fumees-oui').style.display = 'none';
-        document.getElementById('btn-fumees-oui').classList.remove('active-green');
-        document.getElementById('btn-fumees-non').classList.remove('active-red');
-      }
+      const activeEncart = document.getElementById(`encart-${type}`);
+      if (activeEncart) activeEncart.style.display = 'block';
     }
 
-    function selectInhalationFumees(val) {
-      brulureInhalationFumees = val;
-      const btnOui = document.getElementById('btn-fumees-oui');
-      const btnNon = document.getElementById('btn-fumees-non');
-      const encartOui = document.getElementById('bru-encart-fumees-oui');
+    function selectFumeeInhalation(val) {
+      fumeeInhalation = val;
+      const btnOui = document.getElementById('btn-fumee-oui');
+      const btnNon = document.getElementById('btn-fumee-non');
+      const encartOui = document.getElementById('encart-fumee-oui');
 
-      if (val === 'oui') {
-        btnOui.classList.add('active-green');
-        btnNon.classList.remove('active-red');
-        encartOui.style.display = 'block';
+      if (val) {
+        btnOui.classList.add('active');
+        btnNon.classList.remove('active');
+        if (encartOui) encartOui.style.display = 'block';
       } else {
-        btnNon.classList.add('active-red');
-        btnOui.classList.remove('active-green');
-        encartOui.style.display = 'none';
+        btnNon.classList.add('active');
+        btnOui.classList.remove('active');
+        if (encartOui) encartOui.style.display = 'none';
       }
     }
 
-    function toggleSourceElectrique(btn) {
-      sourceElecCoupee = !sourceElecCoupee;
-      btn.classList.toggle('active', sourceElecCoupee);
-      btn.textContent = sourceElecCoupee ? 'source de courant coupée' : "Attention, assurez vous que la source éléctrique ai bien été coupée";
+    function toggleSourceElectrique(elem) {
+      if (elem.textContent.includes('coupée') && !elem.textContent.includes('bien')) {
+        elem.textContent = "Attention, assurez vous que la source électrique ait bien été coupée";
+        elem.style.background = 'var(--danger-bg)';
+        elem.style.color = 'var(--danger)';
+      } else {
+        elem.textContent = "source de courant coupée";
+        elem.style.background = 'var(--success-bg)';
+        elem.style.color = 'var(--success)';
+      }
     }
 
-    function selectProfondeur(btnElem, prof) {
+    function selectProfondeur(elem, prof) {
       brulureProfondeur = prof;
-      btnElem.parentElement.querySelectorAll('.btn-toggle-action').forEach(b => b.classList.remove('active'));
-      btnElem.classList.add('active');
+      const container = document.getElementById('profondeur-container');
+      if (container) {
+        container.querySelectorAll('.thera-box').forEach(b => {
+          b.style.borderColor = 'var(--border)';
+          b.style.background = '#ffffff';
+        });
+      }
+      elem.style.borderColor = 'var(--primary)';
+      elem.style.background = '#e0f2fe';
     }
 
-    function toggleWallaceModal(show) {
-      const modal = document.getElementById('modal-wallace');
-      modal.style.display = show ? 'flex' : 'none';
+    function toggleScbPart(btn) {
+      btn.classList.toggle('active');
+      let sum = 0;
+      document.querySelectorAll('.scb-part.active').forEach(b => {
+        sum += parseInt(b.getAttribute('data-val') || '0', 10);
+      });
+      totalScb = sum;
+      const disp = document.getElementById('scb-total-display');
+      if (disp) disp.textContent = totalScb;
     }
 
     function checkBrulureGravite() {
-      const cervico = document.getElementById('bru-grav-cervico').checked;
-      const circulaire = document.getElementById('bru-grav-circulaire').checked;
-      const inhalation = document.getElementById('bru-grav-inhalation').checked;
-      const hasGravite = cervico || circulaire || inhalation;
+      const cervico = document.getElementById('brul-grav-cervico').checked;
+      const circulaire = document.getElementById('brul-grav-circulaire').checked;
+      const inhalation = document.getElementById('brul-grav-inhalation').checked;
 
-      const encartRenfort = document.getElementById('bru-encart-renfort');
-      if (encartRenfort) encartRenfort.style.display = hasGravite ? 'block' : 'none';
+      const hasGravite = cervico || circulaire || inhalation;
+      const msg = document.getElementById('brul-renfort-msg');
+      if (msg) msg.style.display = hasGravite ? 'block' : 'none';
 
       const demandeSelect = document.getElementById('demande-type');
       if (demandeSelect) {
-        if (hasGravite) {
-          demandeSelect.value = 'Renfort SMUR';
-        } else {
-          demandeSelect.value = 'PSIS Brûlure';
-        }
+        demandeSelect.value = hasGravite ? 'Renfort SMUR' : 'PSIS Brûlure';
       }
     }
 
-    // CONSTRUCTION DYNAMIQUE THÉRAPEUTIQUE BRÛLURE
-    function buildBrulureTheraPage() {
-      const scbVal = parseFloat(document.getElementById('bru-scb-val').value) || 0;
-      const vvpContainer = document.getElementById('bru-thera-vvp-container');
-      
-      if (scbVal > 10) {
-        vvpContainer.innerHTML = `
-          <button type="button" class="btn-toggle-action orange" id="btn-bru-vvp2" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ VVP posées' : '💉 Pose de 2 VVP';">
-            💉 Pose de 2 VVP
-          </button>
-          <button type="button" class="btn-toggle-action orange" id="btn-bru-remplissage" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ hydratation administrée' : 'SCB> 10% → isofundine IV 20mL/kg la première heure';">
-            SCB> 10% → isofundine IV 20mL/kg la première heure
-          </button>
-        `;
-      } else {
-        vvpContainer.innerHTML = `
-          <button type="button" class="btn-toggle-action orange" id="btn-bru-vvp1" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ VVP posée' : 'pose d\'une VVP';">
-            pose d'une VVP
-          </button>
-        `;
+    function setupBrulureTherapeutiqueUI() {
+      const vvpContainer = document.getElementById('brul-vvp-container');
+      const douleurContainer = document.getElementById('brul-douleur-container');
+
+      if (vvpContainer) {
+        if (totalScb > 10) {
+          vvpContainer.innerHTML = `
+            <button type="button" class="btn-toggle-action" id="btn-brul-2vvp" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ VVP posées' : '💉 Pose de 2 VVP';">
+              💉 Pose de 2 VVP
+            </button>
+            <button type="button" class="btn-toggle-action orange" id="btn-brul-isofundine" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ hydratation administrée' : 'SCB > 10% → isofundine IV 20mL/kg la première heure';">
+              SCB > 10% → isofundine IV 20mL/kg la première heure
+            </button>
+          `;
+        } else {
+          vvpContainer.innerHTML = `
+            <button type="button" class="btn-toggle-action" id="btn-brul-1vvp" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ VVP posée' : '💉 Pose d\\'une VVP';">
+              💉 Pose d'une VVP
+            </button>
+          `;
+        }
       }
 
-      const enVal = parseInt(document.getElementById('c-eva').value, 10);
-      const douleurContainer = document.getElementById('bru-douleur-algo-container');
-      const poids = parseInt(document.getElementById('patient-poids').value, 10) || 70;
-
-      if (isNaN(enVal) || enVal === 0) {
-        douleurContainer.innerHTML = `<p style="color: var(--text-muted); font-size: 0.95rem;">Aucune douleur (EN = 0 ou non renseignée).</p>`;
-      } else if (enVal >= 1 && enVal <= 5) {
-        douleurContainer.innerHTML = `
-          <div class="row-2" style="margin-bottom: 10px;">
-            <button type="button" class="btn-toggle-action" onclick="this.classList.toggle('active');">MEOPA avec valve</button>
-            <button type="button" class="btn-toggle-action" onclick="this.classList.toggle('active');">Paracétamol IV 1g IVL/20min</button>
-          </div>
-          <div style="background: #fee2e2; border: 1.5px solid #fca5a5; border-radius: 6px; padding: 10px; color: #991b1b; font-size: 0.85rem; font-weight: 700;">
-            🚫 <strong>Contre-indications Paracétamol :</strong> Insuffisance hépatique sévère.
-          </div>
-          <div style="background: #fee2e2; border: 1.5px solid #fca5a5; border-radius: 6px; padding: 10px; margin-top: 8px; color: #991b1b; font-size: 0.85rem; font-weight: 700;">
-            🚫 <strong>Contre-indications MEOPA :</strong> Trouble de la conscience, HTIC, pneumothorax, bulle d'emphysème, accident de plongée, asthme / BPCO.
-          </div>
-          <div style="background: #e0f2fe; border: 1.5px solid #7dd3fc; border-radius: 6px; padding: 10px; margin-top: 12px; color: #0369a1; font-weight: 800; text-align: center;">
-            Patient scopé — Surveillance des effets secondaires — Réévaluation de la douleur : EN
-          </div>
-        `;
-      } else if (enVal >= 6) {
-        let morphineDose = (poids <= 60) ? '2 mg' : '3 mg';
-        douleurContainer.innerHTML = `
-          <div style="margin-bottom: 12px; text-align: center;">
-            <span style="background: #0f172a; color: #fff; padding: 8px 16px; border-radius: 8px; font-weight: 800;">Poids : ${poids} kg ➔ Morphine ${morphineDose} IVD</span>
-          </div>
-          <button type="button" class="btn-toggle-action orange" onclick="this.classList.toggle('active');" style="margin-bottom: 10px;">
-            Morphine ${morphineDose} IVD (Répéter même dose toutes les 5min jusqu'à EN ≤ 3 — MAX 10mg)
-          </button>
-          <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 12px; margin-top: 10px; color: #b45309;">
-            <div style="font-weight: 900; margin-bottom: 6px;">⚠️ SURDOSAGE : STOP MORPHINE + APPEL C15</div>
-            <p style="font-size: 0.88rem; margin-bottom: 6px;">Tb de la conscience / bradypnée avec FR < 10 par minute / apnées / désaturation / bradycardie extrême</p>
-            <p style="font-size: 0.88rem; font-weight: 800;">• MHC 15L/min<br>• NALOXONE 0.1mg/2min pour obj FR > 12 + amélioration clinique</p>
-          </div>
-          <div style="background: #fee2e2; border: 1.5px solid #fca5a5; border-radius: 6px; padding: 10px; margin-top: 10px; color: #991b1b; font-size: 0.85rem; font-weight: 700;">
-            🚫 <strong>Contre-indications Morphine :</strong> Insuffisance respi aiguë, hypotension artérielle, coma, TC avec HTIC, épilepsie non contrôlée, insuffisance hépatique sévère.
-          </div>
-        `;
+      if (douleurContainer) {
+        const enVal = parseInt(document.getElementById('c-eva').value || '0', 10);
+        if (enVal < 4) {
+          douleurContainer.innerHTML = `<div class="alert-box alert-green">EN < 4 : Surveillance et antalgique palier 1 si besoin (Paracétamol)</div>`;
+        } else if (enVal >= 4 && enVal <= 6) {
+          douleurContainer.innerHTML = `
+            <div class="thera-box" style="border-left: 6px solid var(--samu-yellow);">
+              <div class="thera-title">EN entre 4 et 6 : Antalgie intermédiaire / MEOPA</div>
+              <button type="button" class="btn-toggle-action orange" onclick="this.classList.toggle('active')">Administration MEOPA / Paracétamol IV</button>
+            </div>
+          `;
+        } else {
+          douleurContainer.innerHTML = `
+            <div class="thera-box" style="border-left: 6px solid var(--danger);">
+              <div class="thera-title">EN > 6 : Douleur sévère</div>
+              <button type="button" class="btn-toggle-action orange" onclick="this.classList.toggle('active')">Titration Morphinique / MEOPA selon prescription</button>
+            </div>
+          `;
+        }
       }
     }
 
@@ -2488,6 +2817,7 @@
       btn.textContent = btn.classList.contains('active') ? '✓ MIS EN PLS' : 'METTRE EN POSITION LATÉRALE DE SÉCURITÉ';
     }
 
+    // LOGIQUE THÉRAPEUTIQUE HYPO (REFONDUE)
     function selectHypoPerOs(res) {
       const btnOui = document.getElementById('btn-peros-oui');
       const btnNon = document.getElementById('btn-peros-non');
@@ -2730,6 +3060,106 @@
       }
     }
 
+    // PEC MÈRE
+    function onPertesChange() {
+      const val = document.getElementById('select-pertes').value;
+      const blocVert = document.getElementById('bloc-pertes-vert');
+      const blocRouge = document.getElementById('bloc-pertes-rouge');
+
+      if (val === 'inf500') {
+        blocVert.style.display = 'block';
+        blocRouge.style.display = 'none';
+      } else {
+        blocVert.style.display = 'none';
+        blocRouge.style.display = 'block';
+      }
+    }
+
+    function toggleVvpMere(btn) {
+      btn.classList.toggle('active');
+      btn.textContent = btn.classList.contains('active') ? '✓ VVP posée' : '💉 Pose de VVP';
+    }
+
+    function addPrescription(select) {
+      const val = select.value;
+      if (!val) return;
+      createTagBadge(val, 'prescription-tags', false, true);
+      select.selectedIndex = 0;
+    }
+
+    // NOUVEAU-NÉ
+    function actionBonneAdaptation(motifTxt = 'Bonne adaptation confirmée') {
+      statutNouveauNe = motifTxt;
+      document.getElementById('nn-step-stimul').style.display = 'none';
+      document.getElementById('nn-step-bavu5').style.display = 'none';
+      document.getElementById('nn-step-bavu10').style.display = 'none';
+      document.getElementById('nn-sub-15insuff').style.display = 'none';
+      document.getElementById('nn-sub-rcp').style.display = 'none';
+
+      const grandCarre = document.getElementById('bloc-grand-carre-vert');
+      grandCarre.style.display = 'block';
+      grandCarre.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function actionEchecInit() {
+      statutNouveauNe = 'Critère de mauvaise adaptation initial';
+      document.getElementById('bloc-grand-carre-vert').style.display = 'none';
+      document.getElementById('nn-step-stimul').style.display = 'block';
+      document.getElementById('nn-step-stimul').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function actionEchecStimul() {
+      statutNouveauNe = 'Échec stimulation -> Appel régulateur + 5 insufflations BAVU';
+      document.getElementById('bloc-grand-carre-vert').style.display = 'none';
+      document.getElementById('nn-step-bavu5').style.display = 'block';
+      document.getElementById('nn-step-bavu5').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function actionEchecBavu5() {
+      statutNouveauNe = 'Échec 5 insufflations -> 10 insufflations BAVU';
+      document.getElementById('bloc-grand-carre-vert').style.display = 'none';
+      document.getElementById('nn-step-bavu10').style.display = 'block';
+      document.getElementById('nn-step-bavu10').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function actionFc60100() {
+      statutNouveauNe = 'FC 60-100 bpm -> 15 insufflations sans O2';
+      document.getElementById('nn-sub-15insuff').style.display = 'block';
+      document.getElementById('nn-sub-rcp').style.display = 'none';
+      document.getElementById('nn-sub-15insuff').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function actionFcInf60() {
+      statutNouveauNe = 'FC < 60 bpm -> RCP 3/1 sous O2 15L';
+      document.getElementById('nn-sub-15insuff').style.display = 'none';
+      document.getElementById('nn-sub-rcp').style.display = 'block';
+      document.getElementById('nn-sub-rcp').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // SCORE D'APGAR
+    const apgarScores = { '1m': 10, '3m': null, '5m': null };
+    let curApgarTab = '1m';
+
+    function switchApgarTab(tab) {
+      curApgarTab = tab;
+      ['1m', '3m', '5m'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) btn.classList.toggle('active', t === tab);
+      });
+      document.getElementById('apgar-cur-label').textContent = `${tab.replace('m', ' min')}`;
+      calculateApgar();
+    }
+
+    function calculateApgar() {
+      let sum = 0;
+      document.querySelectorAll('.apgar-input').forEach(sel => {
+        sum += parseInt(sel.value, 10);
+      });
+      apgarScores[curApgarTab] = sum;
+      document.getElementById('apgar-cur-score').textContent = `${sum} / 10`;
+      document.getElementById(`res-${curApgarTab}`).textContent = `${sum}/10`;
+    }
+
     // SCORE AVPU
     function selectAvpu(btn, score) {
       if (btn.classList.contains('active')) {
@@ -2815,31 +3245,6 @@
       };
     }
 
-    // CLINIQUE BRÛLURE
-    function getBrulureData() {
-      let gravites = [];
-      if (document.getElementById('bru-grav-cervico').checked) gravites.push('Brûlure cervico faciale');
-      if (document.getElementById('bru-grav-circulaire').checked) gravites.push('Brûlure circulaire');
-      if (document.getElementById('bru-grav-inhalation').checked) gravites.push('Brûlure par inhalation');
-
-      let gestes = [];
-      if (document.getElementById('bru-geste-refroidissement').checked) gestes.push("Refroidissement à l'eau tiède");
-      if (document.getElementById('bru-geste-vetements').checked) gestes.push('Retrait des vetements non adhérents');
-      if (document.getElementById('bru-geste-protection').checked) gestes.push('Protection des zones brulées');
-      if (document.getElementById('bru-geste-rechauffage').checked) gestes.push('Réchauffage du patient + cellule AR');
-      if (document.getElementById('bru-geste-brulstop').checked) gestes.push('Pose et retrait des brulstop à 15 min');
-
-      return {
-        type: brulureType || 'Non renseigné',
-        inhalationFumees: brulureInhalationFumees ? `Inhalation de fumées: ${brulureInhalationFumees}` : '',
-        sourceElec: (brulureType === 'electrique') ? (sourceElecCoupee ? 'Source de courant coupée' : 'Source de courant non confirmée coupée') : '',
-        profondeur: brulureProfondeur || 'Non renseignée',
-        scb: document.getElementById('bru-scb-val').value ? document.getElementById('bru-scb-val').value + '%' : 'Non renseignée',
-        gravites: gravites.length > 0 ? gravites.join(', ') : 'Aucun',
-        gestes: gestes.length > 0 ? gestes.join(', ') : 'Aucun'
-      };
-    }
-
     // CLINIQUE ALLERGIE
     function getAllergieData() {
       let signes = [];
@@ -2888,7 +3293,6 @@
       if (document.getElementById('hypo-cause-tc').checked) causes.push("Traumatisme crânien");
 
       let gravites = [];
-      if (document.getElementById('hypo-grav-convulsion').checked) causes.push("Convulsion"); // Note: keeping logic intact
       if (document.getElementById('hypo-grav-convulsion').checked) gravites.push("Convulsion");
       if (document.getElementById('hypo-grav-pdc').checked) gravites.push("Perte de connaissance");
       if (document.getElementById('hypo-grav-deglutir').checked) gravites.push("Impossibilité de déglutir");
@@ -2942,14 +3346,26 @@
       const hospit = getTagsText('hospit-tags');
 
       let evalMotif = '';
-      if (motif === 'Brûlure') {
-        const bru = getBrulureData();
+      if (motif === 'Accouchement') {
+        const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
+        const gemellaire = document.getElementById('acc-gemellaire').checked ? 'OUI' : 'NON';
+        const debutTravail = `${document.getElementById('acc-debut-hh').value}:${document.getElementById('acc-debut-mm').value}`;
+        const perteEaux = document.getElementById('acc-perte-eaux').checked ? 'OUI' : 'NON';
+        const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
+        const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
+
+        let prepa = [];
+        if (document.getElementById('acc-rechauffe').checked) prepa.push('cellule réchauffée');
+        if (document.getElementById('acc-scope').checked) prepa.push('scope');
+        if (document.getElementById('acc-o2').checked) prepa.push('O2 SpO2 > 94%');
+        if (document.getElementById('acc-aspi').checked) prepa.push('aspi mucosités CH 8');
+
         evalMotif = 
-`- Type de brûlure : ${bru.type}
-${bru.inhalationFumees ? '- ' + bru.inhalationFumees + '\n' : ''}${bru.sourceElec ? '- ' + bru.sourceElec + '\n' : ''}- Profondeur : ${bru.profondeur}
-- Surface corporelle brûlée (SCB) : ${bru.scb}
-- Signes de gravité : ${bru.gravites}
-- Gestes réalisés : ${bru.gestes}`;
+`- Terme prévu : ${terme} | Grossesse gémellaire : ${gemellaire}
+- Début du travail : ${debutTravail}
+- Perte des eaux : ${perteEaux}
+- Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
+- Mesures associées : ${prepa.length > 0 ? prepa.join(', ') : 'En cours'}`;
       } else if (motif === 'Détresse respiratoire') {
         const dr = getDetresseRespiData();
         evalMotif = 
@@ -2971,6 +3387,18 @@ ${bru.inhalationFumees ? '- ' + bru.inhalationFumees + '\n' : ''}${bru.sourceEle
 - Autre cause de coma : ${hypo.causes}
 - Signes de gravité : ${hypo.gravites}
 - Position latérale de sécurité (PLS) : ${hypo.pls}`;
+      } else if (motif === 'Brûlure') {
+        let grav = [];
+        if (document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
+        if (document.getElementById('brul-grav-circulaire').checked) grav.push('circulaire');
+        if (document.getElementById('brul-grav-inhalation').checked) grav.push('inhalation');
+
+        evalMotif =
+`- Type de brûlure : ${brulureType || 'Non spécifié'}
+- Inhalation de fumées : ${fumeeInhalation ? 'Oui' : 'Non'}
+- Profondeur : ${brulureProfondeur || 'Non spécifiée'}
+- Surface corporelle brûlée (SCB) : ${totalScb}%
+- Signes de gravité : ${grav.length > 0 ? grav.join(', ') : 'Aucun'}`;
       } else {
         evalMotif = `- Bilan clinique spécifique : ${motif}`;
       }
@@ -2992,7 +3420,7 @@ ${bru.inhalationFumees ? '- ' + bru.inhalationFumees + '\n' : ''}${bru.sourceEle
       if (fr) constList.push(`FR: ${fr}/min`);
       if (hgt) constList.push(`HGT: ${hgt} g/L`);
       if (temp) constList.push(`T°: ${temp}°C`);
-      if (eva) constList.push(`EN: ${eva}/10`);
+      if (eva) constList.push(`EVA/EN: ${eva}/10`);
       if (trc) constList.push(`TRC: ${trc}s`);
       if (hbco) constList.push(`HbCO: ${hbco}%`);
       if (selectedAvpu) constList.push(`AVPU: ${selectedAvpu}`);
@@ -3039,7 +3467,7 @@ ${demandeText}
       });
     }
 
-    // RÉSUMÉ FINAL & ENREGISTREMENT LOCAL (Mis à jour pour inclure exhaustivement l'ensemble des éléments thérapeutiques et de suivi)
+    // RÉSUMÉ FINAL & ENREGISTREMENT LOCAL
     function generateResumeFinal() {
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
@@ -3054,7 +3482,7 @@ ${demandeText}
       if (document.getElementById('c-fr').value) cInit.push(`FR: ${document.getElementById('c-fr').value}/min`);
       if (document.getElementById('c-hgt').value) cInit.push(`HGT: ${document.getElementById('c-hgt').value} g/L`);
       if (document.getElementById('c-temp').value) cInit.push(`T°: ${document.getElementById('c-temp').value}°C`);
-      if (document.getElementById('c-eva').value) cInit.push(`EN: ${document.getElementById('c-eva').value}/10`);
+      if (document.getElementById('c-eva').value) cInit.push(`EVA: ${document.getElementById('c-eva').value}/10`);
       if (document.getElementById('c-trc').value) cInit.push(`TRC: ${document.getElementById('c-trc').value}s`);
       if (document.getElementById('c-hbco') && document.getElementById('c-hbco').value) cInit.push(`HbCO: ${document.getElementById('c-hbco').value}%`);
       if (selectedAvpu) cInit.push(`AVPU: ${selectedAvpu}`);
@@ -3064,35 +3492,55 @@ ${demandeText}
 
       let specificSection = '';
 
-      if (motif === 'Brûlure') {
-        const bru = getBrulureData();
-        const t0Str = `PA: ${document.getElementById('bru-t0-pa').value}, Pouls: ${document.getElementById('bru-t0-pouls').value}, SpO2: ${document.getElementById('bru-t0-spo2').value}, HbCO: ${document.getElementById('bru-t0-hbco').value}, EN: ${document.getElementById('bru-t0-en').value}, AVPU: ${document.getElementById('bru-t0-avpu').value}`;
-        const t15Str = `PA: ${document.getElementById('bru-t15-pa').value || '-'}, Pouls: ${document.getElementById('bru-t15-pouls').value || '-'} bpm, SpO2: ${document.getElementById('bru-t15-spo2').value || '-'}%, HbCO: ${document.getElementById('bru-t15-hbco').value || '-'}%, EN: ${document.getElementById('bru-t15-en').value || '-'}, AVPU: ${document.getElementById('bru-t15-avpu').value}`;
-        const t30Str = `PA: ${document.getElementById('bru-t30-pa').value || '-'}, Pouls: ${document.getElementById('bru-t30-pouls').value || '-'} bpm, SpO2: ${document.getElementById('bru-t30-spo2').value || '-'}%, HbCO: ${document.getElementById('bru-t30-hbco').value || '-'}%, EN: ${document.getElementById('bru-t30-en').value || '-'}, AVPU: ${document.getElementById('bru-t30-avpu').value}`;
+      if (motif === 'Accouchement') {
+        const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
+        const gemellaire = document.getElementById('acc-gemellaire').checked ? 'Oui' : 'Non';
+        const debutTravail = `${document.getElementById('acc-debut-hh').value}:${document.getElementById('acc-debut-mm').value}`;
+        const perteEaux = document.getElementById('acc-perte-eaux').checked ? 'Oui' : 'Non';
+        const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
+        const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
 
-        let theraBruList = [];
-        const btnVvp1 = document.getElementById('btn-bru-vvp1');
-        const btnVvp2 = document.getElementById('btn-bru-vvp2');
-        const btnRemplissage = document.getElementById('bru-remplissage') || document.getElementById('btn-bru-remplissage');
-        if (btnVvp1 && btnVvp1.classList.contains('active')) theraBruList.push('VVP posée');
-        if (btnVvp2 && btnVvp2.classList.contains('active')) theraBruList.push('2 VVP posées');
-        if (btnRemplissage && btnRemplissage.classList.contains('active')) theraBruList.push('Remplissage isofundine IV administré');
+        const vvpPosee = document.getElementById('btn-vvp-mere').classList.contains('active') ? 'Oui' : 'Non';
+        const pertes = document.getElementById('select-pertes').value === 'sup500' ? '> 500 ml (Hémorragie délivrance)' : '< 500 ml (Physiologique)';
+
+        let mereDetails = [];
+        if (document.getElementById('select-pertes').value === 'sup500') {
+          let gestesHemo = [];
+          if (document.getElementById('geste-mhc').checked) gestesHemo.push('O2 MHC');
+          if (document.getElementById('geste-massage').checked) gestesHemo.push('Massage utérin');
+          if (document.getElementById('geste-vvp2').checked) gestesHemo.push('2ème VVP');
+          mereDetails.push(`Gestes d'urgence : ${gestesHemo.join(', ') || 'aucun coché'}`);
+
+          let chocConst = [];
+          if (document.getElementById('choc-fc').value) chocConst.push(`Pouls: ${document.getElementById('choc-fc').value} bpm`);
+          if (document.getElementById('choc-ta').value) chocConst.push(`TA: ${document.getElementById('choc-ta').value}`);
+          if (document.getElementById('choc-sat').value) chocConst.push(`Sat: ${document.getElementById('choc-sat').value}%`);
+          if (document.getElementById('choc-hb').value) chocConst.push(`Hb: ${document.getElementById('choc-hb').value} g/L`);
+          if (chocConst.length > 0) mereDetails.push(`Constantes choc : ${chocConst.join(' | ')}`);
+
+          const prescr = getTagsText('prescription-tags');
+          mereDetails.push(`Prescriptions médicales : ${prescr}`);
+        }
+
+        const apgar1 = apgarScores['1m'] !== null ? `${apgarScores['1m']}/10` : 'Non calculé';
+        const apgar3 = apgarScores['3m'] !== null ? `${apgarScores['3m']}/10` : 'Non calculé';
+        const apgar5 = apgarScores['5m'] !== null ? `${apgarScores['5m']}/10` : 'Non calculé';
 
         specificSection = 
-`3. BILAN CLINIQUE BRÛLURE
-- Type de brûlure : ${bru.type}
-${bru.inhalationFumees ? '- ' + bru.inhalationFumees + '\n' : ''}${bru.sourceElec ? '- ' + bru.sourceElec + '\n' : ''}- Profondeur : ${bru.profondeur}
-- Surface corporelle brûlée (SCB) : ${bru.scb}
-- Signes de gravité : ${bru.gravites}
-- Gestes réalisés : ${bru.gestes}
+`3. PROTOCOLE OBSTÉTRICAL
+- Terme : ${terme} | Grossesse gémellaire : ${gemellaire}
+- Début travail : ${debutTravail} | Perte des eaux : ${perteEaux}
+- Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
 
-4. THÉRAPEUTIQUE & PRISE EN CHARGE
-- Actes / Voies d'abord / Hydratation : ${theraBruList.length > 0 ? theraBruList.join(', ') : 'Aucun acte thérapeutique coché'}
+4. PRISE EN CHARGE MATERNELLE
+- VVP : ${vvpPosee} | Pertes sanguines : ${pertes}
+${mereDetails.map(l => '- ' + l).join('\n')}
 
-5. SURVEILLANCE & CONSTANTES
-- T0 : ${t0Str}
-- T+15 min : ${t15Str}
-- T+30 min : ${t30Str}`;
+5. PRISE EN CHARGE DU NOUVEAU-NÉ
+- Évolution clinique : ${statutNouveauNe}
+- Clampage (15 cm) & réchauffement Neohelp réalisés
+- Score d'APGAR : 1 min: ${apgar1} | 3 min: ${apgar3} | 5 min: ${apgar5}
+- Pose de SpO2 : Effectuée`;
       } else if (motif === 'Détresse respiratoire') {
         const dr = getDetresseRespiData();
         const vvpThera = document.getElementById('btn-vvp-thera').classList.contains('active') ? 'Oui' : 'Non';
@@ -3193,6 +3641,36 @@ ${bru.inhalationFumees ? '- ' + bru.inhalationFumees + '\n' : ''}${bru.sourceEle
 - T0 : ${t0Str}
 - T+5 min : ${t5Str}
 - T+10 min : ${t10Str}`;
+      } else if (motif === 'Brûlure') {
+        let grav = [];
+        if (document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
+        if (document.getElementById('brul-grav-circulaire').checked) grav.push('circulaire');
+        if (document.getElementById('brul-grav-inhalation').checked) grav.push('inhalation');
+
+        let gestes = [];
+        if (document.getElementById('geste-refroidissement').checked) gestes.push("Refroidissement eau tiède");
+        if (document.getElementById('geste-retrait-vet').checked) gestes.push("Retrait vêtements non adhérents");
+        if (document.getElementById('geste-protection').checked) gestes.push("Protection zones brûlées");
+        if (document.getElementById('geste-rechauffage').checked) gestes.push("Réchauffage + cellule AR");
+        if (document.getElementById('geste-brulstop').checked) gestes.push("Brûlstop 15 min");
+
+        const t0Str = `PA: ${document.getElementById('brul-t0-pa').value}, Pouls: ${document.getElementById('brul-t0-pouls').value}, SpO2: ${document.getElementById('brul-t0-spo2').value}, HbCO: ${document.getElementById('brul-t0-hbco').value}, EN: ${document.getElementById('brul-t0-en').value}, AVPU: ${document.getElementById('brul-t0-avpu').value}`;
+        const t15Str = `PA: ${document.getElementById('brul-t15-pa').value || '-'}, Pouls: ${document.getElementById('brul-t15-pouls').value || '-'}, SpO2: ${document.getElementById('brul-t15-spo2').value || '-'}%, HbCO: ${document.getElementById('brul-t15-hbco').value || '-'}%, EN: ${document.getElementById('brul-t15-en').value || '-'}, AVPU: ${document.getElementById('brul-t15-avpu').value}`;
+        const t30Str = `PA: ${document.getElementById('brul-t30-pa').value || '-'}, Pouls: ${document.getElementById('brul-t30-pouls').value || '-'}, SpO2: ${document.getElementById('brul-t30-spo2').value || '-'}%, HbCO: ${document.getElementById('brul-t30-hbco').value || '-'}%, EN: ${document.getElementById('brul-t30-en').value || '-'}, AVPU: ${document.getElementById('brul-t30-avpu').value}`;
+
+        specificSection = 
+`3. BILAN BRÛLURE
+- Type de brûlure : ${brulureType || 'Non spécifié'}
+- Inhalation fumées : ${fumeeInhalation ? 'Oui' : 'Non'}
+- Profondeur : ${brulureProfondeur || 'Non spécifiée'}
+- Surface corporelle brûlée (SCB) : ${totalScb}%
+- Signes de gravité : ${grav.length > 0 ? grav.join(', ') : 'Aucun'}
+- Gestes réalisés : ${gestes.length > 0 ? gestes.join(', ') : 'Aucun'}
+
+4. SURVEILLANCE & CONSTANTES BRÛLURE
+- T0 : ${t0Str}
+- T+15 min : ${t15Str}
+- T+30 min : ${t30Str}`;
       }
 
       const resumeTxt = 
