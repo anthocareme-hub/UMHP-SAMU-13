@@ -1290,7 +1290,7 @@
     <div id="page-motif-autre" class="page">
       <div class="card" style="text-align: center; padding: 40px 16px;">
         <h3 id="motif-autre-titre" style="margin-bottom: 12px;">Motif spécifique</h3>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">La page dédiée pour هذا motif sera construite selon tes consignes.</p>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">La page dédiée pour ce motif sera construite selon tes consignes.</p>
         <div class="nav-actions">
           <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
           <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
@@ -3534,7 +3534,7 @@ ${demandeText}
       });
     }
 
-    // RÉSUMÉ FINAL & ENREGISTREMENT LOCAL
+    // RÉSUMÉ FINAL & ENREGISTREMENT LOCAL (EXHAUSTIF AVEC TOUTES LES ACTIONS POST-APPEL)
     function generateResumeFinal() {
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
@@ -3721,6 +3721,20 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
         if (document.getElementById('geste-rechauffage').checked) gestes.push("Réchauffage + cellule AR");
         if (document.getElementById('geste-brulstop').checked) gestes.push("Brûlstop 15 min");
 
+        // Récupération des actions thérapeutiques post-appel brûlure (VVP, remplissage, antalgie/morphine)
+        let theraBrulure = [];
+        const btn1vvp = document.getElementById('btn-brul-1vvp');
+        const btn2vvp = document.getElementById('btn-brul-2vvp');
+        const btnIso = document.getElementById('btn-brul-isofundine');
+        if (btn1vvp && btn1vvp.classList.contains('active')) theraBrulure.push("1 VVP posée");
+        if (btn2vvp && btn2vvp.classList.contains('active')) theraBrulure.push("2 VVP posées");
+        if (btnIso && btnIso.classList.contains('active')) theraBrulure.push("Isofundine IV administré (SCB > 10%)");
+
+        const meopaChk = document.getElementById('brul-meopa');
+        const paracetamolChk = document.getElementById('brul-paracetamol');
+        if (meopaChk && meopaChk.checked) theraBrulure.push("MEOPA avec valve administré");
+        if (paracetamolChk && paracetamolChk.checked) theraBrulure.push("Paracétamol IV 1g administré");
+
         const t0Str = `PA: ${document.getElementById('brul-t0-pa').value}, Pouls: ${document.getElementById('brul-t0-pouls').value}, SpO2: ${document.getElementById('brul-t0-spo2').value}, HbCO: ${document.getElementById('brul-t0-hbco').value}, EN: ${document.getElementById('brul-t0-en').value}, AVPU: ${document.getElementById('brul-t0-avpu').value}`;
         const t15Str = `PA: ${document.getElementById('brul-t15-pa').value || '-'}, Pouls: ${document.getElementById('brul-t15-pouls').value || '-'}, SpO2: ${document.getElementById('brul-t15-spo2').value || '-'}%, HbCO: ${document.getElementById('brul-t15-hbco').value || '-'}%, EN: ${document.getElementById('brul-t15-en').value || '-'}, AVPU: ${document.getElementById('brul-t15-avpu').value}`;
         const t30Str = `PA: ${document.getElementById('brul-t30-pa').value || '-'}, Pouls: ${document.getElementById('brul-t30-pouls').value || '-'}, SpO2: ${document.getElementById('brul-t30-spo2').value || '-'}%, HbCO: ${document.getElementById('brul-t30-hbco').value || '-'}%, EN: ${document.getElementById('brul-t30-en').value || '-'}, AVPU: ${document.getElementById('brul-t30-avpu').value}`;
@@ -3734,7 +3748,10 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 - Signes de gravité : ${grav.length > 0 ? grav.join(', ') : 'Aucun'}
 - Gestes réalisés : ${gestes.length > 0 ? gestes.join(', ') : 'Aucun'}
 
-4. SURVEILLANCE & CONSTANTES BRÛLURE
+4. THÉRAPEUTIQUE & PRISE EN CHARGE BRÛLURE
+- Actions / Traitements post-appel : ${theraBrulure.length > 0 ? theraBrulure.join(', ') : 'Aucun'}
+
+5. SURVEILLANCE & CONSTANTES BRÛLURE
 - T0 : ${t0Str}
 - T+15 min : ${t15Str}
 - T+30 min : ${t30Str}`;
