@@ -1290,7 +1290,7 @@
     <div id="page-motif-autre" class="page">
       <div class="card" style="text-align: center; padding: 40px 16px;">
         <h3 id="motif-autre-titre" style="margin-bottom: 12px;">Motif spécifique</h3>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">La page dédiée pour ce motif sera construite selon tes consignes.</p>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">La page dédiée pour هذا motif sera construite selon tes consignes.</p>
         <div class="nav-actions">
           <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
           <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
@@ -1422,7 +1422,7 @@
       <div class="card">
         <div class="section-label">Prise en charge de la douleur (EN)</div>
         <div id="brul-douleur-container">
-          <!-- Rempli dynamiquement selon l'EN -->
+          <!-- Rempli dynamiquement selon l'EN, le poids et l'algorithme -->
         </div>
       </div>
 
@@ -2421,6 +2421,47 @@
     }
 
     function startNewIntervention() {
+      // Remise à zéro complète pour une nouvelle intervention vierge
+      document.getElementById('patient-nom').value = '';
+      document.getElementById('ddn-jour').selectedIndex = 0;
+      document.getElementById('ddn-mois').selectedIndex = 0;
+      document.getElementById('ddn-annee').value = '1980';
+      document.getElementById('patient-poids').value = '70';
+      
+      document.getElementById('toggle-p0').checked = false;
+      onP0Change();
+      
+      document.getElementById('atcd-tags').innerHTML = '';
+      document.getElementById('ttt-tags').innerHTML = '';
+      document.getElementById('allergies-tags').innerHTML = '';
+      document.getElementById('hospit-tags').innerHTML = '';
+      
+      document.getElementById('c-pa').value = '';
+      document.getElementById('c-fc').value = '';
+      document.getElementById('c-spo2').value = '';
+      document.getElementById('c-fr').value = '';
+      document.getElementById('c-hgt').value = '';
+      document.getElementById('c-temp').value = '';
+      document.getElementById('c-eva').value = '';
+      document.getElementById('c-trc').value = '';
+      if(document.getElementById('c-hbco')) document.getElementById('c-hbco').value = '';
+      
+      document.querySelectorAll('.avpu-btn').forEach(b => b.classList.remove('active'));
+      selectedAvpu = '';
+      
+      brulureType = '';
+      fumeeInhalation = false;
+      brulureProfondeur = '';
+      totalScb = 0;
+      document.querySelectorAll('.btn-toggle-action').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.scb-part').forEach(b => b.classList.remove('active'));
+      const scbDisp = document.getElementById('scb-total-display');
+      if (scbDisp) scbDisp.textContent = '0';
+      const brulRenfort = document.getElementById('brul-renfort-msg');
+      if (brulRenfort) brulRenfort.style.display = 'none';
+      
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+      
       goToPage(1);
     }
 
@@ -2759,22 +2800,48 @@
 
       if (douleurContainer) {
         const enVal = parseInt(document.getElementById('c-eva').value || '0', 10);
-        if (enVal < 4) {
-          douleurContainer.innerHTML = `<div class="alert-box alert-green">EN < 4 : Surveillance et antalgique palier 1 si besoin (Paracétamol)</div>`;
-        } else if (enVal >= 4 && enVal <= 6) {
+        const poidsVal = parseInt(document.getElementById('patient-poids').value || '70', 10);
+
+        if (enVal >= 1 && enVal <= 5) {
           douleurContainer.innerHTML = `
             <div class="thera-box" style="border-left: 6px solid var(--samu-yellow);">
-              <div class="thera-title">EN entre 4 et 6 : Antalgie intermédiaire / MEOPA</div>
-              <button type="button" class="btn-toggle-action orange" onclick="this.classList.toggle('active')">Administration MEOPA / Paracétamol IV</button>
+              <div class="thera-title">1 ≤ EN ≤ 5 : Protocole Antalgique Intermédiaire</div>
+              <label class="checkbox-item"><input type="checkbox" id="brul-meopa"> MEOPA avec valve</label>
+              <label class="checkbox-item"><input type="checkbox" id="brul-paracetamol"> Paracétamol IV 1g IVL/20min</label>
+              <div style="font-size:0.85rem; color:var(--danger); margin-top:6px; font-weight:700;">
+                ⚠️ Contre-indications MEOPA : Trouble de la conscience, HTIC, pneumothorax, bulle d'emphysème, accident de plongée, asthme / BPCO.<br>
+                ⚠️ Contre-indication Paracétamol : Insuffisance hépatique sévère.
+              </div>
+            </div>
+            <div style="background:#f8fafc; border:1px solid var(--border); padding:10px; border-radius:6px; font-size:0.9rem; font-weight:600; text-align:center;">
+              Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)
+            </div>
+          `;
+        } else if (enVal >= 6) {
+          let doseMorphine = poidsVal <= 60 ? "Morphine 2 mg IVD" : "Morphine 3 mg IVD";
+          douleurContainer.innerHTML = `
+            <div class="thera-box" style="border-left: 6px solid var(--danger);">
+              <div class="thera-title">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)</div>
+              <div style="background:#e0f2fe; border:1.5px solid #0284c7; padding:10px; border-radius:6px; margin-bottom:10px; font-weight:800; color:#0369a1; text-align:center;">
+                💉 ${doseMorphine}
+              </div>
+              <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)</p>
+              <div style="background:#fee2e2; border:1.5px solid #ef4444; padding:10px; border-radius:6px; color:#991b1b; font-size:0.85rem; font-weight:700;">
+                🚨 SURDOSAGE : STOP MORPHINE + APPEL C15<br>
+                Tb de la conscience / bradypnée avec FR < 10/min / apnées / désaturation / bradycardie extrême.<br>
+                • MHC 15L/min<br>
+                • NALOXONE 0.1mg/2min pour obj FR > 12 + amélioration clinique
+              </div>
+              <div style="font-size:0.85rem; color:var(--danger); margin-top:8px; font-weight:700;">
+                ⚠️ Contre-indications Morphine : Insuffisance respi aiguë, hypotension artérielle, coma, TC avec HTIC, épilepsie non contrôlée, insuffisance hépatique sévère.
+              </div>
+            </div>
+            <div style="background:#f8fafc; border:1px solid var(--border); padding:10px; border-radius:6px; font-size:0.9rem; font-weight:600; text-align:center;">
+              Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)
             </div>
           `;
         } else {
-          douleurContainer.innerHTML = `
-            <div class="thera-box" style="border-left: 6px solid var(--danger);">
-              <div class="thera-title">EN > 6 : Douleur sévère</div>
-              <button type="button" class="btn-toggle-action orange" onclick="this.classList.toggle('active')">Titration Morphinique / MEOPA selon prescription</button>
-            </div>
-          `;
+          douleurContainer.innerHTML = `<div class="alert-box alert-green">EN < 1 : Surveillance et antalgique palier 1 si besoin</div>`;
         }
       }
     }
