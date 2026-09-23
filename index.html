@@ -348,6 +348,7 @@
     .thera-box.noyade { border-left: 6px solid #0d9488; }
     .thera-box.allergie { border-left: 6px solid #d97706; }
     .thera-box.hypo { border-left: 6px solid #f59e0b; }
+    .thera-box.antalgie { border-left: 6px solid var(--primary); }
     .thera-title {
       font-weight: 800;
       font-size: 1rem;
@@ -938,6 +939,86 @@
       </div>
     </div>
 
+    <!-- ================= PAGE SPÉCIFIQUE : ANTALGIE ================= -->
+    <div id="page-antalgie" class="page">
+      <div class="card">
+        <div class="section-label">1. Trauma ?</div>
+        <div class="row-2 field">
+          <button type="button" class="btn-toggle-action" id="btn-trauma-oui" onclick="selectTrauma(true)">OUI</button>
+          <button type="button" class="btn-toggle-action" id="btn-trauma-non" onclick="selectTrauma(false)">NON</button>
+        </div>
+        <div id="encart-trauma" style="display: none;" class="thera-box" style="border-left: 6px solid var(--primary); margin-top: 10px;">
+          <div style="font-weight: 800; color: var(--primary); margin-bottom: 8px;">Immobilisation par attelle adaptée</div>
+          <div class="field" style="margin-bottom: 0;">
+            <label class="checkbox-item"><input type="checkbox" id="chk-vsm"> Bonne vascularisation</label>
+            <label class="checkbox-item"><input type="checkbox" id="chk-vss"> Bonne sensibilité</label>
+            <label class="checkbox-item"><input type="checkbox" id="chk-vmr"> Bonne motricité</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">2. Caractérisation de la douleur (SITIDRACA)</div>
+        <div class="field">
+          <label><strong>S</strong>iège</label>
+          <input type="text" id="sit-siege" placeholder="ex: Membre inférieur droit">
+        </div>
+        <div class="field">
+          <label><strong>I</strong>ntensité</label>
+          <input type="text" id="sit-intensite" placeholder="ex: 7/10">
+        </div>
+        <div class="field">
+          <label><strong>T</strong>ype</label>
+          <input type="text" id="sit-type" placeholder="ex: Brûlure, constriction...">
+        </div>
+        <div class="field">
+          <label><strong>I</strong>rradiations</label>
+          <input type="text" id="sit-irradiations" placeholder="ex: Vers le dos">
+        </div>
+        <div class="field">
+          <label><strong>D</strong>urée</label>
+          <input type="text" id="sit-duree" placeholder="ex: 2 heures">
+        </div>
+        <div class="field">
+          <label><strong>R</strong>ythme</label>
+          <input type="text" id="sit-rythme" placeholder="ex: Continu / paroxysmal">
+        </div>
+        <div class="field">
+          <label><strong>A</strong>ggravants</label>
+          <input type="text" id="sit-aggravants" placeholder="ex: Mouvement, palpation">
+        </div>
+        <div class="field">
+          <label><strong>C</strong>almants</label>
+          <input type="text" id="sit-calmants" placeholder="ex: Repos, antalgique personnel">
+        </div>
+        <div class="field">
+          <label><strong>A</strong>ssociés (Signes Associés)</label>
+          <input type="text" id="sit-associes" placeholder="ex: Nausées, sueurs">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">3. Antalgiques préalables</div>
+        <label>Le patient a-t-il déjà pris des antalgiques ?</label>
+        <div class="row-2 field">
+          <button type="button" class="btn-toggle-action" id="btn-antalgiques-oui" onclick="selectAntalgiquesPris(true)">OUI</button>
+          <button type="button" class="btn-toggle-action" id="btn-antalgiques-non" onclick="selectAntalgiquesPris(false)">NON</button>
+        </div>
+        <div id="encart-antalgiques-pris" style="display: none; margin-top: 10px;">
+          <div class="input-btn-group">
+            <input type="text" id="input-antalgique-pris" placeholder="ex: Doliprane 1g, Spasfon">
+            <button type="button" class="btn-add" onclick="addTagFromInput('input-antalgique-pris', 'antalgiques-pris-tags')">Ajouter</button>
+          </div>
+          <div class="tag-container" id="antalgiques-pris-tags"></div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
+      </div>
+    </div>
+
     <!-- ================= PAGE SPÉCIFIQUE : BRÛLURE ================= -->
     <div id="page-brulure" class="page">
       <div class="card">
@@ -1290,7 +1371,7 @@
     <div id="page-motif-autre" class="page">
       <div class="card" style="text-align: center; padding: 40px 16px;">
         <h3 id="motif-autre-titre" style="margin-bottom: 12px;">Motif spécifique</h3>
-        <p style="color: var(--text-muted); margin-bottom: 24px;">La page dédiée pour ce motif sera construite selon tes consignes.</p>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">La page dédiée pour هذا motif sera construite selon tes consignes.</p>
         <div class="nav-actions">
           <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
           <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
@@ -1406,6 +1487,93 @@
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('constantes')">⬅ Constantes</button>
         <button type="button" class="btn-nav" id="btn-suite-regu" onclick="routeApresRegu()">Thérapeutique ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= PAGE : THÉRAPEUTIQUE (ANTALGIE) ================= -->
+    <div id="page-therapeutique-antalgie" class="page">
+      <div class="card">
+        <div class="section-label">Voie Veineuse & Remplissage</div>
+        <button type="button" class="btn-toggle-action" id="btn-antalgie-vvp" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ VVP posée' : '💉 Pose d\'une VVP';">
+          💉 Pose d'une VVP
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Prise en charge de la douleur (EN)[cite: 1]</div>
+        <div id="antalgie-douleur-container">
+          <!-- Rempli dynamiquement selon l'EN, le poids et l'algorithme source -->
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Appel au 15</button>
+        <button type="button" class="btn-nav" onclick="goToPage('suivi-antalgie')">Surveillance ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= PAGE : SUIVI CHRONOLOGIQUE (ANTALGIE) ================= -->
+    <div id="page-suivi-antalgie" class="page">
+      <div class="card">
+        <div class="section-label">Suivi des Constantes (T0, T+10, T+20)</div>
+
+        <!-- T0 -->
+        <div class="field" style="background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 14px;">
+          <label style="color: var(--primary); margin-bottom: 6px;">T0 (Constantes Initiales)</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="ant-t0-pa" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="text" id="ant-t0-pouls" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="text" id="ant-t0-spo2" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">EN</label><input type="text" id="ant-t0-en" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label><input type="text" id="ant-t0-avpu" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div></div>
+          </div>
+        </div>
+
+        <!-- T+10 -->
+        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border); margin-bottom: 14px;">
+          <label style="color: var(--text); margin-bottom: 6px;">T+10 min</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="ant-t10-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="ant-t10-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="ant-t10-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">EN</label><input type="number" min="0" max="10" inputmode="numeric" id="ant-t10-en" placeholder="3" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label>
+              <select id="ant-t10-avpu" style="padding: 6px; font-size: 0.9rem;">
+                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
+              </select>
+            </div>
+            <div></div>
+          </div>
+        </div>
+
+        <!-- T+20 -->
+        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
+          <label style="color: var(--text); margin-bottom: 6px;">T+20 min</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="ant-t20-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="ant-t20-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="ant-t20-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">EN</label><input type="number" min="0" max="10" inputmode="numeric" id="ant-t20-en" placeholder="1" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label>
+              <select id="ant-t20-avpu" style="padding: 6px; font-size: 0.9rem;">
+                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
+              </select>
+            </div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('therapeutique-antalgie')">⬅ Thérapeutique</button>
+        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
       </div>
     </div>
 
@@ -2299,6 +2467,10 @@
     let brulureProfondeur = '';
     let totalScb = 0;
 
+    // Variables spécifiques Antalgie
+    let antalgieTrauma = null;
+    let antalgiquesPrisStatut = null;
+
     window.addEventListener('DOMContentLoaded', () => {
       // DATE DE NAISSANCE
       const ddnJour = document.getElementById('ddn-jour');
@@ -2421,7 +2593,6 @@
     }
 
     function startNewIntervention() {
-      // Remise à zéro complète pour une nouvelle intervention vierge
       document.getElementById('patient-nom').value = '';
       document.getElementById('ddn-jour').selectedIndex = 0;
       document.getElementById('ddn-mois').selectedIndex = 0;
@@ -2453,12 +2624,27 @@
       fumeeInhalation = false;
       brulureProfondeur = '';
       totalScb = 0;
+      antalgieTrauma = null;
+      antalgiquesPrisStatut = null;
+
       document.querySelectorAll('.btn-toggle-action').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.scb-part').forEach(b => b.classList.remove('active'));
       const scbDisp = document.getElementById('scb-total-display');
       if (scbDisp) scbDisp.textContent = '0';
       const brulRenfort = document.getElementById('brul-renfort-msg');
       if (brulRenfort) brulRenfort.style.display = 'none';
+
+      // Reset Antalgie fields
+      const encTrauma = document.getElementById('encart-trauma');
+      if (encTrauma) encTrauma.style.display = 'none';
+      const encAntPris = document.getElementById('encart-antalgiques-pris');
+      if (encAntPris) encAntPris.style.display = 'none';
+      const antTags = document.getElementById('antalgiques-pris-tags');
+      if (antTags) antTags.innerHTML = '';
+      ['sit-siege', 'sit-intensite', 'sit-type', 'sit-irradiations', 'sit-duree', 'sit-rythme', 'sit-aggravants', 'sit-calmants', 'sit-associes'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
       
       document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
       
@@ -2510,6 +2696,9 @@
       } else if (motif === 'Brûlure') {
         previousMotifPage = 'brulure';
         goToPage('brulure');
+      } else if (motif === 'Antalgie') {
+        previousMotifPage = 'antalgie';
+        goToPage('antalgie');
       } else {
         document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
         previousMotifPage = 'motif-autre';
@@ -2530,6 +2719,9 @@
       } else if (motif === 'Brûlure') {
         setupBrulureTherapeutiqueUI();
         goToPage('therapeutique-brulure');
+      } else if (motif === 'Antalgie') {
+        setupAntalgieTherapeutiqueUI();
+        goToPage('therapeutique-antalgie');
       } else {
         goToPage('resume');
       }
@@ -2575,13 +2767,15 @@
       } else if (target === 'brulure') {
         indicator.textContent = '3. Brûlure';
         p0Container.style.display = 'none';
+      } else if (target === 'antalgie') {
+        indicator.textContent = '3. Antalgie';
+        p0Container.style.display = 'none';
       } else if (target === 'motif-autre') {
         indicator.textContent = '3. Motif spécifique';
         p0Container.style.display = 'none';
       } else if (target === 'constantes') {
         indicator.textContent = 'Constantes';
         p0Container.style.display = 'none';
-        // Afficher ou masquer HbCO selon fumée inhalation brûlure
         const hbcoField = document.getElementById('field-hbco-container');
         if (hbcoField) {
           hbcoField.style.display = (document.getElementById('motif-select').value === 'Brûlure' && fumeeInhalation) ? 'block' : 'none';
@@ -2600,6 +2794,8 @@
         } else if (motif === 'Hypoglycémie') {
           btnSuite.textContent = 'Thérapeutique ➔';
         } else if (motif === 'Brûlure') {
+          btnSuite.textContent = 'Thérapeutique ➔';
+        } else if (motif === 'Antalgie') {
           btnSuite.textContent = 'Thérapeutique ➔';
         } else {
           btnSuite.textContent = 'Résumé final ➔';
@@ -2620,6 +2816,17 @@
       } else if (target === 'therapeutique-brulure') {
         indicator.textContent = 'Thérapeutique Brûlure';
         p0Container.style.display = 'none';
+      } else if (target === 'therapeutique-antalgie') {
+        indicator.textContent = 'Thérapeutique Antalgie';
+        p0Container.style.display = 'none';
+      } else if (target === 'suivi-antalgie') {
+        indicator.textContent = 'Suivi Antalgie';
+        p0Container.style.display = 'none';
+        document.getElementById('ant-t0-pa').value = document.getElementById('c-pa').value.trim() || '-';
+        document.getElementById('ant-t0-pouls').value = (document.getElementById('c-fc').value.trim() ? document.getElementById('c-fc').value.trim() + ' bpm' : '-');
+        document.getElementById('ant-t0-spo2').value = (document.getElementById('c-spo2').value.trim() ? document.getElementById('c-spo2').value.trim() + '%' : '-');
+        document.getElementById('ant-t0-en').value = (document.getElementById('c-eva').value.trim() ? document.getElementById('c-eva').value.trim() + '/10' : '-');
+        document.getElementById('ant-t0-avpu').value = selectedAvpu || '-';
       } else if (target === 'suivi-allergie') {
         indicator.textContent = 'Suivi Chronologique';
         p0Container.style.display = 'none';
@@ -2637,7 +2844,6 @@
         document.getElementById('t0-pad').value = pad;
         document.getElementById('t0-pouls').value = document.getElementById('c-fc').value.trim();
         document.getElementById('t0-spo2').value = document.getElementById('c-spo2').value.trim();
-
       } else if (target === 'suivi-hypo') {
         indicator.textContent = 'Surveillance Hypoglycémie';
         p0Container.style.display = 'none';
@@ -2678,6 +2884,8 @@
           btnBack.onclick = () => goToPage('suivi-hypo');
         } else if (motif === 'Brûlure') {
           btnBack.onclick = () => goToPage('suivi-brulure');
+        } else if (motif === 'Antalgie') {
+          btnBack.onclick = () => goToPage('suivi-antalgie');
         } else {
           btnBack.onclick = () => goToPage('regu');
         }
@@ -2688,6 +2896,89 @@
       }
 
       window.scrollTo(0, 0);
+    }
+
+    // LOGIQUE SPÉCIFIQUE ANTALGIE (PAGE 3)
+    function selectTrauma(val) {
+      antalgieTrauma = val;
+      const btnOui = document.getElementById('btn-trauma-oui');
+      const btnNon = document.getElementById('btn-trauma-non');
+      const encart = document.getElementById('encart-trauma');
+      if (val) {
+        btnOui.classList.add('active');
+        btnNon.classList.remove('active');
+        if (encart) encart.style.display = 'block';
+      } else {
+        btnNon.classList.add('active');
+        btnOui.classList.remove('active');
+        if (encart) encart.style.display = 'none';
+      }
+    }
+
+    function selectAntalgiquesPris(val) {
+      antalgiquesPrisStatut = val;
+      const btnOui = document.getElementById('btn-antalgiques-oui');
+      const btnNon = document.getElementById('btn-antalgiques-non');
+      const encart = document.getElementById('encart-antalgiques-pris');
+      if (val) {
+        btnOui.classList.add('active');
+        btnNon.classList.remove('active');
+        if (encart) encart.style.display = 'block';
+      } else {
+        btnNon.classList.add('active');
+        btnOui.classList.remove('active');
+        if (encart) encart.style.display = 'none';
+      }
+    }
+
+    function setupAntalgieTherapeutiqueUI() {
+      const container = document.getElementById('antalgie-douleur-container');
+      if (!container) return;
+
+      const enVal = parseInt(document.getElementById('c-eva').value || '0', 10);
+      const poidsVal = parseInt(document.getElementById('patient-poids').value || '70', 10);
+
+      if (enVal >= 1 && enVal <= 5) {
+        container.innerHTML = `
+          <div class="thera-box" style="border-left: 6px solid var(--samu-yellow);">
+            <div class="thera-title">1 ≤ EN ≤ 5 : Protocole Antalgique Intermédiaire</div>
+            <label class="checkbox-item"><input type="checkbox" id="ant-meopa"> MEOPA avec valve</label>
+            <label class="checkbox-item"><input type="checkbox" id="ant-paracetamol"> Paracétamol IV 1g IVL/20min</label>
+            <div style="font-size:0.85rem; color:var(--danger); margin-top:6px; font-weight:700;">
+              ⚠️ Contre-indications MEOPA : Trouble de la conscience, HTIC, pneumothorax, bulle d'emphysème, accident de plongée, asthme / BPCO.<br>
+              ⚠️ Contre-indication Paracétamol : Insuffisance hépatique sévère.
+            </div>
+          </div>
+          <div style="background:#f8fafc; border:1px solid var(--border); padding:10px; border-radius:6px; font-size:0.9rem; font-weight:600; text-align:center;">
+            Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)[cite: 1]
+          </div>
+        `;
+      } else if (enVal >= 6) {
+        let doseMorphine = poidsVal <= 60 ? "Morphine 2 mg IVD" : "Morphine 3 mg IVD";
+        container.innerHTML = `
+          <div class="thera-box" style="border-left: 6px solid var(--danger);">
+            <div class="thera-title">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)[cite: 1]</div>
+            <div style="background:#e0f2fe; border:1.5px solid #0284c7; padding:10px; border-radius:6px; margin-bottom:10px; font-weight:800; color:#0369a1; text-align:center;">
+              💉 ${doseMorphine}
+            </div>
+            <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)[cite: 1]</p>
+            <div style="background:#fee2e2; border:1.5px solid #ef4444; padding:10px; border-radius:6px; color:#991b1b; font-size:0.85rem; font-weight:700;">
+              🚨 SURDOSAGE : STOP MORPHINE + APPEL C15[cite: 1]<br>
+              Tb de la conscience / bradypnée avec FR < 10/min / apnées / désaturation / bradycardie extrême[cite: 1].<br>
+              • MHC 15L/min[cite: 1]<br>
+              • NALOXONE 0.1mg/2min pour obj FR > 12 + amélioration clinique[cite: 1]
+            </div>
+            <div style="font-size:0.85rem; color:var(--danger); margin-top:8px; font-weight:700;">
+              ⚠️ Contre-indications Morphine : Insuffisance respi aiguë, hypotension artérielle, coma, TC avec HTIC, épilepsie non contrôlée, insuffisance hépatique sévère[cite: 1].
+            </div>
+          </div>
+          <div style="background:#f8fafc; border:1px solid var(--border); padding:10px; border-radius:6px; font-size:0.9rem; font-weight:600; text-align:center;">
+            Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)[cite: 1]
+          </div>
+        `;
+      } else {
+        container.innerHTML = `<div class="alert-box alert-green">EN < 1 : Surveillance et antalgique palier 1 si besoin</div>`;
+      }
     }
 
     // LOGIQUE SPÉCIFIQUE BRÛLURE
@@ -2814,30 +3105,30 @@
               </div>
             </div>
             <div style="background:#f8fafc; border:1px solid var(--border); padding:10px; border-radius:6px; font-size:0.9rem; font-weight:600; text-align:center;">
-              Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)
+              Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)[cite: 1]
             </div>
           `;
         } else if (enVal >= 6) {
           let doseMorphine = poidsVal <= 60 ? "Morphine 2 mg IVD" : "Morphine 3 mg IVD";
           douleurContainer.innerHTML = `
             <div class="thera-box" style="border-left: 6px solid var(--danger);">
-              <div class="thera-title">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)</div>
+              <div class="thera-title">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)[cite: 1]</div>
               <div style="background:#e0f2fe; border:1.5px solid #0284c7; padding:10px; border-radius:6px; margin-bottom:10px; font-weight:800; color:#0369a1; text-align:center;">
                 💉 ${doseMorphine}
               </div>
-              <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)</p>
+              <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)[cite: 1]</p>
               <div style="background:#fee2e2; border:1.5px solid #ef4444; padding:10px; border-radius:6px; color:#991b1b; font-size:0.85rem; font-weight:700;">
-                🚨 SURDOSAGE : STOP MORPHINE + APPEL C15<br>
-                Tb de la conscience / bradypnée avec FR < 10/min / apnées / désaturation / bradycardie extrême.<br>
-                • MHC 15L/min<br>
-                • NALOXONE 0.1mg/2min pour obj FR > 12 + amélioration clinique
+                🚨 SURDOSAGE : STOP MORPHINE + APPEL C15[cite: 1]<br>
+                Tb de la conscience / bradypnée avec FR < 10/min / apnées / désaturation / bradycardie extrême[cite: 1].<br>
+                • MHC 15L/min[cite: 1]<br>
+                • NALOXONE 0.1mg/2min pour obj FR > 12 + amélioration clinique[cite: 1]
               </div>
               <div style="font-size:0.85rem; color:var(--danger); margin-top:8px; font-weight:700;">
-                ⚠️ Contre-indications Morphine : Insuffisance respi aiguë, hypotension artérielle, coma, TC avec HTIC, épilepsie non contrôlée, insuffisance hépatique sévère.
+                ⚠️ Contre-indications Morphine : Insuffisance respi aiguë, hypotension artérielle, coma, TC avec HTIC, épilepsie non contrôlée, insuffisance hépatique sévère[cite: 1].
               </div>
             </div>
             <div style="background:#f8fafc; border:1px solid var(--border); padding:10px; border-radius:6px; font-size:0.9rem; font-weight:600; text-align:center;">
-              Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)
+              Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)[cite: 1]
             </div>
           `;
         } else {
@@ -3283,7 +3574,7 @@
 
     function getTagsText(containerId) {
       const tags = Array.from(document.querySelectorAll(`#${containerId} .tag-text`)).map(el => el.textContent);
-      return tags.length > 0 ? tags.join(', ') : 'Aucun';
+      return tags.length > 0 ? tags.join(', ') : '';
     }
 
     // CLINIQUE DÉTRESSE RESPIRATOIRE
@@ -3306,9 +3597,9 @@
       if (document.getElementById('dr-o2-mhc').checked) gestes.push('O2 MHC 15 L/min');
 
       return {
-        signes: signes.length > 0 ? signes.join(', ') : 'Aucun critère spécifique coché',
+        signes: signes.length > 0 ? signes.join(', ') : '',
         auscult: auscult,
-        gestes: gestes.length > 0 ? gestes.join(', ') : 'Aucun geste réflexe coché'
+        gestes: gestes.length > 0 ? gestes.join(', ') : ''
       };
     }
 
@@ -3344,11 +3635,11 @@
 
       return {
         heure: `${document.getElementById('alg-debut-hh').value}:${document.getElementById('alg-debut-mm').value}`,
-        facteur: document.getElementById('alg-facteur').value.trim() || 'Non renseigné',
-        traitementPris: document.getElementById('alg-traitement-pris').value.trim() || 'Aucun',
-        signes: signes.length > 0 ? signes.join(', ') : 'Aucun',
-        gravites: gravites.length > 0 ? gravites.join(', ') : 'Aucun signe de gravité',
-        actions: actionsConditionnelles.length > 0 ? actionsConditionnelles.join(' | ') : 'Aucune'
+        facteur: document.getElementById('alg-facteur').value.trim(),
+        traitementPris: document.getElementById('alg-traitement-pris').value.trim(),
+        signes: signes.length > 0 ? signes.join(', ') : '',
+        gravites: gravites.length > 0 ? gravites.join(', ') : '',
+        actions: actionsConditionnelles.length > 0 ? actionsConditionnelles.join(' | ') : ''
       };
     }
 
@@ -3364,7 +3655,7 @@
       if (document.getElementById('hypo-grav-pdc').checked) gravites.push("Perte de connaissance");
       if (document.getElementById('hypo-grav-deglutir').checked) gravites.push("Impossibilité de déglutir");
 
-      const plsFait = document.getElementById('btn-pls') && document.getElementById('btn-pls').classList.contains('active') ? 'OUI (MIS EN PLS)' : 'NON';
+      const plsFait = document.getElementById('btn-pls') && document.getElementById('btn-pls').classList.contains('active') ? 'OUI (MIS EN PLS)' : '';
 
       let theraRes = [];
       const perOsOui = document.getElementById('btn-peros-oui').classList.contains('active-green');
@@ -3392,10 +3683,10 @@
 
       return {
         pompe: pompeInsulineStatut,
-        causes: causes.length > 0 ? causes.join(', ') : 'Aucune',
-        gravites: gravites.length > 0 ? gravites.join(', ') : 'Aucun',
+        causes: causes.length > 0 ? causes.join(', ') : '',
+        gravites: gravites.length > 0 ? gravites.join(', ') : '',
         pls: plsFait,
-        thera: theraRes.length > 0 ? theraRes.join(' | ') : 'Non renseigné'
+        thera: theraRes.length > 0 ? theraRes.join(' | ') : ''
       };
     }
 
@@ -3466,6 +3757,40 @@
 - Profondeur : ${brulureProfondeur || 'Non spécifiée'}
 - Surface corporelle brûlée (SCB) : ${totalScb}%
 - Signes de gravité : ${grav.length > 0 ? grav.join(', ') : 'Aucun'}`;
+      } else if (motif === 'Antalgie') {
+        let traumaLines = [];
+        if (antalgieTrauma !== null) {
+          traumaLines.push(`Trauma : ${antalgieTrauma ? 'OUI' : 'NON'}`);
+          if (antalgieTrauma) {
+            let vsm = document.getElementById('chk-vsm').checked ? 'Bonne vascularisation' : '';
+            let vss = document.getElementById('chk-vss').checked ? 'Bonne sensibilité' : '';
+            let vmr = document.getElementById('chk-vmr').checked ? 'Bonne motricité' : '';
+            let items = [vsm, vss, vmr].filter(Boolean);
+            traumaLines.push(`- Immobilisation par attelle adaptée`);
+            if (items.length > 0) traumaLines.push(`- Vérifications : ${items.join(', ')}`);
+          }
+        }
+        let sitLines = [];
+        const s = document.getElementById('sit-siege').value.trim(); if(s) sitLines.push(`Siège : ${s}`);
+        const i = document.getElementById('sit-intensite').value.trim(); if(i) sitLines.push(`Intensité : ${i}`);
+        const t = document.getElementById('sit-type').value.trim(); if(t) sitLines.push(`Type : ${t}`);
+        const ir = document.getElementById('sit-irradiations').value.trim(); if(ir) sitLines.push(`Irradiations : ${ir}`);
+        const d = document.getElementById('sit-duree').value.trim(); if(d) sitLines.push(`Durée : ${d}`);
+        const r = document.getElementById('sit-rythme').value.trim(); if(r) sitLines.push(`Rythme : ${r}`);
+        const ag = document.getElementById('sit-aggravants').value.trim(); if(ag) sitLines.push(`Aggravants : ${ag}`);
+        const c = document.getElementById('sit-calmants').value.trim(); if(c) sitLines.push(`Calmants : ${c}`);
+        const as_ = document.getElementById('sit-associes').value.trim(); if(as_) sitLines.push(`Signes Associés : ${as_}`);
+
+        let antPrisText = '';
+        if (antalgiquesPrisStatut !== null) {
+          antPrisText = antalgiquesPrisStatut ? `Antalgiques préalables pris : OUI (${getTagsText('antalgiques-pris-tags') || 'aucun spécifié'})` : `Antalgiques préalables pris : NON`;
+        }
+
+        evalMotif = [
+          traumaLines.join('\n'),
+          sitLines.length > 0 ? "Caractérisation (SITIDRACA) :\n- " + sitLines.join('\n- ') : '',
+          antPrisText
+        ].filter(Boolean).join('\n');
       } else {
         evalMotif = `- Bilan clinique spécifique : ${motif}`;
       }
@@ -3492,7 +3817,7 @@
       if (hbco) constList.push(`HbCO: ${hbco}%`);
       if (selectedAvpu) constList.push(`AVPU: ${selectedAvpu}`);
 
-      const constText = constList.length > 0 ? `- Constantes : ${constList.join(' | ')}` : `- Constantes : Non renseignées`;
+      const constText = constList.length > 0 ? `- Constantes : ${constList.join(' | ')}` : ``;
 
       const demandeType = document.getElementById('demande-type').value;
       const demandeDetails = document.getElementById('saed-demande').value.trim();
@@ -3500,6 +3825,12 @@
       if (demandeDetails) {
         demandeText += `\nPrécisions / Actions : ${demandeDetails}`;
       }
+
+      let atcdBlock = atcd ? `- ATCD : ${atcd}\n` : '';
+      let tttBlock = ttt ? `- Traitements : ${ttt}\n` : '';
+      let allergiesBlock = allergies ? `- Allergies : ${allergies}\n` : '';
+      let hospitBlock = hospit ? `- Hospitalisation récente : ${hospit}\n` : '';
+      let anamnaseContent = atcdBlock + tttBlock + allergiesBlock + hospitBlock;
 
       const cr = 
 `TRANSMISSION SMUR INFIRMIER (SAED / SAU)
@@ -3510,11 +3841,7 @@ Degré d'urgence : ${isP0 ? 'P0 (Urgence vitale)' : 'Non P0'}
 Motif : ${motif}
 
 [A] ANTECEDENTS & TERRAIN
-- ATCD : ${atcd}
-- Traitements : ${ttt}
-- Allergies : ${allergies}
-- Hospitalisation récente : ${hospit}
-
+${anamnaseContent || 'Aucun renseigné'}
 [E] EVALUATION CLINIQUE & CONSTANTES
 ${evalMotif}
 ${constText}
@@ -3534,7 +3861,7 @@ ${demandeText}
       });
     }
 
-    // RÉSUMÉ FINAL & ENREGISTREMENT LOCAL (EXHAUSTIF AVEC TOUTES LES ACTIONS POST-APPEL)
+    // RÉSUMÉ FINAL & ENREGISTREMENT LOCAL
     function generateResumeFinal() {
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
@@ -3555,7 +3882,7 @@ ${demandeText}
       if (selectedAvpu) cInit.push(`AVPU: ${selectedAvpu}`);
 
       const demType = document.getElementById('demande-type').value;
-      const demTxt = document.getElementById('saed-demande').value.trim() || 'Aucune précision textuelle';
+      const demTxt = document.getElementById('saed-demande').value.trim();
 
       let specificSection = '';
 
@@ -3576,7 +3903,7 @@ ${demandeText}
           if (document.getElementById('geste-mhc').checked) gestesHemo.push('O2 MHC');
           if (document.getElementById('geste-massage').checked) gestesHemo.push('Massage utérin');
           if (document.getElementById('geste-vvp2').checked) gestesHemo.push('2ème VVP');
-          mereDetails.push(`Gestes d'urgence : ${gestesHemo.join(', ') || 'aucun coché'}`);
+          if(gestesHemo.length > 0) mereDetails.push(`Gestes d'urgence : ${gestesHemo.join(', ')}`);
 
           let chocConst = [];
           if (document.getElementById('choc-fc').value) chocConst.push(`Pouls: ${document.getElementById('choc-fc').value} bpm`);
@@ -3586,12 +3913,12 @@ ${demandeText}
           if (chocConst.length > 0) mereDetails.push(`Constantes choc : ${chocConst.join(' | ')}`);
 
           const prescr = getTagsText('prescription-tags');
-          mereDetails.push(`Prescriptions médicales : ${prescr}`);
+          if(prescr) mereDetails.push(`Prescriptions médicales : ${prescr}`);
         }
 
-        const apgar1 = apgarScores['1m'] !== null ? `${apgarScores['1m']}/10` : 'Non calculé';
-        const apgar3 = apgarScores['3m'] !== null ? `${apgarScores['3m']}/10` : 'Non calculé';
-        const apgar5 = apgarScores['5m'] !== null ? `${apgarScores['5m']}/10` : 'Non calculé';
+        const apgar1 = apgarScores['1m'] !== null ? `${apgarScores['1m']}/10` : '';
+        const apgar3 = apgarScores['3m'] !== null ? `${apgarScores['3m']}/10` : '';
+        const apgar5 = apgarScores['5m'] !== null ? `${apgarScores['5m']}/10` : '';
 
         specificSection = 
 `3. PROTOCOLE OBSTÉTRICAL
@@ -3645,7 +3972,7 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
         if (document.getElementById('sc-temp').value) cScope.push(`T°: ${document.getElementById('sc-temp').value}°C`);
         if (document.getElementById('sc-hgt').value) cScope.push(`HGT: ${document.getElementById('sc-hgt').value} g/L`);
 
-        const scopeTxt = cScope.length > 0 ? cScope.join(' | ') : 'Non réévaluées';
+        const scopeTxt = cScope.length > 0 ? cScope.join(' | ') : '';
 
         specificSection = 
 `3. BILAN RESPIRATOIRE DÉTAILLÉ
@@ -3655,13 +3982,13 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 
 4. THÉRAPEUTIQUE & PRISE EN CHARGE SMUR/PSIS
 - VVP : ${vvpThera}
-- Thérapeutiques appliquées : ${theraList.length > 0 ? theraList.join(', ') : 'Aucune cochée'}
+- Thérapeutiques appliquées : ${theraList.join(', ')}
 - Réévaluation sous surveillance scope : ${scopeTxt}`;
       } else if (motif === 'Allergie') {
         const alg = getAllergieData();
         const vvpAll = document.getElementById('btn-vvp-allergie').classList.contains('active') ? 'Oui' : 'Non';
-        const adren = document.getElementById('btn-adrenaline') && document.getElementById('btn-adrenaline').classList.contains('active') ? 'Adrénaline 0.5mg administrée' : 'Non administrée';
-        const salbu = document.getElementById('alg-signe-sibilants').checked ? 'Nébulisation salbutamol 5mg réalisée' : 'Non concerné';
+        const adren = document.getElementById('btn-adrenaline') && document.getElementById('btn-adrenaline').classList.contains('active') ? 'Adrénaline 0.5mg administrée' : '';
+        const salbu = document.getElementById('alg-signe-sibilants').checked ? 'Nébulisation salbutamol 5mg réalisée' : '';
         const pol = document.getElementById('alg-trt-polaramine').checked ? 'Polaramine 5mg IVL' : '';
         const pred = document.getElementById('alg-trt-prednisolone').checked ? 'Prednisolone IVL' : '';
         let trts = [pol, pred].filter(Boolean).join(', ');
@@ -3681,7 +4008,7 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 - VVP : ${vvpAll}
 - Adrénaline IM : ${adren}
 - Salbutamol : ${salbu}
-- Traitements associés : ${trts || 'Aucun'}
+- Traitements associés : ${trts}
 
 5. SUIVI CHRONOLOGIQUE & ÉVOLUTION
 - T0 : ${t0Str}
@@ -3721,7 +4048,6 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
         if (document.getElementById('geste-rechauffage').checked) gestes.push("Réchauffage + cellule AR");
         if (document.getElementById('geste-brulstop').checked) gestes.push("Brûlstop 15 min");
 
-        // Récupération des actions thérapeutiques post-appel brûlure (VVP, remplissage, antalgie/morphine)
         let theraBrulure = [];
         const btn1vvp = document.getElementById('btn-brul-1vvp');
         const btn2vvp = document.getElementById('btn-brul-2vvp');
@@ -3745,16 +4071,69 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 - Inhalation fumées : ${fumeeInhalation ? 'Oui' : 'Non'}
 - Profondeur : ${brulureProfondeur || 'Non spécifiée'}
 - Surface corporelle brûlée (SCB) : ${totalScb}%
-- Signes de gravité : ${grav.length > 0 ? grav.join(', ') : 'Aucun'}
-- Gestes réalisés : ${gestes.length > 0 ? gestes.join(', ') : 'Aucun'}
+- Signes de gravité : ${grav.join(', ')}
+- Gestes réalisés : ${gestes.join(', ')}
 
 4. THÉRAPEUTIQUE & PRISE EN CHARGE BRÛLURE
-- Actions / Traitements post-appel : ${theraBrulure.length > 0 ? theraBrulure.join(', ') : 'Aucun'}
+- Actions / Traitements post-appel : ${theraBrulure.join(', ')}
 
 5. SURVEILLANCE & CONSTANTES BRÛLURE
 - T0 : ${t0Str}
 - T+15 min : ${t15Str}
 - T+30 min : ${t30Str}`;
+      } else if (motif === 'Antalgie') {
+        let traumaLines = [];
+        if (antalgieTrauma !== null) {
+          traumaLines.push(`Trauma : ${antalgieTrauma ? 'OUI' : 'NON'}`);
+          if (antalgieTrauma) {
+            let vsm = document.getElementById('chk-vsm').checked ? 'Bonne vascularisation' : '';
+            let vss = document.getElementById('chk-vss').checked ? 'Bonne sensibilité' : '';
+            let vmr = document.getElementById('chk-vmr').checked ? 'Bonne motricité' : '';
+            let items = [vsm, vss, vmr].filter(Boolean);
+            traumaLines.push(`- Immobilisation par attelle adaptée`);
+            if (items.length > 0) traumaLines.push(`- Vérifications : ${items.join(', ')}`);
+          }
+        }
+        let sitLines = [];
+        const s = document.getElementById('sit-siege').value.trim(); if(s) sitLines.push(`Siège : ${s}`);
+        const i = document.getElementById('sit-intensite').value.trim(); if(i) sitLines.push(`Intensité : ${i}`);
+        const t = document.getElementById('sit-type').value.trim(); if(t) sitLines.push(`Type : ${t}`);
+        const ir = document.getElementById('sit-irradiations').value.trim(); if(ir) sitLines.push(`Irradiations : ${ir}`);
+        const d = document.getElementById('sit-duree').value.trim(); if(d) sitLines.push(`Durée : ${d}`);
+        const r = document.getElementById('sit-rythme').value.trim(); if(r) sitLines.push(`Rythme : ${r}`);
+        const ag = document.getElementById('sit-aggravants').value.trim(); if(ag) sitLines.push(`Aggravants : ${ag}`);
+        const c = document.getElementById('sit-calmants').value.trim(); if(c) sitLines.push(`Calmants : ${c}`);
+        const as_ = document.getElementById('sit-associes').value.trim(); if(as_) sitLines.push(`Signes Associés : ${as_}`);
+
+        let antPrisText = '';
+        if (antalgiquesPrisStatut !== null) {
+          antPrisText = antalgiquesPrisStatut ? `Antalgiques préalables pris : OUI (${getTagsText('antalgiques-pris-tags')})` : `Antalgiques préalables pris : NON`;
+        }
+
+        let theraAnt = [];
+        const btnVvpAnt = document.getElementById('antalgie-vvp');
+        if (btnVvpAnt && btnVvpAnt.classList.contains('active')) theraAnt.push("VVP posée");
+        const meopaAnt = document.getElementById('ant-meopa');
+        const paracetamolAnt = document.getElementById('ant-paracetamol');
+        if (meopaAnt && meopaAnt.checked) theraAnt.push("MEOPA avec valve administré");
+        if (paracetamolAnt && paracetamolAnt.checked) theraAnt.push("Paracétamol IV 1g administré");
+
+        const t0Str = `PA: ${document.getElementById('ant-t0-pa').value}, Pouls: ${document.getElementById('ant-t0-pouls').value}, SpO2: ${document.getElementById('ant-t0-spo2').value}, EN: ${document.getElementById('ant-t0-en').value}, AVPU: ${document.getElementById('ant-t0-avpu').value}`;
+        const t10Str = `PA: ${document.getElementById('ant-t10-pa').value || '-'}, Pouls: ${document.getElementById('ant-t10-pouls').value || '-'} bpm, SpO2: ${document.getElementById('ant-t10-spo2').value || '-'}%, EN: ${document.getElementById('ant-t10-en').value || '-'}, AVPU: ${document.getElementById('ant-t10-avpu').value}`;
+        const t20Str = `PA: ${document.getElementById('ant-t20-pa').value || '-'}, Pouls: ${document.getElementById('ant-t20-pouls').value || '-'} bpm, SpO2: ${document.getElementById('ant-t20-spo2').value || '-'}%, EN: ${document.getElementById('ant-t20-en').value || '-'}, AVPU: ${document.getElementById('ant-t20-avpu').value}`;
+
+        specificSection = [
+          "3. BILAN ANTALGIE & SITIDRACA",
+          traumaLines.join('\n'),
+          sitLines.length > 0 ? "Caractérisation :\n- " + sitLines.join('\n- ') : '',
+          antPrisText,
+          "\n4. THÉRAPEUTIQUE ANTALGIE",
+          "- Actions / Traitements : " + (theraAnt.join(', ') || 'Aucun'),
+          "\n5. SURVEILLANCE & CONSTANTES (T0, T+10, T+20)",
+          `- T0 : ${t0Str}`,
+          `- T+10 min : ${t10Str}`,
+          `- T+20 min : ${t20Str}`
+        ].filter(Boolean).join('\n');
       }
 
       const resumeTxt = 
@@ -3766,9 +4145,9 @@ RAPPORT D'INTERVENTION SMUR / PSIS - SAMU 13
 - Identité : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
 - Statut : ${isP0 ? 'P0 (Urgence vitale)' : 'Non P0'}
 - Motif : ${motif}
-- ATCD : ${getTagsText('atcd-tags')}
-- Traitements : ${getTagsText('ttt-tags')}
-- Allergies : ${getTagsText('allergies-tags')}
+${getTagsText('atcd-tags') ? '- ATCD : ' + getTagsText('atcd-tags') : ''}
+${getTagsText('ttt-tags') ? '- Traitements : ' + getTagsText('ttt-tags') : ''}
+${getTagsText('allergies-tags') ? '- Allergies : ' + getTagsText('allergies-tags') : ''}
 
 2. PARAMÈTRES VITAUX INITIAUX
 ${cInit.length > 0 ? cInit.join(' | ') : 'Non renseignés'}
@@ -3777,7 +4156,7 @@ ${specificSection}
 
 6. RÉGULATION CENTRE 15 / BILAN COMPLÉMENTAIRE
 - Demande : ${demType}
-- Prescriptions / Consignes : ${demTxt}
+${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
 ==============================================`;
 
       document.getElementById('resume-output').value = resumeTxt;
