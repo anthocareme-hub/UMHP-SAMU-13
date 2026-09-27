@@ -2683,7 +2683,7 @@
       document.querySelectorAll('.btn-toggle-action').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.scb-part').forEach(b => b.classList.remove('active'));
       const scbDisp = document.getElementById('scb-total-display');
-      if (scbDisp) scbDisp.textContent = '0';
+      if (scbDisp) scbDisp.value = '0';
       const brulRenfort = document.getElementById('brul-renfort-msg');
       if (brulRenfort) brulRenfort.style.display = 'none';
 
