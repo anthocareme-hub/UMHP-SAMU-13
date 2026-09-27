@@ -4075,16 +4075,8 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
           theraList.push('Pose de SNG');
         }
 
-        let cScope = [];
-        if (document.getElementById('sc-fc').value) cScope.push(`FC: ${document.getElementById('sc-fc').value} bpm`);
-        if (document.getElementById('sc-pa').value) cScope.push(`PA: ${document.getElementById('sc-pa').value}`);
-        if (document.getElementById('sc-fr').value) cScope.push(`FR: ${document.getElementById('sc-fr').value}/min`);
-        if (document.getElementById('sc-spo2').value) cScope.push(`SpO2: ${document.getElementById('sc-spo2').value}%`);
-        if (document.getElementById('sc-trc').value) cScope.push(`TRC: ${document.getElementById('sc-trc').value}s`);
-        if (document.getElementById('sc-temp').value) cScope.push(`T°: ${document.getElementById('sc-temp').value}°C`);
-        if (document.getElementById('sc-hgt').value) cScope.push(`HGT: ${document.getElementById('sc-hgt').value} g/L`);
-
-        const scopeTxt = cScope.length > 0 ? cScope.join(' | ') : '';
+const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls: ${document.getElementById('dr-t10-pouls').value || '-'} bpm, SpO2: ${document.getElementById('dr-t10-spo2').value || '-'}%, FR: ${document.getElementById('dr-t10-fr').value || '-'}/min, AVPU: ${document.getElementById('dr-t10-avpu').value}`;
+        const t20Str = `PA: ${document.getElementById('dr-t20-pa').value || '-'}, Pouls: ${document.getElementById('dr-t20-pouls').value || '-'} bpm, SpO2: ${document.getElementById('dr-t20-spo2').value || '-'}%, FR: ${document.getElementById('dr-t20-fr').value || '-'}/min, AVPU: ${document.getElementById('dr-t20-avpu').value}`;
 
         specificSection = 
 `3. BILAN RESPIRATOIRE DÉTAILLÉ
@@ -4094,8 +4086,11 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 
 4. THÉRAPEUTIQUE & PRISE EN CHARGE SMUR/PSIS
 - VVP : ${vvpThera}
-- Thérapeutiques appliquées : ${theraList.join(', ')}
-- Réévaluation sous surveillance scope : ${scopeTxt}`;
+- Thérapeutiques appliquées : ${theraList.join(', ') || 'Aucune'}
+
+5. SURVEILLANCE & CONSTANTES (T+10, T+20)
+- T+10 min : ${t10Str}
+- T+20 min : ${t20Str}`;
       } else if (motif === 'Allergie') {
         const alg = getAllergieData();
         const vvpAll = document.getElementById('btn-vvp-allergie').classList.contains('active') ? 'Oui' : 'Non';
