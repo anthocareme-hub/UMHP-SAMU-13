@@ -3666,17 +3666,20 @@
       if (document.getElementById('dr-silence').checked) signes.push('Silence auscultatoire');
       if (document.getElementById('dr-parole').checked) signes.push('Parole impossible');
       if (document.getElementById('dr-conscience').checked) signes.push('Troubles de la conscience');
+      if (document.getElementById('dr-hemo').checked) signes.push('Défaillance hémodynamique');
 
       const auscult = `${document.getElementById('dr-auscult-type').value} (${document.getElementById('dr-auscult-cote').value})`;
 
       let gestes = [];
       if (document.getElementById('dr-demi-assis').checked) gestes.push('Position demi-assise');
-      if (document.getElementById('dr-o2-mhc').checked) gestes.push('O2 MHC 15 L/min');
+      if (document.getElementById('dr-o2').checked) {
+        gestes.push(`Oxygénothérapie à ${document.getElementById('dr-o2-debit').value} L/min`);
+      }
 
       return {
-        signes: signes.length > 0 ? signes.join(', ') : '',
+        signes: signes.length > 0 ? signes.join(', ') : 'Aucun signe grave coché',
         auscult: auscult,
-        gestes: gestes.length > 0 ? gestes.join(', ') : ''
+        gestes: gestes.length > 0 ? gestes.join(', ') : 'Aucun'
       };
     }
 
