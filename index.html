@@ -4184,16 +4184,17 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
 - T+15 min : ${t15Str}
 - T+30 min : ${t30Str}`;
       } else if (motif === 'Antalgie') {
-        let traumaLines = [];
+        let traumaStr = '';
+        let gestesStr = '';
         if (antalgieTrauma !== null) {
-          traumaLines.push(`Trauma : ${antalgieTrauma ? 'OUI' : 'NON'}`);
+          traumaStr = `Trauma : ${antalgieTrauma ? 'OUI' : 'NON'}`;
           if (antalgieTrauma) {
             let attelle = document.getElementById('chk-attelle') && document.getElementById('chk-attelle').checked ? 'Immobilisation par attelle' : '';
             let vsm = document.getElementById('chk-vsm') && document.getElementById('chk-vsm').checked ? 'Bonne vascularisation' : '';
             let vss = document.getElementById('chk-vss') && document.getElementById('chk-vss').checked ? 'Bonne sensibilité' : '';
             let vmr = document.getElementById('chk-vmr') && document.getElementById('chk-vmr').checked ? 'Bonne motricité' : '';
             let items = [attelle, vsm, vss, vmr].filter(Boolean);
-            if (items.length > 0) traumaLines.push(`- Gestes / Vérifications : ${items.join(', ')}`);
+            if (items.length > 0) gestesStr = `- Gestes / Vérifications : ${items.join(', ')}`;
           }
         }
         let sitLines = [];
@@ -4228,8 +4229,9 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
 
         specificSection = [
           "3. BILAN ANTALGIE & SITIDRACA",
-          traumaLines.join('\n'),
+          traumaStr,
           sitLines.length > 0 ? "Caractérisation :\n- " + sitLines.join('\n- ') : '',
+          gestesStr,
           antPrisText,
           "\n4. THÉRAPEUTIQUE ANTALGIE",
           "- Actions / Traitements : " + (theraAnt.join(', ') || 'Aucun'),
