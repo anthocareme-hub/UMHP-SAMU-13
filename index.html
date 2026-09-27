@@ -2825,7 +2825,7 @@
         p0Container.style.display = 'none';
         const motif = document.getElementById('motif-select').value;
         const btnSuite = document.getElementById('btn-suite-regu');
-        if (motif === 'Détresse respiratoire') {
+        if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
           btnSuite.textContent = 'Thérapeutique ➔';
         } else if (motif === 'Accouchement') {
           btnSuite.textContent = 'Prise en charge ➔';
