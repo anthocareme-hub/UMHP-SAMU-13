@@ -3799,7 +3799,7 @@ function checkDrGravite() {
 - Perte des eaux : ${perteEaux}
 - Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
 - Mesures associées : ${prepa.length > 0 ? prepa.join(', ') : 'En cours'}`;
-      } else if (motif === 'Détresse respiratoire') {
+      } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
         const dr = getDetresseRespiData();
         evalMotif = 
 `- Signes de gravité : ${dr.signes}
