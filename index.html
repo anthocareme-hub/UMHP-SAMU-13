@@ -1072,7 +1072,7 @@
 
       <div class="card">
         <div class="section-label">3. Surface corporelle brûlée (SCB)</div>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Cliquez sur les parties touchées (Règle des 9 de Wallace approx.) :</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Cliquez sur les parties (Règle des 9) ou ajustez avec la paume (1%) :</p>
         <div class="row-2 field">
           <button type="button" class="btn-toggle-action orange scb-part" data-val="9" onclick="toggleScbPart(this)">Tête / Cou (9%)</button>
           <button type="button" class="btn-toggle-action orange scb-part" data-val="18" onclick="toggleScbPart(this)">Tronc Antérieur (18%)</button>
@@ -1089,8 +1089,18 @@
           <button type="button" class="btn-toggle-action orange scb-part" data-val="18" onclick="toggleScbPart(this)">Membre Inf. Gauche (18%)</button>
           <button type="button" class="btn-toggle-action orange scb-part" data-val="1" onclick="toggleScbPart(this)">Périnée / OGE (1%)</button>
         </div>
-        <div style="background: var(--primary); color: #fff; text-align: center; padding: 12px; border-radius: 8px; font-weight: 800; font-size: 1.1rem; margin-top: 12px;">
-          Surface corporelle brûlée calculée : <span id="scb-total-display">0</span> %
+        
+        <hr class="divider">
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+          <button type="button" class="btn-nav secondary" style="flex: 1; padding: 10px;" onclick="adjustScb(-1)">- 1 %</button>
+          <button type="button" class="btn-nav secondary" style="flex: 2; padding: 10px; font-size: 0.95rem;" onclick="adjustScb(1)">+ 1 % (1 paume)</button>
+        </div>
+
+        <div style="background: var(--primary); color: #fff; display: flex; justify-content: center; align-items: center; padding: 12px; border-radius: 8px; font-weight: 800; font-size: 1.1rem; margin-top: 12px;">
+          Surface totale estimée : 
+          <input type="number" id="scb-total-display" value="0" min="0" max="100" oninput="manualScbUpdate(this)" style="width: 60px; background: transparent; border: none; border-bottom: 2px solid #fff; color: #fff; font-size: 1.25rem; font-weight: 900; text-align: center; margin: 0 8px; padding: 0; outline: none;">
+          %
         </div>
       </div>
 
