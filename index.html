@@ -2845,6 +2845,8 @@
         }
 
         if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
+          const hasGravite = ['dr-tirage', 'dr-balancement', 'dr-sueurs', 'dr-cyanose', 'dr-polypnee', 'dr-bradypnee', 'dr-silence', 'dr-parole', 'dr-conscience', 'dr-hemo'].some(id => document.getElementById(id) && document.getElementById(id).checked);
+          document.getElementById('demande-type').value = hasGravite ? 'Renfort SMUR' : 'PSIS Dyspnée';
           btnSuite.textContent = 'Thérapeutique ➔';
         } else if (motif === 'Accouchement') {
           btnSuite.textContent = 'Prise en charge ➔';
