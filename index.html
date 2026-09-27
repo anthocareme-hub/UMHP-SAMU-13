@@ -3666,7 +3666,7 @@ function checkDrGravite() {
       if (msg) msg.style.display = hasGravite ? 'block' : 'none';
       
       const demandeSelect = document.getElementById('demande-type');
-      if (demandeSelect && document.getElementById('motif-select').value === 'Détresse respiratoire') {
+      if (demandeSelect && (document.getElementById('motif-select').value === 'Détresse respiratoire' || document.getElementById('motif-select').value === 'Dyspnée')) {
         demandeSelect.value = hasGravite ? 'Renfort SMUR' : 'PSIS Dyspnée';
       }
     }
