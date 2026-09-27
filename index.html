@@ -1755,19 +1755,6 @@
         <label class="checkbox-item"><input type="checkbox" id="check-noyade-sng"> Pose de SNG</label>
       </div>
 
-      <div class="row-2" style="margin-bottom: 14px;">
-        <button type="button" onclick="toggleDrpModal(true)" style="background: #fef9c3; border: 1.5px solid #fde047; padding: 12px 6px; border-radius: 8px; text-align: center; font-weight: 800; font-size: 0.85rem; color: #854d0e; cursor: pointer;">
-          📖 Nourrisson : DRP
-        </button>
-        <button type="button" id="btn-open-scope" onclick="toggleScopeModal(true)" style="background: #dcfce7; border: 2px solid #86efac; padding: 12px 6px; border-radius: 8px; text-align: center; font-weight: 800; font-size: 0.85rem; color: #166534; cursor: pointer;">
-          Surveillance scope ⏱
-        </button>
-      </div>
-
-      <div id="modal-scope">
-        <button type="button" class="modal-close-btn" onclick="toggleScopeModal(false)">✕</button>
-        <div class="section-label" style="font-size: 0.95rem; margin-bottom: 10px;">Constantes réévaluées sous scope</div>
-        
         <div class="row-2 field">
           <div>
             <label for="sc-fc">Pouls (bpm)</label>
@@ -1808,10 +1795,73 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Bilan régulation</button>
-        <button type="button" class="btn-nav" onclick="goToPage('resume')">Bilan complémentaire C15 ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('suivi-dr')">Surveillance ➔</button>
       </div>
     </div>
+  <!-- ================= PAGE : SUIVI CHRONOLOGIQUE (DÉTRESSE RESPIRATOIRE) ================= -->
+    <div id="page-suivi-dr" class="page">
+      <div class="card">
+        <div class="section-label">Surveillance Respiratoire (T0, T+10, T+20)</div>
 
+        <!-- T0 -->
+        <div class="field" style="background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 14px;">
+          <label style="color: var(--primary); margin-bottom: 6px;">T0 (Constantes Initiales)</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="dr-t0-pa" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="text" id="dr-t0-pouls" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="text" id="dr-t0-spo2" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">FR</label><input type="text" id="dr-t0-fr" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label><input type="text" id="dr-t0-avpu" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div></div>
+          </div>
+        </div>
+
+        <!-- T+10 -->
+        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border); margin-bottom: 14px;">
+          <label style="color: var(--text); margin-bottom: 6px;">T+10 min</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="dr-t10-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="dr-t10-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="dr-t10-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">FR</label><input type="number" inputmode="numeric" id="dr-t10-fr" placeholder="18" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label>
+              <select id="dr-t10-avpu" style="padding: 6px; font-size: 0.9rem;">
+                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
+              </select>
+            </div>
+            <div></div>
+          </div>
+        </div>
+
+        <!-- T+20 -->
+        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
+          <label style="color: var(--text); margin-bottom: 6px;">T+20 min</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="dr-t20-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="dr-t20-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="dr-t20-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">FR</label><input type="number" inputmode="numeric" id="dr-t20-fr" placeholder="18" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label>
+              <select id="dr-t20-avpu" style="padding: 6px; font-size: 0.9rem;">
+                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
+              </select>
+            </div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('therapeutique')">⬅ Thérapeutique</button>
+        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+      </div>
+    </div>
     <!-- ================= PAGE : THÉRAPEUTIQUE (ALLERGIE) ================= -->
     <div id="page-therapeutique-allergie" class="page">
       <div class="card thera-box allergie">
