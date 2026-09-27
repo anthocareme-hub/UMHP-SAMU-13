@@ -4185,12 +4185,12 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
         if (antalgieTrauma !== null) {
           traumaLines.push(`Trauma : ${antalgieTrauma ? 'OUI' : 'NON'}`);
           if (antalgieTrauma) {
-            let vsm = document.getElementById('chk-vsm').checked ? 'Bonne vascularisation' : '';
-            let vss = document.getElementById('chk-vss').checked ? 'Bonne sensibilité' : '';
-            let vmr = document.getElementById('chk-vmr').checked ? 'Bonne motricité' : '';
-            let items = [vsm, vss, vmr].filter(Boolean);
-            traumaLines.push(`- Immobilisation par attelle adaptée`);
-            if (items.length > 0) traumaLines.push(`- Vérifications : ${items.join(', ')}`);
+            let attelle = document.getElementById('chk-attelle') && document.getElementById('chk-attelle').checked ? 'Immobilisation par attelle' : '';
+            let vsm = document.getElementById('chk-vsm') && document.getElementById('chk-vsm').checked ? 'Bonne vascularisation' : '';
+            let vss = document.getElementById('chk-vss') && document.getElementById('chk-vss').checked ? 'Bonne sensibilité' : '';
+            let vmr = document.getElementById('chk-vmr') && document.getElementById('chk-vmr').checked ? 'Bonne motricité' : '';
+            let items = [attelle, vsm, vss, vmr].filter(Boolean);
+            if (items.length > 0) traumaLines.push(`- Gestes / Vérifications : ${items.join(', ')}`);
           }
         }
         let sitLines = [];
@@ -4210,12 +4210,14 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
         }
 
         let theraAnt = [];
-        const btnVvpAnt = document.getElementById('antalgie-vvp');
+        const btnVvpAnt = document.getElementById('btn-antalgie-vvp');
         if (btnVvpAnt && btnVvpAnt.classList.contains('active')) theraAnt.push("VVP posée");
-        const meopaAnt = document.getElementById('ant-meopa');
-        const paracetamolAnt = document.getElementById('ant-paracetamol');
-        if (meopaAnt && meopaAnt.checked) theraAnt.push("MEOPA avec valve administré");
-        if (paracetamolAnt && paracetamolAnt.checked) theraAnt.push("Paracétamol IV 1g administré");
+        const btnMeopa = document.getElementById('btn-ant-meopa');
+        if (btnMeopa && btnMeopa.classList.contains('active')) theraAnt.push("MEOPA administré");
+        const btnPara = document.getElementById('btn-ant-para');
+        if (btnPara && btnPara.classList.contains('active')) theraAnt.push("Paracétamol 1g IVL administré");
+        const btnMorph = document.getElementById('btn-ant-morphine');
+        if (btnMorph && btnMorph.classList.contains('active')) theraAnt.push(btnMorph.textContent.replace('💉', '').trim() + " administré");
 
         const t0Str = `PA: ${document.getElementById('ant-t0-pa').value}, Pouls: ${document.getElementById('ant-t0-pouls').value}, SpO2: ${document.getElementById('ant-t0-spo2').value}, EN: ${document.getElementById('ant-t0-en').value}, AVPU: ${document.getElementById('ant-t0-avpu').value}`;
         const t10Str = `PA: ${document.getElementById('ant-t10-pa').value || '-'}, Pouls: ${document.getElementById('ant-t10-pouls').value || '-'} bpm, SpO2: ${document.getElementById('ant-t10-spo2').value || '-'}%, EN: ${document.getElementById('ant-t10-en').value || '-'}, AVPU: ${document.getElementById('ant-t10-avpu').value}`;
