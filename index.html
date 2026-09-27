@@ -2584,6 +2584,17 @@
         }
       }
 
+      // ROULETTE DÉBIT O2 DÉTRESSE RESPIRATOIRE (1 à 15 L/min)
+      const drO2Select = document.getElementById('dr-o2-debit');
+      if (drO2Select) {
+        for (let i = 1; i <= 15; i++) {
+          const opt = document.createElement('option');
+          opt.value = i;
+          opt.textContent = `${i} L/min`;
+          if (i === 15) opt.selected = true; // Par défaut sur 15L
+          drO2Select.appendChild(opt);
+        }
+      }
       // HOSPIT RÉCENTE
       const hospitMois = document.getElementById('hospit-mois');
       moisNoms.forEach((m, idx) => {
