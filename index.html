@@ -4217,10 +4217,14 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
         if (btn2vvp && btn2vvp.classList.contains('active')) theraBrulure.push("2 VVP posées");
         if (btnIso && btnIso.classList.contains('active')) theraBrulure.push("Isofundine IV administré (SCB > 10%)");
 
-        const meopaChk = document.getElementById('brul-meopa');
-        const paracetamolChk = document.getElementById('brul-paracetamol');
-        if (meopaChk && meopaChk.checked) theraBrulure.push("MEOPA avec valve administré");
-        if (paracetamolChk && paracetamolChk.checked) theraBrulure.push("Paracétamol IV 1g administré");
+        const btnBrulMeopa = document.getElementById('btn-brul-meopa');
+        if (btnBrulMeopa && btnBrulMeopa.classList.contains('active')) theraBrulure.push("MEOPA administré");
+        
+        const btnBrulPara = document.getElementById('btn-brul-para');
+        if (btnBrulPara && btnBrulPara.classList.contains('active')) theraBrulure.push("Paracétamol 1g IVL administré");
+        
+        const btnBrulMorph = document.getElementById('btn-brul-morphine');
+        if (btnBrulMorph && btnBrulMorph.classList.contains('active')) theraBrulure.push(btnBrulMorph.textContent.replace('💉', '').trim() + " administré");
 
         const t0Str = `PA: ${document.getElementById('brul-t0-pa').value}, Pouls: ${document.getElementById('brul-t0-pouls').value}, SpO2: ${document.getElementById('brul-t0-spo2').value}, HbCO: ${document.getElementById('brul-t0-hbco').value}, EN: ${document.getElementById('brul-t0-en').value}, AVPU: ${document.getElementById('brul-t0-avpu').value}`;
         const t15Str = `PA: ${document.getElementById('brul-t15-pa').value || '-'}, Pouls: ${document.getElementById('brul-t15-pouls').value || '-'}, SpO2: ${document.getElementById('brul-t15-spo2').value || '-'}%, HbCO: ${document.getElementById('brul-t15-hbco').value || '-'}%, EN: ${document.getElementById('brul-t15-en').value || '-'}, AVPU: ${document.getElementById('brul-t15-avpu').value}`;
