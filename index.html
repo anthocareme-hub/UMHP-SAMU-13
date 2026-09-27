@@ -964,7 +964,7 @@
         </div>
         <div class="field">
           <label><strong>I</strong>ntensité</label>
-          <input type="text" id="sit-intensite" placeholder="ex: 7/10">
+          <input type="text" id="sit-intensite" placeholder="ex: 7/10" oninput="document.getElementById('c-eva').value = this.value.match(/\d+/) ? this.value.match(/\d+/)[0] : '';">
         </div>
         <div class="field">
           <label><strong>T</strong>ype</label>
