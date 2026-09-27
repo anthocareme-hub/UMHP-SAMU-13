@@ -1725,11 +1725,16 @@
           <span id="thera-poids-badge" style="font-size: 0.8rem; background: #e2e8f0; padding: 2px 8px; border-radius: 4px; color: var(--text);">Poids: 70 kg</span>
         </div>
 
-        <button type="button" id="btn-nebul-asthme" class="btn-toggle-action" style="background: #f0fdf4; border-color: #86efac; color: #166534; padding: 12px; height: auto; text-align: left;" onclick="this.classList.toggle('active')">
-          <div style="font-weight: 800; font-size: 0.95rem; margin-bottom: 6px;">
-            Nébulisation β2-mimétiques + Anticholinergiques :
+        <button type="button" id="btn-nebul-asthme" class="btn-toggle-action" style="padding: 12px; height: auto; border-color: #86efac;" onclick="this.classList.toggle('active'); document.getElementById('nebul-text-default').style.display = this.classList.contains('active') ? 'none' : 'block'; document.getElementById('nebul-text-active').style.display = this.classList.contains('active') ? 'block' : 'none';">
+          <div id="nebul-text-default" style="text-align: left;">
+            <div style="font-weight: 800; font-size: 0.95rem; margin-bottom: 6px; color: #166534;">
+              Nébulisation β2-mimétiques + Anticholinergiques :
+            </div>
+            <div id="nebul-doses-box" style="font-size: 0.9rem; line-height: 1.4; font-weight: 600; color: #166534;"></div>
           </div>
-          <div id="nebul-doses-box" style="font-size: 0.9rem; line-height: 1.4; font-weight: 600;"></div>
+          <div id="nebul-text-active" style="display: none; font-weight: 800; font-size: 1.05rem; text-align: center;">
+            ✓ Aérosols Salbutamol / Atrovent administrés
+          </div>
         </button>
 
         <label class="checkbox-item">
