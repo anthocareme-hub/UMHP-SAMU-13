@@ -1755,50 +1755,13 @@
         <label class="checkbox-item"><input type="checkbox" id="check-noyade-sng"> Pose de SNG</label>
       </div>
 
-        <div class="row-2 field">
-          <div>
-            <label for="sc-fc">Pouls (bpm)</label>
-            <input type="number" inputmode="numeric" id="sc-fc" placeholder="ex: 85">
-          </div>
-          <div>
-            <label for="sc-pa">Tension</label>
-            <input type="text" inputmode="numeric" id="sc-pa" placeholder="ex: 190/100" oninput="checkPasOap()">
-          </div>
-        </div>
-
-        <div class="row-2 field">
-          <div>
-            <label for="sc-fr">FR (/min)</label>
-            <input type="number" inputmode="numeric" id="sc-fr" placeholder="ex: 18">
-          </div>
-          <div>
-            <label for="sc-spo2">SpO2 (%)</label>
-            <input type="number" inputmode="numeric" id="sc-spo2" placeholder="ex: 96">
-          </div>
-        </div>
-
-        <div class="row-3 field">
-          <div>
-            <label for="sc-trc">TRC (sec)</label>
-            <input type="number" step="0.5" inputmode="decimal" id="sc-trc" placeholder="ex: 2">
-          </div>
-          <div>
-            <label for="sc-temp">T° (°C)</label>
-            <input type="number" step="0.1" inputmode="decimal" id="sc-temp" placeholder="ex: 37.0">
-          </div>
-          <div>
-            <label for="sc-hgt">HGT (g/L)</label>
-            <input type="number" step="0.01" inputmode="decimal" id="sc-hgt" placeholder="ex: 1.10">
-          </div>
-        </div>
-      </div>
-
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Bilan régulation</button>
         <button type="button" class="btn-nav" onclick="goToPage('suivi-dr')">Surveillance ➔</button>
       </div>
     </div>
-  <!-- ================= PAGE : SUIVI CHRONOLOGIQUE (DÉTRESSE RESPIRATOIRE) ================= -->
+
+    <!-- ================= PAGE : SUIVI CHRONOLOGIQUE (DÉTRESSE RESPIRATOIRE) ================= -->
     <div id="page-suivi-dr" class="page">
       <div class="card">
         <div class="section-label">Surveillance Respiratoire (T0, T+10, T+20)</div>
