@@ -3192,12 +3192,20 @@
         if (enVal >= 1 && enVal <= 5) {
           douleurContainer.innerHTML = `
             <div class="thera-box" style="border-left: 6px solid var(--samu-yellow);">
-              <div class="thera-title">1 ≤ EN ≤ 5 : Protocole Antalgique Intermédiaire</div>
-              <label class="checkbox-item"><input type="checkbox" id="brul-meopa"> MEOPA avec valve</label>
-              <label class="checkbox-item"><input type="checkbox" id="brul-paracetamol"> Paracétamol IV 1g IVL/20min</label>
-              <div style="font-size:0.85rem; color:var(--danger); margin-top:6px; font-weight:700;">
-                ⚠️ Contre-indications MEOPA : Trouble de la conscience, HTIC, pneumothorax, bulle d'emphysème, accident de plongée, asthme / BPCO.<br>
-                ⚠️ Contre-indication Paracétamol : Insuffisance hépatique sévère.
+              <div class="thera-title" style="margin-bottom: 12px;">1 ≤ EN ≤ 5 : Protocole Antalgique Intermédiaire</div>
+              
+              <button type="button" class="btn-toggle-action" id="btn-brul-meopa" onclick="this.classList.toggle('active'); document.getElementById('warn-brul-meopa').style.display = this.classList.contains('active') ? 'block' : 'none';">
+                MEOPA avec valve
+              </button>
+              <div id="warn-brul-meopa" style="display: none; background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; margin-top: -10px; margin-bottom: 14px; border: 1px solid #ef4444;">
+                ATTENTION : Trouble de la conscience, HTIC, pneumothorax, bulle d’emphysème, accident de plongée, asthme, BPCO
+              </div>
+
+              <button type="button" class="btn-toggle-action" id="btn-brul-para" onclick="this.classList.toggle('active'); document.getElementById('warn-brul-para').style.display = this.classList.contains('active') ? 'block' : 'none';">
+                Paracétamol 1g IVL
+              </button>
+              <div id="warn-brul-para" style="display: none; background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; margin-top: -10px; margin-bottom: 14px; border: 1px solid #ef4444;">
+                Attention si insuffisance hépatique sévère
               </div>
             </div>
             <div style="background:#f8fafc; border:1px solid var(--border); padding:10px; border-radius:6px; font-size:0.9rem; font-weight:600; text-align:center;">
@@ -3208,10 +3216,12 @@
           let doseMorphine = poidsVal <= 60 ? "Morphine 2 mg IVD" : "Morphine 3 mg IVD";
           douleurContainer.innerHTML = `
             <div class="thera-box" style="border-left: 6px solid var(--danger);">
-              <div class="thera-title">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)</div>
-              <div style="background:#e0f2fe; border:1.5px solid #0284c7; padding:10px; border-radius:6px; margin-bottom:10px; font-weight:800; color:#0369a1; text-align:center;">
+              <div class="thera-title" style="margin-bottom: 12px;">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)</div>
+              
+              <button type="button" class="btn-toggle-action" id="btn-brul-morphine" onclick="this.classList.toggle('active');" style="border-color: #0284c7; color: #0369a1;">
                 💉 ${doseMorphine}
-              </div>
+              </button>
+              
               <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)</p>
               <div style="background:#fee2e2; border:1.5px solid #ef4444; padding:10px; border-radius:6px; color:#991b1b; font-size:0.85rem; font-weight:700;">
                 🚨 SURDOSAGE : STOP MORPHINE + APPEL C15<br>
