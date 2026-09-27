@@ -2904,6 +2904,14 @@
         document.getElementById('ant-t0-spo2').value = (document.getElementById('c-spo2').value.trim() ? document.getElementById('c-spo2').value.trim() + '%' : '-');
         document.getElementById('ant-t0-en').value = (document.getElementById('c-eva').value.trim() ? document.getElementById('c-eva').value.trim() + '/10' : '-');
         document.getElementById('ant-t0-avpu').value = selectedAvpu || '-';
+        } else if (target === 'suivi-dr') {
+        indicator.textContent = 'Suivi Détresse Respiratoire';
+        p0Container.style.display = 'none';
+        document.getElementById('dr-t0-pa').value = document.getElementById('c-pa').value.trim() || '-';
+        document.getElementById('dr-t0-pouls').value = (document.getElementById('c-fc').value.trim() ? document.getElementById('c-fc').value.trim() + ' bpm' : '-');
+        document.getElementById('dr-t0-spo2').value = (document.getElementById('c-spo2').value.trim() ? document.getElementById('c-spo2').value.trim() + '%' : '-');
+        document.getElementById('dr-t0-fr').value = (document.getElementById('c-fr').value.trim() ? document.getElementById('c-fr').value.trim() + '/min' : '-');
+        document.getElementById('dr-t0-avpu').value = selectedAvpu || '-';
       } else if (target === 'suivi-allergie') {
         indicator.textContent = 'Suivi Chronologique';
         p0Container.style.display = 'none';
