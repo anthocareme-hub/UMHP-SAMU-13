@@ -2924,7 +2924,7 @@
         const btnBack = document.getElementById('btn-back-resume');
         if (motif === 'Accouchement') {
           btnBack.onclick = () => goToPage('pec-enfant');
-        } else if (motif === 'Détresse respiratoire') {
+        } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
           btnBack.onclick = () => goToPage('suivi-dr');
         } else if (motif === 'Allergie') {
           btnBack.onclick = () => goToPage('suivi-allergie');
