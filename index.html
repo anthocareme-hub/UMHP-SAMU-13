@@ -1199,9 +1199,12 @@
     <!-- ================= PAGE SPÉCIFIQUE : DÉTRESSE RESPIRATOIRE ================= -->
     <div id="page-detresse-respi" class="page">
       <div class="card">
+        <!-- Nouvel encart rouge demandé -->
+        <div class="alert-box alert-red" style="margin-bottom: 14px;">Oxygénothérapie pour SpO2 ≥ 95%</div>
+
         <div class="section-label">Signes cliniques & critères de gravité</div>
 
-        <div class="field">
+        <div class="field" onchange="checkDrGravite()">
           <label class="checkbox-item"><input type="checkbox" id="dr-tirage"> Tirage intercostal / sus-claviculaire</label>
           <label class="checkbox-item"><input type="checkbox" id="dr-balancement"> Balancement thoraco-abdominal</label>
           <label class="checkbox-item"><input type="checkbox" id="dr-sueurs"> Sueurs</label>
@@ -1211,6 +1214,13 @@
           <label class="checkbox-item"><input type="checkbox" id="dr-silence"> Silence auscultatoire</label>
           <label class="checkbox-item"><input type="checkbox" id="dr-parole"> Parole impossible</label>
           <label class="checkbox-item"><input type="checkbox" id="dr-conscience"> Troubles de la conscience</label>
+          <!-- Ajout de la défaillance hémodynamique -->
+          <label class="checkbox-item"><input type="checkbox" id="dr-hemo"> Défaillance hémodynamique</label>
+        </div>
+
+        <!-- Message renfort SMUR -->
+        <div id="dr-renfort-msg" class="alert-box alert-red" style="display: none; margin-top: 10px;">
+          Discuter renfort SMUR à l'appel
         </div>
 
         <hr class="divider">
@@ -1243,7 +1253,13 @@
         <div class="section-label">Gestes réflexes & matériels</div>
         <div class="field">
           <label class="checkbox-item"><input type="checkbox" id="dr-demi-assis"> Position demi-assise</label>
-          <label class="checkbox-item"><input type="checkbox" id="dr-o2-mhc"> O2 au masque à haute concentration (15 L/min)</label>
+          <!-- Modification pour Oxygénothérapie et débit -->
+          <label class="checkbox-item"><input type="checkbox" id="dr-o2" onchange="toggleDrO2(this)"> Oxygénothérapie</label>
+          
+          <div id="dr-o2-debit-container" style="display:none; margin-top: -10px; margin-bottom: 14px; padding-left: 32px;">
+            <label for="dr-o2-debit" style="font-size: 0.85rem; margin-bottom: 4px;">Débit (L/min)</label>
+            <select id="dr-o2-debit"></select>
+          </div>
         </div>
       </div>
 
