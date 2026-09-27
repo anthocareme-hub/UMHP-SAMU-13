@@ -3118,14 +3118,33 @@
     }
 
     function toggleScbPart(btn) {
-      btn.classList.toggle('active');
-      let sum = 0;
-      document.querySelectorAll('.scb-part.active').forEach(b => {
-        sum += parseInt(b.getAttribute('data-val') || '0', 10);
-      });
-      totalScb = sum;
+      const val = parseInt(btn.getAttribute('data-val') || '0', 10);
+      if (btn.classList.contains('active')) {
+        btn.classList.remove('active');
+        totalScb = Math.max(0, totalScb - val);
+      } else {
+        btn.classList.add('active');
+        totalScb = Math.min(100, totalScb + val);
+      }
+      updateScbDisplay();
+    }
+
+    function adjustScb(val) {
+      totalScb = Math.max(0, Math.min(100, totalScb + val));
+      updateScbDisplay();
+    }
+
+    function manualScbUpdate(input) {
+      let val = parseInt(input.value, 10);
+      if (isNaN(val)) val = 0;
+      totalScb = Math.max(0, Math.min(100, val));
+      setupBrulureTherapeutiqueUI(); // Met à jour la page 4 en temps réel
+    }
+
+    function updateScbDisplay() {
       const disp = document.getElementById('scb-total-display');
-      if (disp) disp.textContent = totalScb;
+      if (disp) disp.value = totalScb;
+      setupBrulureTherapeutiqueUI(); 
     }
 
     function checkBrulureGravite() {
