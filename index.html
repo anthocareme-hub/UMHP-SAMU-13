@@ -2827,6 +2827,12 @@
         p0Container.style.display = 'none';
         const motif = document.getElementById('motif-select').value;
         const btnSuite = document.getElementById('btn-suite-regu');
+
+        // Forcer "PSIS Antalgie" par défaut
+        if (motif === 'Antalgie') {
+          document.getElementById('demande-type').value = 'PSIS Antalgie';
+        }
+
         if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
           btnSuite.textContent = 'Thérapeutique ➔';
         } else if (motif === 'Accouchement') {
