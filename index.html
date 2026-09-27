@@ -1529,7 +1529,7 @@
       </div>
 
       <div class="card">
-        <div class="section-label">Prise en charge de la douleur (EN)[cite: 1]</div>
+        <div class="section-label">Prise en charge de la douleur (EN)</div>
         <div id="antalgie-douleur-container">
           <!-- Rempli dynamiquement selon l'EN, le poids et l'algorithme source -->
         </div>
@@ -3201,30 +3201,30 @@
               </div>
             </div>
             <div style="background:#f8fafc; border:1px solid var(--border); padding:10px; border-radius:6px; font-size:0.9rem; font-weight:600; text-align:center;">
-              Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)[cite: 1]
+              Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)
             </div>
           `;
         } else if (enVal >= 6) {
           let doseMorphine = poidsVal <= 60 ? "Morphine 2 mg IVD" : "Morphine 3 mg IVD";
           douleurContainer.innerHTML = `
             <div class="thera-box" style="border-left: 6px solid var(--danger);">
-              <div class="thera-title">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)[cite: 1]</div>
+              <div class="thera-title">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)</div>
               <div style="background:#e0f2fe; border:1.5px solid #0284c7; padding:10px; border-radius:6px; margin-bottom:10px; font-weight:800; color:#0369a1; text-align:center;">
                 💉 ${doseMorphine}
               </div>
-              <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)[cite: 1]</p>
+              <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)</p>
               <div style="background:#fee2e2; border:1.5px solid #ef4444; padding:10px; border-radius:6px; color:#991b1b; font-size:0.85rem; font-weight:700;">
-                🚨 SURDOSAGE : STOP MORPHINE + APPEL C15[cite: 1]<br>
-                Tb de la conscience / bradypnée avec FR < 10/min / apnées / désaturation / bradycardie extrême[cite: 1].<br>
-                • MHC 15L/min[cite: 1]<br>
-                • NALOXONE 0.1mg/2min pour obj FR > 12 + amélioration clinique[cite: 1]
+                🚨 SURDOSAGE : STOP MORPHINE + APPEL C15<br>
+                Tb de la conscience / bradypnée avec FR < 10/min / apnées / désaturation / bradycardie extrême.<br>
+                • MHC 15L/min<br>
+                • NALOXONE 0.1mg/2min pour obj FR > 12 + amélioration clinique
               </div>
               <div style="font-size:0.85rem; color:var(--danger); margin-top:8px; font-weight:700;">
-                ⚠️ Contre-indications Morphine : Insuffisance respi aiguë, hypotension artérielle, coma, TC avec HTIC, épilepsie non contrôlée, insuffisance hépatique sévère[cite: 1].
+                ⚠️ Contre-indications Morphine : Insuffisance respi aiguë, hypotension artérielle, coma, TC avec HTIC, épilepsie non contrôlée, insuffisance hépatique sévère.
               </div>
             </div>
             <div style="background:#f8fafc; border:1px solid var(--border); padding:10px; border-radius:6px; font-size:0.9rem; font-weight:600; text-align:center;">
-              Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)[cite: 1]
+              Patient scopé | Surveillance des effets secondaires | Réévaluation de la douleur (EN)
             </div>
           `;
         } else {
