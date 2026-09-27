@@ -3314,9 +3314,20 @@
       }
 
       const blocRespi = document.getElementById('alg-bloc-respi-gravite');
-      const showRespi = dra || insp || sibilants;
-      if (blocRespi) blocRespi.style.display = showRespi ? 'block' : 'none';
+      const placeClinique = document.getElementById('place-respi-clinique');
+      const placeGravite = document.getElementById('place-respi-gravite');
 
+      if (blocRespi && placeClinique && placeGravite) {
+        if (dra || insp) {
+          placeGravite.appendChild(blocRespi);
+          blocRespi.style.display = 'block';
+        } else if (sibilants) {
+          placeClinique.appendChild(blocRespi);
+          blocRespi.style.display = 'block';
+        } else {
+          blocRespi.style.display = 'none';
+        }
+      }
       const blocHemo = document.getElementById('alg-bloc-hemo-gravite');
       const showHemo = conscience || hemo;
       if (blocHemo) blocHemo.style.display = showHemo ? 'block' : 'none';
