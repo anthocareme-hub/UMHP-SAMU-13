@@ -4179,16 +4179,25 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
 - T+10 min : ${t10Str}`;
       } else if (motif === 'Brûlure') {
         let grav = [];
-        if (document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
-        if (document.getElementById('brul-grav-circulaire').checked) grav.push('circulaire');
-        if (document.getElementById('brul-grav-inhalation').checked) grav.push('inhalation');
+        if (document.getElementById('brul-grav-cervico') && document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
+        if (document.getElementById('brul-grav-circulaire') && document.getElementById('brul-grav-circulaire').checked) grav.push('circulaire');
+        if (document.getElementById('brul-grav-inhalation') && document.getElementById('brul-grav-inhalation').checked) grav.push('inhalation');
 
         let gestes = [];
-        if (document.getElementById('geste-refroidissement').checked) gestes.push("Refroidissement eau tiède");
-        if (document.getElementById('geste-retrait-vet').checked) gestes.push("Retrait vêtements non adhérents");
-        if (document.getElementById('geste-protection').checked) gestes.push("Protection zones brûlées");
-        if (document.getElementById('geste-rechauffage').checked) gestes.push("Réchauffage + cellule AR");
-        if (document.getElementById('geste-brulstop').checked) gestes.push("Brûlstop 15 min");
+        if (document.getElementById('geste-refroidissement') && document.getElementById('geste-refroidissement').checked) gestes.push("Refroidissement eau tiède");
+        if (document.getElementById('geste-retrait-vet') && document.getElementById('geste-retrait-vet').checked) gestes.push("Retrait vêtements non adhérents");
+        if (document.getElementById('geste-protection') && document.getElementById('geste-protection').checked) gestes.push("Protection zones brûlées");
+        if (document.getElementById('geste-rechauffage') && document.getElementById('geste-rechauffage').checked) gestes.push("Réchauffage + cellule AR");
+        if (document.getElementById('geste-brulstop') && document.getElementById('geste-brulstop').checked) gestes.push("Brûlstop 15 min");
+        if (fumeeInhalation) gestes.push("O2 15L au MHC");
+
+        let bilanBrulureLines = [];
+        bilanBrulureLines.push(`- Type de brûlure : ${brulureType || 'Non spécifié'}`);
+        bilanBrulureLines.push(`- Profondeur : ${brulureProfondeur || 'Non spécifiée'}`);
+        bilanBrulureLines.push(`- Surface corporelle brûlée (SCB) : ${totalScb}%`);
+        if (grav.length > 0) bilanBrulureLines.push(`- Signes de gravité : ${grav.join(', ')}`);
+        if (fumeeInhalation) bilanBrulureLines.push(`- Inhalation de fumées : OUI`);
+        if (gestes.length > 0) bilanBrulureLines.push(`- Gestes réalisés : ${gestes.join(', ')}`);
 
         let theraBrulure = [];
         const btn1vvp = document.getElementById('btn-brul-1vvp');
@@ -4209,15 +4218,10 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
 
         specificSection = 
 `3. BILAN BRÛLURE
-- Type de brûlure : ${brulureType || 'Non spécifié'}
-- Inhalation fumées : ${fumeeInhalation ? 'Oui' : 'Non'}
-- Profondeur : ${brulureProfondeur || 'Non spécifiée'}
-- Surface corporelle brûlée (SCB) : ${totalScb}%
-- Signes de gravité : ${grav.join(', ')}
-- Gestes réalisés : ${gestes.join(', ')}
+${bilanBrulureLines.join('\n')}
 
 4. THÉRAPEUTIQUE & PRISE EN CHARGE BRÛLURE
-- Actions / Traitements post-appel : ${theraBrulure.join(', ')}
+- Actions / Traitements post-appel : ${theraBrulure.length > 0 ? theraBrulure.join(', ') : 'Aucun'}
 
 5. SURVEILLANCE & CONSTANTES BRÛLURE
 - T0 : ${t0Str}
