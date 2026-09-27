@@ -4103,6 +4103,10 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
           const lblOxy = oxygeneMode === 'asthme' ? 'Asthme/Autre (SpO2 > 94%)' : (oxygeneMode === 'bpco' ? 'BPCO (SpO2 88-92%)' : (oxygeneMode === 'oap' ? 'OAP (SpO2 > 94%)' : 'Noyade (MHC 15 L/min)'));
           theraList.push(`Oxygénothérapie : mode ${lblOxy}`);
         }
+        const btnNebul = document.getElementById('btn-nebul-asthme');
+        if (btnNebul && btnNebul.classList.contains('active') && (oxygeneMode === 'asthme' || oxygeneMode === 'bpco')) {
+          theraList.push(`Nébulisation (β2-mimétiques + Anticholinergiques) administrée`);
+        }
         if (document.getElementById('check-cortico').checked && (oxygeneMode === 'asthme' || oxygeneMode === 'bpco')) {
           theraList.push(`Prednisolone : ${poids} mg IVL`);
         }
