@@ -3683,6 +3683,30 @@
       };
     }
 
+function checkDrGravite() {
+      const checkboxes = [
+        'dr-tirage', 'dr-balancement', 'dr-sueurs', 'dr-cyanose',
+        'dr-polypnee', 'dr-bradypnee', 'dr-silence', 'dr-parole',
+        'dr-conscience', 'dr-hemo'
+      ];
+      const hasGravite = checkboxes.some(id => document.getElementById(id) && document.getElementById(id).checked);
+      
+      const msg = document.getElementById('dr-renfort-msg');
+      if (msg) msg.style.display = hasGravite ? 'block' : 'none';
+      
+      const demandeSelect = document.getElementById('demande-type');
+      if (demandeSelect && document.getElementById('motif-select').value === 'Détresse respiratoire') {
+        demandeSelect.value = hasGravite ? 'Renfort SMUR' : 'PSIS Dyspnée';
+      }
+    }
+
+    function toggleDrO2(btn) {
+      const container = document.getElementById('dr-o2-debit-container');
+      if (container) {
+        container.style.display = btn.checked ? 'block' : 'none';
+      }
+    }
+    
     // CLINIQUE ALLERGIE
     function getAllergieData() {
       let signes = [];
