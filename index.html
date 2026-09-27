@@ -3863,16 +3863,17 @@ function checkDrGravite() {
 - Surface corporelle brûlée (SCB) : ${totalScb}%
 - Signes de gravité : ${grav.length > 0 ? grav.join(', ') : 'Aucun'}`;
       } else if (motif === 'Antalgie') {
-        let traumaLines = [];
+        let traumaStr = '';
+        let gestesStr = '';
         if (antalgieTrauma !== null) {
-          traumaLines.push(`Trauma : ${antalgieTrauma ? 'OUI' : 'NON'}`);
+          traumaStr = `Trauma : ${antalgieTrauma ? 'OUI' : 'NON'}`;
           if (antalgieTrauma) {
             let attelle = document.getElementById('chk-attelle').checked ? 'Immobilisation par attelle' : '';
             let vsm = document.getElementById('chk-vsm').checked ? 'Bonne vascularisation' : '';
             let vss = document.getElementById('chk-vss').checked ? 'Bonne sensibilité' : '';
             let vmr = document.getElementById('chk-vmr').checked ? 'Bonne motricité' : '';
             let items = [attelle, vsm, vss, vmr].filter(Boolean);
-            if (items.length > 0) traumaLines.push(`- Gestes / Vérifications : ${items.join(', ')}`);
+            if (items.length > 0) gestesStr = `- Gestes / Vérifications : ${items.join(', ')}`;
           }
         }
         let sitLines = [];
@@ -3892,8 +3893,9 @@ function checkDrGravite() {
         }
 
         evalMotif = [
-          traumaLines.join('\n'),
+          traumaStr,
           sitLines.length > 0 ? "Caractérisation (SITIDRACA) :\n- " + sitLines.join('\n- ') : '',
+          gestesStr,
           antPrisText
         ].filter(Boolean).join('\n');
       } else {
