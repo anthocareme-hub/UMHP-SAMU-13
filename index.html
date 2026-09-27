@@ -3866,12 +3866,12 @@ function checkDrGravite() {
         if (antalgieTrauma !== null) {
           traumaLines.push(`Trauma : ${antalgieTrauma ? 'OUI' : 'NON'}`);
           if (antalgieTrauma) {
+            let attelle = document.getElementById('chk-attelle').checked ? 'Immobilisation par attelle' : '';
             let vsm = document.getElementById('chk-vsm').checked ? 'Bonne vascularisation' : '';
             let vss = document.getElementById('chk-vss').checked ? 'Bonne sensibilité' : '';
             let vmr = document.getElementById('chk-vmr').checked ? 'Bonne motricité' : '';
-            let items = [vsm, vss, vmr].filter(Boolean);
-            traumaLines.push(`- Immobilisation par attelle adaptée`);
-            if (items.length > 0) traumaLines.push(`- Vérifications : ${items.join(', ')}`);
+            let items = [attelle, vsm, vss, vmr].filter(Boolean);
+            if (items.length > 0) traumaLines.push(`- Gestes / Vérifications : ${items.join(', ')}`);
           }
         }
         let sitLines = [];
