@@ -3881,16 +3881,27 @@ function checkDrGravite() {
 - Position latérale de sécurité (PLS) : ${hypo.pls}`;
       } else if (motif === 'Brûlure') {
         let grav = [];
-        if (document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
-        if (document.getElementById('brul-grav-circulaire').checked) grav.push('circulaire');
-        if (document.getElementById('brul-grav-inhalation').checked) grav.push('inhalation');
+        if (document.getElementById('brul-grav-cervico') && document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
+        if (document.getElementById('brul-grav-circulaire') && document.getElementById('brul-grav-circulaire').checked) grav.push('circulaire');
+        if (document.getElementById('brul-grav-inhalation') && document.getElementById('brul-grav-inhalation').checked) grav.push('inhalation');
 
-        evalMotif =
-`- Type de brûlure : ${brulureType || 'Non spécifié'}
-- Inhalation de fumées : ${fumeeInhalation ? 'Oui' : 'Non'}
-- Profondeur : ${brulureProfondeur || 'Non spécifiée'}
-- Surface corporelle brûlée (SCB) : ${totalScb}%
-- Signes de gravité : ${grav.length > 0 ? grav.join(', ') : 'Aucun'}`;
+        let gestes = [];
+        if (document.getElementById('geste-refroidissement') && document.getElementById('geste-refroidissement').checked) gestes.push("Refroidissement eau tiède");
+        if (document.getElementById('geste-retrait-vet') && document.getElementById('geste-retrait-vet').checked) gestes.push("Retrait vêtements non adhérents");
+        if (document.getElementById('geste-protection') && document.getElementById('geste-protection').checked) gestes.push("Protection zones brûlées");
+        if (document.getElementById('geste-rechauffage') && document.getElementById('geste-rechauffage').checked) gestes.push("Réchauffage + cellule AR");
+        if (document.getElementById('geste-brulstop') && document.getElementById('geste-brulstop').checked) gestes.push("Brûlstop 15 min");
+        if (fumeeInhalation) gestes.push("O2 15L au MHC");
+
+        let evalLines = [];
+        evalLines.push(`- Type de brûlure : ${brulureType || 'Non spécifié'}`);
+        evalLines.push(`- Profondeur : ${brulureProfondeur || 'Non spécifiée'}`);
+        evalLines.push(`- Surface corporelle brûlée (SCB) : ${totalScb}%`);
+        if (grav.length > 0) evalLines.push(`- Signes de gravité : ${grav.join(', ')}`);
+        if (fumeeInhalation) evalLines.push(`- Inhalation de fumées : OUI`);
+        if (gestes.length > 0) evalLines.push(`- Gestes réalisés : ${gestes.join(', ')}`);
+
+        evalMotif = evalLines.join('\n');
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
