@@ -4010,7 +4010,7 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
 - Clampage (15 cm) & réchauffement Neohelp réalisés
 - Score d'APGAR : 1 min: ${apgar1} | 3 min: ${apgar3} | 5 min: ${apgar5}
 - Pose de SpO2 : Effectuée`;
-      } else if (motif === 'Détresse respiratoire') {
+      } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
         const dr = getDetresseRespiData();
         const vvpThera = document.getElementById('btn-vvp-thera').classList.contains('active') ? 'Oui' : 'Non';
         
