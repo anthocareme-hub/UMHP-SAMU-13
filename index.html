@@ -3494,12 +3494,27 @@
 
       const sibilants = document.getElementById('alg-signe-sibilants').checked;
       const blocSalbu = document.getElementById('alg-bloc-salbutamol');
-      if (blocSalbu) blocSalbu.style.display = sibilants ? 'block' : 'none';
+      
+      if (blocSalbu) {
+        blocSalbu.style.display = sibilants ? 'block' : 'none';
+        if (!blocSalbu.classList.contains('active')) {
+          const poids = parseInt(document.getElementById('patient-poids').value, 10) || 70;
+          const dose = poids < 20 ? '2,5 mg' : '5 mg';
+          blocSalbu.textContent = `💨 Nébulisation salbutamol ${dose}`;
+        }
+      }
     }
 
     function toggleAdrenaline(btn) {
       btn.classList.toggle('active');
       btn.textContent = btn.classList.contains('active') ? '✓ Adrénaline 0,5 fait' : 'Adrénaline 0,5mg IM à répéter 1x si besoin à T+15 min';
+    }
+
+    function toggleSalbutamolAllergie(btn) {
+      const poids = parseInt(document.getElementById('patient-poids').value, 10) || 70;
+      const dose = poids < 20 ? '2,5 mg' : '5 mg';
+      btn.classList.toggle('active');
+      btn.textContent = btn.classList.contains('active') ? `✓ Salbutamol ${dose} administré` : `💨 Nébulisation salbutamol ${dose}`;
     }
     function toggleSalbutamolAllergie(btn) {
       btn.classList.toggle('active');
@@ -4247,7 +4262,11 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
         const alg = getAllergieData();
         const vvpAll = document.getElementById('btn-vvp-allergie').classList.contains('active') ? 'Oui' : 'Non';
         const adren = document.getElementById('btn-adrenaline') && document.getElementById('btn-adrenaline').classList.contains('active') ? 'Adrénaline 0.5mg administrée' : '';
-        const salbu = document.getElementById('alg-bloc-salbutamol') && document.getElementById('alg-bloc-salbutamol').classList.contains('active') ? 'Nébulisation 5mg réalisée' : '';
+        
+        const poidsAllergie = parseInt(document.getElementById('patient-poids').value, 10) || 70;
+        const doseSalbuAllergie = poidsAllergie < 20 ? '2,5 mg' : '5 mg';
+        const salbu = document.getElementById('alg-bloc-salbutamol') && document.getElementById('alg-bloc-salbutamol').classList.contains('active') ? `Nébulisation salbutamol ${doseSalbuAllergie} réalisée` : '';
+        
         const pol = document.getElementById('alg-trt-polaramine').checked ? 'Polaramine 5mg IVL' : '';
         const pred = document.getElementById('alg-trt-prednisolone').checked ? 'Prednisolone IVL' : '';
         let trts = [pol, pred].filter(Boolean).join(', ');
