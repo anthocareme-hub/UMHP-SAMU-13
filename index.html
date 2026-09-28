@@ -775,49 +775,6 @@
 .legal-link:hover {
   text-decoration: underline;
 }
-/* ================= MODE SOMBRE (DARK MODE) ================= */
-    body.dark-mode {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
-      --danger-bg: #450a0a;
-      --success-bg: #064e3b;
-      --warning-bg: #422006;
-      --tag-bg: #334155;
-      --algo-blue-bg: #0c4a6e;
-    }
-    body.dark-mode input[type="text"], 
-    body.dark-mode input[type="number"], 
-    body.dark-mode select, 
-    body.dark-mode textarea,
-    body.dark-mode .btn-toggle-action,
-    body.dark-mode .btn-home-secondary,
-    body.dark-mode .algo-sub-box,
-    body.dark-mode .thera-box,
-    body.dark-mode .umhp-item,
-    body.dark-mode .apgar-summary-line {
-      background-color: var(--card-bg);
-      color: var(--text);
-    }
-    .btn-dark-mode {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: var(--card-bg);
-      border: 1.5px solid var(--border);
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-    }
   </style>
 </head>
 <body>
@@ -827,9 +784,6 @@
     <!-- ================= PAGE ACCUEIL SAMU 13 ================= -->
     <div id="page-home" class="page active">
 
-<!-- BOUTON MODE SOMBRE -->
-      <button type="button" class="btn-dark-mode" id="btn-dark-mode" onclick="toggleDarkMode()">🌙</button>
-      
       <div class="home-top-half">
         <!-- Nouveau logo UMHP -->
         <svg class="home-logo-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
@@ -2643,12 +2597,7 @@
     let antalgiquesPrisStatut = null;
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Vérifier si le mode sombre était activé avant
-      if (localStorage.getItem('samu13_theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-        const btn = document.getElementById('btn-dark-mode');
-        if (btn) btn.textContent = '☀️';
-      }
+      
       // DATE DE NAISSANCE
       const ddnJour = document.getElementById('ddn-jour');
       for (let j = 1; j <= 31; j++) {
@@ -3567,16 +3516,7 @@
       const modal = document.getElementById('modal-legal');
       modal.style.display = show ? 'flex' : 'none';
     }
-    // ACTIVATION DU MODE SOMBRE
-    function toggleDarkMode() {
-      const isDark = document.body.classList.toggle('dark-mode');
-      const btn = document.getElementById('btn-dark-mode');
-      if (btn) btn.textContent = isDark ? '☀️' : '🌙';
-      
-      // Mémorise le choix pour la prochaine intervention !
-      localStorage.setItem('samu13_theme', isDark ? 'dark' : 'light');
-    }
-
+    
     function setOxygeneProfile(mode) {
       oxygeneMode = mode;
       const btnAsthme = document.getElementById('btn-o2-asthme');
