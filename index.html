@@ -778,86 +778,9 @@
 .legal-link:hover {
   text-decoration: underline;
 }
-    /* ================= NOTIFICATION MISE À JOUR ================= */
-    #update-banner {
-      position: fixed;
-      top: -150px; /* Caché en haut */
-      left: 10px;
-      right: 10px;
-      background: var(--primary);
-      color: white;
-      padding: 16px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: top 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Effet de rebond fluide */
-    }
-    #update-banner.show {
-      top: 16px; /* Glisse vers le bas */
-    }
-    .update-content h4 { margin-bottom: 4px; font-size: 1.05rem; }
-    .update-content p { font-size: 0.85rem; opacity: 0.9; margin-bottom: 8px; }
-    
-    .btn-update-detail {
-      background: rgba(255,255,255,0.2);
-      border: 1px solid white;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-update-close {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 1.5rem;
-      cursor: pointer;
-      padding: 0 0 0 12px;
-      font-weight: 800;
-    }
-
-    /* MODALE DÉTAILS DE LA RELEASE */
-    #modal-release {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(15, 23, 42, 0.85);
-      z-index: 10001;
-      padding: 16px;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(3px);
-    }
   </style>
 </head>
 <body>
-
-  <!-- ================= NOTIFICATION MISE À JOUR ================= -->
-    <div id="update-banner">
-      <div class="update-content">
-        <h4>✨ Mise à jour installée</h4>
-        <p>L'application est passée en v<span id="banner-version"></span>.</p>
-        <button class="btn-update-detail" onclick="showReleaseNotes()">Détails</button>
-      </div>
-      <button class="btn-update-close" onclick="hideUpdateBanner()">✕</button>
-    </div>
-
-    <!-- ================= MODALE RELEASE NOTES ================= -->
-    <div id="modal-release">
-      <div class="release-content-card" style="background: #ffffff; border-radius: 12px; max-width: 480px; width: 100%; padding: 20px; position: relative;">
-        <button type="button" class="legal-close-btn" style="position: absolute; top: 10px; right: 16px; font-size: 1.5rem; background: none; border: none; color: #94a3b8; font-weight: 900; cursor: pointer;" onclick="document.getElementById('modal-release').style.display='none'">✕</button>
-        <h3 style="color: var(--primary); margin-bottom: 16px; font-weight: 800; font-size: 1.15rem;">
-          Nouveautés (v<span id="modal-version"></span>)
-        </h3>
-        <!-- Le texte s'insèrera ici en gardant les retours à la ligne -->
-        <div id="release-notes-text" style="font-size: 0.9rem; color: var(--text); line-height: 1.6; white-space: pre-wrap; font-weight: 600;"></div>
-      </div>
-    </div>
 
   <div class="container">
 
@@ -4326,13 +4249,13 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
         const pred = document.getElementById('alg-trt-prednisolone').checked ? 'Prednisolone IVL' : '';
         let trts = [pol, pred].filter(Boolean).join(', ');
 
-        const t0Str = `PAS: ${document.getElementById('t0-pas').value || '-'}, PAD: ${document.getElementById('t0-pad').value || '-'}, Pouls: ${document.getElementById('t0-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t0-spo2').value || '-'}`;
-        const t15Str = `PAS: ${document.getElementById('t15-pas').value || '-'}, PAD: ${document.getElementById('t15-pad').value || '-'}, Pouls: ${document.getElementById('t15-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t15-spo2').value || '-'}`;
-        const t30Str = `PAS: ${document.getElementById('t30-pas').value || '-'}, PAD: ${document.getElementById('t30-pad').value || '-'}, Pouls: ${document.getElementById('t30-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t30-spo2').value || '-'}`;
+        const t0Str = `PAS: ${document.getElementById('t0-pas').value \vert{}\vert{} '-'}, PAD:${document.getElementById('t0-pad').value || '-'}, Pouls: ${document.getElementById('t0-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('t0-spo2').value || '-'}`;
+        const t15Str = `PAS: ${document.getElementById('t15-pas').value \vert{}\vert{} '-'}, PAD:${document.getElementById('t15-pad').value || '-'}, Pouls: ${document.getElementById('t15-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('t15-spo2').value || '-'}`;
+        const t30Str = `PAS: ${document.getElementById('t30-pas').value \vert{}\vert{} '-'}, PAD:${document.getElementById('t30-pad').value || '-'}, Pouls: ${document.getElementById('t30-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('t30-spo2').value || '-'}`;
 
         let evalLines = [];
         if (alg.signes) evalLines.push(`- Signes cliniques : ${alg.signes}`);
-        if (alg.heure && alg.heure !== ':') evalLines.push(`- Heure de début : ${getDureeDepuis(alg.heure)} (saisi: ${alg.heure})`);
+        if (alg.heure && alg.heure !== ':') evalLines.push(`- Heure de début : ${getDureeDepuis(alg.heure)} (saisi:${alg.heure})`);
         if (alg.facteur) evalLines.push(`- Facteur déclenchant : ${alg.facteur}`);
         if (alg.gravites) evalLines.push(`- Signes de gravité : ${alg.gravites}`);
         if (alg.actions) evalLines.push(`- Gestes réalisés : ${alg.actions}`);
@@ -4341,6 +4264,13 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
         specificSection = 
 `3. BILAN ALLERGOLOGIQUE & CLINIQUE
 ${evalLines.join('\n')}
+
+4. THÉRAPEUTIQUE ALLERGIE
+`3. BILAN ALLERGOLOGIQUE & CLINIQUE
+- Début : ${alg.heure} | Facteur : ${alg.facteur} | Traitement pris : ${alg.traitementPris}
+- Signes cliniques : ${alg.signes}
+- Signes de gravité : ${alg.gravites}
+- Actions réflexes : ${alg.actions}
 
 4. THÉRAPEUTIQUE ALLERGIE
 - VVP : ${vvpAll}
@@ -4651,53 +4581,6 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       savedList = savedList.filter(x => x.id !== id);
       localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
       renderUmhpList();
-    }
-    // ================= GESTION DES MISES À JOUR (RELEASE NOTES) =================
-    
-    // ⚠️ À MODIFIER À CHAQUE NOUVELLE MISE À JOUR SUR GITHUB
-    const APP_VERSION = "1.1"; 
-    const RELEASE_NOTES = 
-    `• Réorganisation clinique de la section E du SAED.
-• Calcul automatique du temps écoulé (depuis Xh Ymin).
-• L'application se met désormais à jour en temps réel sans bouton "Générer".
-• Le chronomètre avance automatiquement chaque minute sur la page.`;
-
-    let updateBannerTimeout;
-
-    // Vérifie la version au chargement de la page
-    window.addEventListener('load', () => {
-      setTimeout(checkAppVersion, 1500); // Attend 1,5 seconde avant d'apparaître pour plus de fluidité
-    });
-
-    function checkAppVersion() {
-      const savedVersion = localStorage.getItem('umhp_version');
-      
-      // Si on trouve une ancienne version différente de la nouvelle
-      if (savedVersion !== null && savedVersion !== APP_VERSION) {
-        document.getElementById('banner-version').textContent = APP_VERSION;
-        
-        const banner = document.getElementById('update-banner');
-        banner.classList.add('show');
-        
-        // Cache la bannière automatiquement après 6 secondes si on ne touche à rien
-        updateBannerTimeout = setTimeout(hideUpdateBanner, 6000);
-      }
-      
-      // On sauvegarde la nouvelle version en mémoire
-      localStorage.setItem('umhp_version', APP_VERSION);
-    }
-
-    function hideUpdateBanner() {
-      const banner = document.getElementById('update-banner');
-      banner.classList.remove('show');
-      clearTimeout(updateBannerTimeout); // Annule le minuteur si on a cliqué sur fermer
-    }
-
-    function showReleaseNotes() {
-      hideUpdateBanner(); // Cache la bannière qui glisse
-      document.getElementById('modal-version').textContent = APP_VERSION;
-      document.getElementById('release-notes-text').textContent = RELEASE_NOTES;
-      document.getElementById('modal-release').style.display = 'flex'; // Affiche la fenêtre
     }
   </script>
 </body>
