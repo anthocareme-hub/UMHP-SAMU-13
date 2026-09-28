@@ -1,11 +1,12 @@
-const CACHE_NAME = 'umhp-v2';
+const CACHE_NAME = 'umhp-v3'; // J'ai passé en v3 pour forcer le nettoyage de l'ancien cache
 const urlsToCache = [
   './',
+  './index.html',
   './manifest.json',
   './logo.jpg'
 ];
 
-// Installation : mise en mémoire immédiate
+// Installation
 self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(
@@ -13,7 +14,7 @@ self.addEventListener('install', event => {
   );
 });
 
-// Activation : nettoyage des anciens caches
+// Activation et nettoyage
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => Promise.all(
@@ -24,22 +25,21 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Récupération instantanée depuis le cache, mise à jour en tâche de fond
+// Stratégie "Network First, fallback to Cache"
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      // 1. Si le fichier est en cache, on l'affiche immédiatement sans attendre la 4G
-      if (cachedResponse) {
-        // En parallèle, on tente de récupérer la dernière version sur le réseau en toute discrétion
-        fetch(event.request).then(networkResponse => {
-          if (networkResponse && networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, networkResponse));
-          }
-        }).catch(() => {});
-        return cachedResponse;
-      }
-      // 2. Sinon, on va chercher sur le réseau
-      return fetch(event.request);
-    })
+    fetch(event.request)
+      .then(networkResponse => {
+        // 1. Le téléphone capte internet : on met à jour le cache avec le code tout neuf
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseClone));
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // 2. Le téléphone n'a pas de réseau : on sert immédiatement la version en mémoire (hors-ligne garanti)
+        return caches.match(event.request);
+      })
   );
 });
