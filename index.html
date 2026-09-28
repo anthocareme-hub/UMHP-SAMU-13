@@ -1909,10 +1909,9 @@
           </button>
         </div>
 
-        <div id="alg-bloc-salbutamol" style="display: none; margin-bottom: 14px; background: #fef3c7; border: 2px solid #f59e0b; padding: 14px; border-radius: 8px; text-align: center; font-weight: 800; color: #b45309;">
+        <button type="button" class="btn-toggle-action orange" id="alg-bloc-salbutamol" style="display: none;" onclick="toggleSalbutamolAllergie(this)">
           💨 Nébulisation salbutamol 5 mg
-        </div>
-
+        </button>
         <button type="button" class="btn-toggle-action orange" id="btn-vvp-allergie" onclick="toggleVvpAllergie(this)">
           💉 VVP
         </button>
@@ -3502,6 +3501,10 @@
       btn.classList.toggle('active');
       btn.textContent = btn.classList.contains('active') ? '✓ Adrénaline 0,5 fait' : 'Adrénaline 0,5mg IM à répéter 1x si besoin à T+15 min';
     }
+    function toggleSalbutamolAllergie(btn) {
+      btn.classList.toggle('active');
+      btn.textContent = btn.classList.contains('active') ? '✓ Salbutamol 5 mg administré' : '💨 Nébulisation salbutamol 5 mg';
+    }
 
     function toggleVvpAllergie(btn) {
       btn.classList.toggle('active');
@@ -4244,7 +4247,7 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
         const alg = getAllergieData();
         const vvpAll = document.getElementById('btn-vvp-allergie').classList.contains('active') ? 'Oui' : 'Non';
         const adren = document.getElementById('btn-adrenaline') && document.getElementById('btn-adrenaline').classList.contains('active') ? 'Adrénaline 0.5mg administrée' : '';
-        const salbu = document.getElementById('alg-signe-sibilants').checked ? 'Nébulisation salbutamol 5mg réalisée' : '';
+        const salbu = document.getElementById('alg-bloc-salbutamol') && document.getElementById('alg-bloc-salbutamol').classList.contains('active') ? 'Nébulisation 5mg réalisée' : '';
         const pol = document.getElementById('alg-trt-polaramine').checked ? 'Polaramine 5mg IVL' : '';
         const pred = document.getElementById('alg-trt-prednisolone').checked ? 'Prednisolone IVL' : '';
         let trts = [pol, pred].filter(Boolean).join(', ');
@@ -4261,15 +4264,18 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
         if (alg.actions) evalLines.push(`- Gestes réalisés : ${alg.actions}`);
         if (alg.traitementPris) evalLines.push(`- Traitements pris : ${alg.traitementPris}`);
 
+        let theraLines = [];
+        theraLines.push(`- VVP : ${vvpAll}`);
+        if (adren) theraLines.push(`- Adrénaline IM : ${adren}`);
+        if (salbu) theraLines.push(`- Salbutamol : ${salbu}`);
+        if (trts) theraLines.push(`- Traitements associés : ${trts}`);
+
         specificSection = 
 `3. BILAN ALLERGOLOGIQUE & CLINIQUE
 ${evalLines.join('\n')}
 
 4. THÉRAPEUTIQUE ALLERGIE
-- VVP : ${vvpAll}
-- Adrénaline IM : ${adren}
-- Salbutamol : ${salbu}
-- Traitements associés : ${trts}
+${theraLines.join('\n')}
 
 5. SUIVI CHRONOLOGIQUE & ÉVOLUTION
 - T0 : ${t0Str}
