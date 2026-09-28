@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Bilan SMUR / PSIS - SAMU 13</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#005ea8">
+  <link rel="apple-touch-icon" href="logo.jpg">
   <style>
     :root {
       --bg: #f8fafc;
@@ -4462,6 +4465,14 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       } else {
         alert("La fonction de partage natif n'est pas supportée sur ce navigateur. Utilisez le bouton 'Copier'.");
       }
+    }
+    // ================= ENREGISTREMENT PWA (HORS-LIGNE) =================
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(registration => console.log('PWA activée avec succès !'))
+          .catch(err => console.log('Erreur PWA :', err));
+      });
     }
     function saveCurrentIntervention() {
       const data = generateResumeFinal();
