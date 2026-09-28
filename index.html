@@ -1561,10 +1561,6 @@
         </div>
       </div>
 
-      <div class="nav-actions" style="margin-top: 0; margin-bottom: 14px;">
-        <button type="button" class="btn-nav" onclick="generateSAED()">🔄 Générer / Mettre à jour le SAED</button>
-      </div>
-
       <div class="card">
         <label>Texte de transmission SAED / SAU :</label>
         <textarea id="cr-output" readonly placeholder="Appuie sur « Générer le SAED / SAU » pour afficher le compte rendu..."></textarea>
@@ -3976,12 +3972,16 @@ function checkDrGravite() {
 - Gestes réflexes entrepris : ${dr.gestes}`;
       } else if (motif === 'Allergie') {
         const alg = getAllergieData();
-        evalMotif =
-`- Heure de début : ${alg.heure} | Facteur : ${alg.facteur}
-- Traitement pris avant : ${alg.traitementPris}
-- Signes cliniques : ${alg.signes}
-- Signes de gravité : ${alg.gravites}
-- Actions protocolaires : ${alg.actions}`;
+        let evalLines = [];
+        
+        if (alg.signes) evalLines.push(`- Signes cliniques : ${alg.signes}`);
+        if (alg.heure && alg.heure !== ':') evalLines.push(`- Heure de début : ${getDureeDepuis(alg.heure)} (saisi:${alg.heure})`);
+        if (alg.facteur) evalLines.push(`- Facteur déclenchant : ${alg.facteur}`);
+        if (alg.gravites) evalLines.push(`- Signes de gravité : ${alg.gravites}`);
+        if (alg.actions) evalLines.push(`- Gestes réalisés : ${alg.actions}`);
+        if (alg.traitementPris) evalLines.push(`- Traitements pris : ${alg.traitementPris}`);
+        
+        evalMotif = evalLines.join('\n');
       } else if (motif === 'Hypoglycémie') {
         const hypo = getHypoglycemieData();
         evalMotif =
@@ -4249,11 +4249,23 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
         const pred = document.getElementById('alg-trt-prednisolone').checked ? 'Prednisolone IVL' : '';
         let trts = [pol, pred].filter(Boolean).join(', ');
 
-        const t0Str = `PAS: ${document.getElementById('t0-pas').value || '-'}, PAD: ${document.getElementById('t0-pad').value || '-'}, Pouls: ${document.getElementById('t0-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t0-spo2').value || '-'}`;
-        const t15Str = `PAS: ${document.getElementById('t15-pas').value || '-'}, PAD: ${document.getElementById('t15-pad').value || '-'}, Pouls: ${document.getElementById('t15-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t15-spo2').value || '-'}`;
-        const t30Str = `PAS: ${document.getElementById('t30-pas').value || '-'}, PAD: ${document.getElementById('t30-pad').value || '-'}, Pouls: ${document.getElementById('t30-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t30-spo2').value || '-'}`;
+        const t0Str = `PAS: ${document.getElementById('t0-pas').value \vert{}\vert{} '-'}, PAD:${document.getElementById('t0-pad').value || '-'}, Pouls: ${document.getElementById('t0-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('t0-spo2').value || '-'}`;
+        const t15Str = `PAS: ${document.getElementById('t15-pas').value \vert{}\vert{} '-'}, PAD:${document.getElementById('t15-pad').value || '-'}, Pouls: ${document.getElementById('t15-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('t15-spo2').value || '-'}`;
+        const t30Str = `PAS: ${document.getElementById('t30-pas').value \vert{}\vert{} '-'}, PAD:${document.getElementById('t30-pad').value || '-'}, Pouls: ${document.getElementById('t30-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('t30-spo2').value || '-'}`;
+
+        let evalLines = [];
+        if (alg.signes) evalLines.push(`- Signes cliniques : ${alg.signes}`);
+        if (alg.heure && alg.heure !== ':') evalLines.push(`- Heure de début : ${getDureeDepuis(alg.heure)} (saisi:${alg.heure})`);
+        if (alg.facteur) evalLines.push(`- Facteur déclenchant : ${alg.facteur}`);
+        if (alg.gravites) evalLines.push(`- Signes de gravité : ${alg.gravites}`);
+        if (alg.actions) evalLines.push(`- Gestes réalisés : ${alg.actions}`);
+        if (alg.traitementPris) evalLines.push(`- Traitements pris : ${alg.traitementPris}`);
 
         specificSection = 
+`3. BILAN ALLERGOLOGIQUE & CLINIQUE
+${evalLines.join('\n')}
+
+4. THÉRAPEUTIQUE ALLERGIE
 `3. BILAN ALLERGOLOGIQUE & CLINIQUE
 - Début : ${alg.heure} | Facteur : ${alg.facteur} | Traitement pris : ${alg.traitementPris}
 - Signes cliniques : ${alg.signes}
@@ -4435,6 +4447,40 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
         texte: resumeTxt
       };
     }
+
+    // ================= CALCUL DU TEMPS & ACTUALISATION AUTOMATIQUE =================
+    function getDureeDepuis(heureSaisie) {
+      if (!heureSaisie || !heureSaisie.includes(':')) return "";
+      const now = new Date();
+      const [h, m] = heureSaisie.split(':').map(Number);
+      if (isNaN(h) || isNaN(m)) return "";
+
+      let debut = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m);
+      if (debut > now) debut.setDate(debut.getDate() - 1); // Si l'heure est dans le futur, c'était hier
+
+      const diffMins = Math.floor((now - debut) / 60000);
+      const heures = Math.floor(diffMins / 60);
+      const minutes = diffMins % 60;
+
+      let resultat = "depuis : ";
+      if (heures > 0) resultat += `${heures}h `;
+      resultat += `${minutes}min`;
+      return resultat;
+    }
+
+    // Met à jour les résumés dès qu'on tape, clique ou coche quelque chose
+    function autoUpdateResumes() {
+      setTimeout(() => {
+        if (document.getElementById('page-regu').classList.contains('active')) generateSAED();
+        if (document.getElementById('page-resume').classList.contains('active')) generateResumeFinal();
+      }, 50);
+    }
+    document.addEventListener('input', autoUpdateResumes);
+    document.addEventListener('change', autoUpdateResumes);
+    document.addEventListener('click', autoUpdateResumes);
+
+    // Fait avancer le chronomètre (depuis X min) toutes les 60 secondes
+    setInterval(autoUpdateResumes, 60000);
 
     // SAUVEGARDE EN MÉMOIRE LOCALE (LOCALSTORAGE)
     // FONCTION POUR COPIER LE RÉSUMÉ FINAL
