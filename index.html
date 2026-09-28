@@ -3511,10 +3511,18 @@
     }
 
     function toggleSalbutamolAllergie(btn) {
+      // 1. On va lire le poids actuel
       const poids = parseInt(document.getElementById('patient-poids').value, 10) || 70;
+      // 2. On définit la bonne dose
       const dose = poids < 20 ? '2,5 mg' : '5 mg';
+      
+      // 3. On change l'état et le texte en intégrant la variable "dose"
       btn.classList.toggle('active');
-      btn.textContent = btn.classList.contains('active') ? `✓ Salbutamol ${dose} administré` : `💨 Nébulisation salbutamol ${dose}`;
+      if (btn.classList.contains('active')) {
+        btn.textContent = '✓ Salbutamol ' + dose + ' administré';
+      } else {
+        btn.textContent = '💨 Nébulisation salbutamol ' + dose;
+      }
     }
     function toggleSalbutamolAllergie(btn) {
       btn.classList.toggle('active');
