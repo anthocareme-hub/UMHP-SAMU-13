@@ -1559,8 +1559,7 @@
       </div>
 
       <div class="nav-actions" style="margin-top: 0; margin-bottom: 14px;">
-        <button type="button" class="btn-nav" onclick="generateSAED()">Générer le SAED / SAU</button>
-        <button type="button" class="btn-nav success" onclick="copySAED()">Copier</button>
+        <button type="button" class="btn-nav" onclick="generateSAED()">🔄 Générer / Mettre à jour le SAED</button>
       </div>
 
       <div class="card">
@@ -2528,11 +2527,19 @@
       </div>
 
       <div class="nav-actions" style="margin-top: 0; margin-bottom: 14px;">
+        <button type="button" class="btn-nav" style="background: #0284c7; color: white;" onclick="copyResume()">
+          📋 Copier
+        </button>
         <button type="button" class="btn-nav success" onclick="saveCurrentIntervention()">
-          💾 Enregistrer dans mes interventions
+          💾 Enregistrer
         </button>
       </div>
-
+      
+      <div class="nav-actions" style="margin-top: 0; margin-bottom: 14px;">
+        <button type="button" class="btn-nav" style="background: #6366f1; color: white;" onclick="shareResume()">
+          📤 Partager le bilan (SMS, Mail...)
+        </button>
+      </div>
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" id="btn-back-resume" onclick="goToPage('therapeutique')">⬅ Prise en charge</button>
         <button type="button" class="btn-nav secondary" onclick="goToHome()">🏠 Accueil</button>
@@ -4427,6 +4434,35 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
     }
 
     // SAUVEGARDE EN MÉMOIRE LOCALE (LOCALSTORAGE)
+    // FONCTION POUR COPIER LE RÉSUMÉ FINAL
+    function copyResume() {
+      const output = document.getElementById('resume-output');
+      if (!output.value) generateResumeFinal();
+      
+      navigator.clipboard.writeText(output.value).then(() => {
+        alert('✓ Bilan complet copié dans le presse-papier !');
+      }).catch(err => {
+        alert('Erreur lors de la copie.');
+      });
+    }
+
+    // FONCTION POUR PARTAGER LE RÉSUMÉ (SMS, MAIL, ETC.)
+    function shareResume() {
+      const output = document.getElementById('resume-output');
+      if (!output.value) generateResumeFinal();
+      
+      const nomPatient = document.getElementById('patient-nom').value.trim() || 'Patient';
+      const motif = document.getElementById('motif-select').value;
+
+      if (navigator.share) {
+        navigator.share({
+          title: `Bilan Intervention - ${nomPatient} (${motif})`,
+          text: output.value
+        }).catch(err => console.log('Partage annulé ou échoué', err));
+      } else {
+        alert("La fonction de partage natif n'est pas supportée sur ce navigateur. Utilisez le bouton 'Copier'.");
+      }
+    }
     function saveCurrentIntervention() {
       const data = generateResumeFinal();
       let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
