@@ -3283,6 +3283,11 @@
       document.getElementById('c-eva').value = '';
       document.getElementById('c-trc').value = '';
       if(document.getElementById('c-hbco')) document.getElementById('c-hbco').value = '';
+      if(document.getElementById('c-glasgow')) document.getElementById('c-glasgow').value = '';
+      if(document.getElementById('ts-d-e')) document.getElementById('ts-d-e').dataset.touched = 'false';
+      if(document.getElementById('ts-d-v')) document.getElementById('ts-d-v').dataset.touched = 'false';
+      if(document.getElementById('ts-d-m')) document.getElementById('ts-d-m').dataset.touched = 'false';
+      if(document.getElementById('ts-d-gcs-score')) document.getElementById('ts-d-gcs-score').textContent = 'Score = -';
       
       document.querySelectorAll('.avpu-btn').forEach(b => b.classList.remove('active'));
       selectedAvpu = '';
@@ -3463,10 +3468,11 @@
           hbField.style.display = (document.getElementById('motif-select').value === 'Traumatisé sévère') ? 'block' : 'none';
         }
 
-        // NOUVEAU : Affichage de la case Glasgow
+        // NOUVEAU : Affichage de la case Glasgow (uniquement si calculé)
         const gcsField = document.getElementById('field-gcs-container');
-        if (gcsField) {
-          gcsField.style.display = (document.getElementById('motif-select').value === 'Traumatisé sévère') ? 'block' : 'none';
+        const cGlasgow = document.getElementById('c-glasgow');
+        if (gcsField && cGlasgow) {
+          gcsField.style.display = (document.getElementById('motif-select').value === 'Traumatisé sévère' && cGlasgow.value !== '') ? 'block' : 'none';
         }
       } else if (target === 'regu') {
         indicator.textContent = 'Appel au 15';
@@ -4949,7 +4955,7 @@ function checkDrGravite() {
       const trc = document.getElementById('c-trc').value.trim();
       const hbco = document.getElementById('c-hbco') ? document.getElementById('c-hbco').value.trim() : '';
       const hb = document.getElementById('c-hb') ? document.getElementById('c-hb').value.trim() : '';
-
+      const glasgow = document.getElementById('c-glasgow') ? document.getElementById('c-glasgow').value.trim() : '';
       if (pa) constList.push(`PA: ${pa}`);
       if (fc) constList.push(`FC: ${fc} bpm`);
       if (spo2) constList.push(`SpO2: ${spo2}%`);
@@ -4961,7 +4967,7 @@ function checkDrGravite() {
       if (hbco) constList.push(`HbCO: ${hbco}%`);
       if (selectedAvpu) constList.push(`AVPU: ${selectedAvpu}`);
       if (hb) constList.push(`Hb: ${hb} g/L`);
-
+      if (glasgow) constList.push(`Glasgow: ${glasgow}`);
       const constText = constList.length > 0 ? `- Constantes : ${constList.join(' | ')}` : ``;
 
       const demandeType = document.getElementById('demande-type').value;
@@ -5025,7 +5031,7 @@ ${demandeText}
       if (document.getElementById('c-trc').value) cInit.push(`TRC: ${document.getElementById('c-trc').value}s`);
       if (document.getElementById('c-hbco') && document.getElementById('c-hbco').value) cInit.push(`HbCO: ${document.getElementById('c-hbco').value}%`);
       if (document.getElementById('c-hb') && document.getElementById('c-hb').value) cInit.push(`Hb: ${document.getElementById('c-hb').value} g/L`);
-      if (selectedAvpu) cInit.push(`AVPU: ${selectedAvpu}`);
+      if (document.getElementById('c-glasgow') && document.getElementById('c-glasgow').value) cInit.push(`Glasgow: ${document.getElementById('c-glasgow').value}`);
 
       const demType = document.getElementById('demande-type').value;
       const demTxt = document.getElementById('saed-demande').value.trim();
