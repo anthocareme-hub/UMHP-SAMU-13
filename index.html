@@ -1765,19 +1765,7 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="section-label">E : Environnement / Exposition</div>
-        <div class="field">
-          <label class="checkbox-item"><input type="checkbox" id="ts-e-deshabillage"> Déshabillage total / inspection face postérieure</label>
-          <label class="checkbox-item"><input type="checkbox" id="ts-e-hypothermie"> Lutte contre l'hypothermie (chauffage, couverture survie)</label>
-        </div>
-      </div>
-
-      <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
-        <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
-      </div>
-      <!-- ---- BLOC E : EXPOSITION / ENVIRONNEMENT ---- -->
+     <!-- ---- BLOC E : EXPOSITION / ENVIRONNEMENT ---- -->
       <div class="card">
         <div class="section-label">E : Exposition / Environnement</div>
 
@@ -1825,13 +1813,19 @@
           <label for="ts-e-en" style="font-weight: 800;">Antalgie : Douleur (EN) :</label>
           <input type="number" id="ts-e-en" inputmode="numeric" placeholder="0 à 10" oninput="syncTsEEn()">
         </div>
-        <!-- Boutons de médicaments antalgiques classiques (tu pourras modifier les noms selon ta dotation) -->
+        
+        <!-- Boutons de médicaments antalgiques classiques -->
         <div class="field" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
           <button type="button" class="btn-toggle-action" id="btn-ts-e-para" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Paracétamol 1g passé' : 'Paracétamol 1g';">Paracétamol 1g</button>
           <button type="button" class="btn-toggle-action" id="btn-ts-e-morphine" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Morphine (titration) débutée' : 'Morphine (titration)';">Morphine (titration)</button>
           <button type="button" class="btn-toggle-action" id="btn-ts-e-ketamine" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Kétamine passée' : 'Kétamine (faible dose)';">Kétamine (faible dose)</button>
         </div>
-
+      </div>
+      
+      <!-- BOUTONS DE NAVIGATION REMIS TOUT EN BAS -->
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
       </div>
     </div>
     
