@@ -2724,6 +2724,7 @@
   <script>
     const moisNoms = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
     let previousMotifPage = 'detresse-respi';
+    let tsVoiesAeriennes = '';
     let selectedAvpu = '';
     let statutNouveauNe = 'Non évalué';
     let oxygeneMode = '';
@@ -2906,6 +2907,7 @@
       totalScb = 0;
       antalgieTrauma = null;
       antalgiquesPrisStatut = null;
+      tsVoiesAeriennes = '';
 
       document.querySelectorAll('.btn-toggle-action').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.scb-part').forEach(b => b.classList.remove('active'));
@@ -4095,6 +4097,67 @@ function checkDrGravite() {
         thera: theraRes.length > 0 ? theraRes.join(' | ') : ''
       };
     }
+    // CLINIQUE TRAUMATISÉ SÉVÈRE (X et A)
+    function getTraumaSevereData() {
+      let xLines = [];
+      
+      // X : Saignements extériorisés
+      const btnSaignOui = document.getElementById('btn-ts-x-saign-oui');
+      if (btnSaignOui && btnSaignOui.classList.contains('active')) {
+        let gestes = [];
+        if (document.getElementById('ts-x-garrot').checked) gestes.push('pose de garrot');
+        if (document.getElementById('ts-x-compressif').checked) gestes.push('pansement compressif');
+        if (document.getElementById('ts-x-celox').checked) gestes.push('Celox');
+        
+        let txt = "saignement extériorisé";
+        if (gestes.length > 0) txt += " avec " + gestes.join(' + ');
+        xLines.push(txt);
+      } else {
+        xLines.push("pas de saignement extériorisé");
+      }
+
+      // X : Bassin
+      const btnBassinOui = document.getElementById('btn-ts-x-bassin-oui');
+      if (btnBassinOui && btnBassinOui.classList.contains('active')) {
+        let txt = "suspicion de traumatisme du bassin";
+        if (document.getElementById('ts-x-pelvis') && document.getElementById('ts-x-pelvis').checked) {
+          txt += " avec pose de ceinture pelvienne";
+        }
+        xLines.push(txt);
+      } else {
+        xLines.push("pas de suspicion de traumatisme du bassin");
+      }
+
+      // A : Voies aériennes
+      let aLine = "";
+      if (tsVoiesAeriennes === 'libre') {
+        aLine = "voie aérienne libre";
+      } else if (tsVoiesAeriennes === 'risque') {
+        let gestes = [];
+        if (document.getElementById('ts-a-risque-collier').checked) gestes.push('pose de collier cervical');
+        if (document.getElementById('ts-a-risque-guedel').checked) gestes.push('Guedel');
+        if (document.getElementById('ts-a-risque-aspi').checked) gestes.push('aspiration sécrétions / sang');
+        
+        aLine = "voie aérienne à risque";
+        if (gestes.length > 0) aLine += " avec " + gestes.join(' + ');
+      } else if (tsVoiesAeriennes === 'obstruee') {
+        let gestes = [];
+        if (document.getElementById('ts-a-obs-liberation').checked) gestes.push('libération des voies aériennes');
+        if (document.getElementById('ts-a-obs-collier').checked) gestes.push('pose de collier cervical');
+        if (document.getElementById('ts-a-obs-retrait').checked) gestes.push('retrait de corps étranger');
+        if (document.getElementById('ts-a-obs-aspi').checked) gestes.push('aspiration sécrétions / sang');
+        
+        aLine = "voie aérienne obstruée";
+        if (gestes.length > 0) aLine += " avec " + gestes.join(' + ');
+      } else {
+        aLine = "voies aériennes non évaluées";
+      }
+
+      return {
+        x: xLines,
+        a: aLine
+      };
+    }
 
     // TRANSMISSION SAED
     function generateSAED() {
@@ -4178,6 +4241,12 @@ function checkDrGravite() {
         if (gestes.length > 0) evalLines.push(`- Gestes réalisés : ${gestes.join(', ')}`);
 
         evalMotif = evalLines.join('\n');
+        } else if (motif === 'Traumatisé sévère') {
+        const tsData = getTraumaSevereData();
+        evalMotif = 
+`- [X] ${tsData.x[0]}
+- [X] ${tsData.x[1]}
+- [A] ${tsData.a}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -4523,6 +4592,14 @@ ${bilanBrulureLines.join('\n')}
 - T0 : ${t0Str}
 - T+15 min : ${t15Str}
 - T+30 min : ${t30Str}`;
+        } else if (motif === 'Traumatisé sévère') {
+        const tsData = getTraumaSevereData();
+        
+        specificSection = 
+`3. BILAN TRAUMATISÉ SÉVÈRE (XABCDE)
+- [X] ${tsData.x[0]}
+- [X] ${tsData.x[1]}
+- [A] ${tsData.a}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -4783,6 +4860,7 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
     }
 
     function selectTsVoiesAir(etat) {
+      tsVoiesAeriennes = etat;
       const btnLibre = document.getElementById('btn-ts-a-libre');
       const btnRisque = document.getElementById('btn-ts-a-risque');
       const btnObstruee = document.getElementById('btn-ts-a-obstruee');
