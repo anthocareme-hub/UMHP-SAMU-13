@@ -5111,15 +5111,15 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       const frVal = document.getElementById('ts-b-fr').value;
       const spo2Val = document.getElementById('ts-b-spo2').value;
       
-      // 2. Les envoyer vers la page 4 "Constantes"
+      // 2. Les envoyer vers la page "Constantes"
       const cFr = document.getElementById('c-fr');
       const cSpo2 = document.getElementById('c-spo2');
       if (cFr) cFr.value = frVal;
       if (cSpo2) cSpo2.value = spo2Val;
       
-      // 3. Alerte O2 si SpO2 < 95
+      // 3. Alerte O2 si SpO2 < 95 (Vérifie uniquement si au moins 2 chiffres sont tapés)
       const blocO2 = document.getElementById('bloc-ts-b-o2');
-      if (spo2Val !== '' && parseInt(spo2Val, 10) < 95) {
+      if (spo2Val.length >= 2 && parseInt(spo2Val, 10) < 95) {
         blocO2.style.display = 'block';
       } else {
         blocO2.style.display = 'none';
