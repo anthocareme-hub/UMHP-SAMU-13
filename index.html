@@ -1458,7 +1458,7 @@
     <div id="page-trauma-severe" class="page">
       
       <div class="card thera-box" style="border-left: 6px solid var(--danger);">
-        <div class="section-label" style="color: var(--danger);">X : Hémorragie Exsanguinante</div>
+        <div class="section-label" style="color: var(--danger);">X : Hémorragies</div>
         
         <!-- Saignements extériorisés -->
         <label style="font-weight: 800; margin-bottom: 6px;">Saignements extériorisés ?</label>
@@ -1467,7 +1467,27 @@
           <button type="button" class="btn-toggle-action active" id="btn-ts-x-saign-non" onclick="toggleTsXSaign(false)">NON</button>
         </div>
         <div id="bloc-ts-x-saign" style="display: none; padding-left: 12px; border-left: 2px solid var(--danger); margin-bottom: 14px;">
-          <label class="checkbox-item"><input type="checkbox" id="ts-x-garrot"> Pose de garrot(s) tourniquet(s)</label>
+          
+          <!-- NOUVEL ENCART : Localisation -->
+          <div class="field" style="margin-top: 8px; margin-bottom: 12px;">
+            <label for="ts-x-saign-loc" style="font-size: 0.85rem; color: var(--danger);">Localisation du saignement :</label>
+            <input type="text" id="ts-x-saign-loc" placeholder="ex: Cuisse droite, bras gauche...">
+          </div>
+
+          <label class="checkbox-item">
+            <!-- Ajout de l'événement onchange pour le garrot -->
+            <input type="checkbox" id="ts-x-garrot" onchange="toggleGarrotTime(this)"> Pose de garrot(s) tourniquet(s)
+          </label>
+          
+          <!-- NOUVEL ENCART : Heure du garrot (caché par défaut) -->
+          <div id="bloc-ts-x-garrot-time" style="display: none; margin-left: 28px; margin-bottom: 10px; padding-left: 10px; border-left: 2px solid var(--border);">
+            <label style="font-size: 0.8rem; margin-bottom: 4px;">Heure de pose :</label>
+            <div class="row-2">
+              <select id="ts-x-garrot-hh"></select>
+              <select id="ts-x-garrot-mm"></select>
+            </div>
+          </div>
+
           <label class="checkbox-item"><input type="checkbox" id="ts-x-compressif"> Pansement compressif</label>
           <label class="checkbox-item"><input type="checkbox" id="ts-x-celox"> Celox</label>
         </div>
@@ -4104,9 +4124,19 @@ function checkDrGravite() {
       const btnSaignOui = document.getElementById('btn-ts-x-saign-oui');
       
       if (btnSaignOui && btnSaignOui.classList.contains('active')) {
-        xParts.push("Saignement extériorisé");
+        const loc = document.getElementById('ts-x-saign-loc').value.trim();
+        let titreSaignement = "Saignement extériorisé";
+        if (loc) {
+          titreSaignement += ` ${loc}`; // Ajoute juste un espace et le lieu
+        }
+        xParts.push(titreSaignement);
+
         let gestes = [];
-        if (document.getElementById('ts-x-garrot').checked) gestes.push('pose de garrot');
+        if (document.getElementById('ts-x-garrot').checked) {
+          const h = document.getElementById('ts-x-garrot-hh').value;
+          const m = document.getElementById('ts-x-garrot-mm').value;
+          gestes.push(`pose de garrot à ${h}h${m}`);
+        }
         if (document.getElementById('ts-x-compressif').checked) gestes.push('pansement compressif');
         if (document.getElementById('ts-x-celox').checked) gestes.push('Celox');
         
@@ -4888,6 +4918,40 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
         btnObstruee.style.background = '#ef4444'; // Rouge foncé
         btnObstruee.style.color = '#ffffff';
         blocObstruee.style.display = 'block';
+      }
+    }
+    function toggleGarrotTime(checkbox) {
+      const timeBlock = document.getElementById('bloc-ts-x-garrot-time');
+      const hhSelect = document.getElementById('ts-x-garrot-hh');
+      const mmSelect = document.getElementById('ts-x-garrot-mm');
+
+      if (checkbox.checked) {
+        timeBlock.style.display = 'block';
+        
+        // Remplir les options 0-23h et 0-59min si elles sont vides
+        if (hhSelect.options.length === 0) {
+          for (let h = 0; h < 24; h++) {
+            let opt = document.createElement('option');
+            let val = h < 10 ? '0' + h : h.toString();
+            opt.value = val; opt.textContent = `${val} h`;
+            hhSelect.appendChild(opt);
+          }
+          for (let m = 0; m < 60; m++) {
+            let opt = document.createElement('option');
+            let val = m < 10 ? '0' + m : m.toString();
+            opt.value = val; opt.textContent = `${val} min`;
+            mmSelect.appendChild(opt);
+          }
+        }
+        
+        // Régler automatiquement sur l'heure actuelle
+        const now = new Date();
+        const curH = now.getHours() < 10 ? '0' + now.getHours() : now.getHours().toString();
+        const curM = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes().toString();
+        hhSelect.value = curH;
+        mmSelect.value = curM;
+      } else {
+        timeBlock.style.display = 'none';
       }
     }
   </script>
