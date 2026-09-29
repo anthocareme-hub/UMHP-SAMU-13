@@ -4387,18 +4387,48 @@ function checkDrGravite() {
       const auscCote = document.getElementById('ts-b-auscult-cote').value;
       bParts.push(`Auscultation : ${auscType} (${auscCote})`);
 
-      // ---- BLOC C ----
-let cParts = [];
-const pasVal = document.getElementById('ts-c-pas').value;
-const padVal = document.getElementById('ts-c-pad').value;
-let cPa = "";
-if (pasVal || padVal) cPa = `${pasVal}/${padVal}`;
-const cFc = document.getElementById('ts-c-fc').value;
-const cHb = document.getElementById('ts-c-hb').value;
+// ---- BLOC C ----
+      let cParts = [];
+      const pasVal = document.getElementById('ts-c-pas').value;
+      const padVal = document.getElementById('ts-c-pad').value;
+      let cPa = "";
+      if (pasVal || padVal) cPa = `${pasVal}/${padVal}`;
+      const cFc = document.getElementById('ts-c-fc').value;
+      const cHb = document.getElementById('ts-c-hb').value;
       
       let constsC = [];
-      if (cPa) constsC.push(`PA: ${cPa}`);
-      if (cFc) constsC.push(`FC: ${cFc} bpm`);
+      
+      // Préparation des valeurs numériques pour les calculs (avec correction des oublis de "0")
+      let pasCalc = parseFloat(pasVal);
+      let padCalc = parseFloat(padVal);
+      let fcCalc = parseInt(cFc, 10);
+      if (!isNaN(pasCalc) && pasCalc >= 4 && pasCalc <= 30) pasCalc *= 10;
+      if (!isNaN(padCalc) && padCalc >= 2 && padCalc <= 20) padCalc *= 10;
+
+      // Construction de la PA avec ajout de la PAM si < 60
+      if (cPa) {
+        let paString = `PA: ${cPa}`;
+        if (!isNaN(pasCalc) && !isNaN(padCalc)) {
+          const pam = (pasCalc + (2 * padCalc)) / 3;
+          if (pam < 60) {
+            paString += ` (PAM: ${Math.round(pam)})`;
+          }
+        }
+        constsC.push(paString);
+      }
+
+      // Construction de la FC avec ajout du Choc Index si >= 0.9
+      if (cFc) {
+        let fcString = `FC: ${cFc} bpm`;
+        if (!isNaN(fcCalc) && !isNaN(pasCalc) && pasCalc > 0) {
+          const shockIndex = fcCalc / pasCalc;
+          if (shockIndex >= 0.9) {
+            fcString += ` (Choc-Index: ${shockIndex.toFixed(2)})`;
+          }
+        }
+        constsC.push(fcString);
+      }
+
       if (cHb) constsC.push(`Hb: ${cHb} g/L`);
       if (constsC.length > 0) {
         cParts.push("Hémodynamique : " + constsC.join(' | '));
