@@ -1764,8 +1764,14 @@
 
         <div class="row-2 field">
           <div>
-            <label for="c-pa">Pression artérielle</label>
-            <input type="text" inputmode="numeric" id="c-pa" placeholder="ex: 120/80" oninput="checkPasOap()">
+            <label>Pression artérielle</label>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <input type="number" inputmode="numeric" id="c-pas" placeholder="PAS" oninput="updateHiddenPa(); checkPasOap()">
+              <span style="font-weight: 900; font-size: 1.2rem; color: var(--border);">/</span>
+              <input type="number" inputmode="numeric" id="c-pad" placeholder="PAD" oninput="updateHiddenPa(); checkPasOap()">
+            </div>
+            <!-- Ce champ caché permet de ne pas "casser" le reste de ton code -->
+            <input type="hidden" id="c-pa">
           </div>
           <div>
             <label for="c-fc">Fréquence card. (bpm)</label>
@@ -3041,6 +3047,8 @@
       document.getElementById('allergies-tags').innerHTML = '';
       document.getElementById('hospit-tags').innerHTML = '';
       
+      if(document.getElementById('c-pas')) document.getElementById('c-pas').value = '';
+      if(document.getElementById('c-pad')) document.getElementById('c-pad').value = '';
       document.getElementById('c-pa').value = '';
       document.getElementById('c-fc').value = '';
       document.getElementById('c-spo2').value = '';
@@ -5229,6 +5237,8 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       // On regroupe pour l'envoyer vers la case PA de la page "Constantes" générale
       let paCombine = "";
       if (pasInput || padInput) paCombine = `${pasInput}/${padInput}`;
+      if (document.getElementById('c-pas')) document.getElementById('c-pas').value = pasInput;
+      if (document.getElementById('c-pad')) document.getElementById('c-pad').value = padInput;
       if (document.getElementById('c-pa')) document.getElementById('c-pa').value = paCombine;
       if (document.getElementById('c-fc')) document.getElementById('c-fc').value = fcVal;
 
@@ -5293,6 +5303,14 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
         btn.textContent = (btn.dataset.mode === 'choc') ? '✓ Remplissage vasculaire réalisé' : '✓ Garde-veine posé';
       } else {
         syncTsCConstantes(); // Remet le texte par défaut selon les alertes
+      }
+    }
+    function updateHiddenPa() {
+      const pas = document.getElementById('c-pas').value.trim();
+      const pad = document.getElementById('c-pad').value.trim();
+      const paHidden = document.getElementById('c-pa');
+      if (paHidden) {
+        paHidden.value = (pas || pad) ? `${pas}/${pad}` : '';
       }
     }
   </script>
