@@ -1680,7 +1680,73 @@
             Isofundine en garde-veine
           </button>
         </div>
+      </div><div class="card">
+        <div class="section-label">D : Neurologique (Disability)</div>
+        
+        <!-- Score de Glasgow -->
+        <label style="font-weight: 800; margin-bottom: 6px;">Score de Glasgow (GCS) :</label>
+        <div class="row-2 field" style="align-items: center;">
+          <div style="display: flex; gap: 4px; width: 100%;">
+            <select id="ts-d-e" onchange="calcGlasgow(this)">
+              <option value="1" selected>Y1</option>
+              <option value="2">Y2</option>
+              <option value="3">Y3</option>
+              <option value="4">Y4</option>
+            </select>
+            <select id="ts-d-v" onchange="calcGlasgow(this)">
+              <option value="1" selected>V1</option>
+              <option value="2">V2</option>
+              <option value="3">V3</option>
+              <option value="4">V4</option>
+              <option value="5">V5</option>
+            </select>
+            <select id="ts-d-m" onchange="calcGlasgow(this)">
+              <option value="1" selected>M1</option>
+              <option value="2">M2</option>
+              <option value="3">M3</option>
+              <option value="4">M4</option>
+              <option value="5">M5</option>
+              <option value="6">M6</option>
+            </select>
+          </div>
+          <div id="ts-d-gcs-score" style="font-weight: 900; font-size: 1.2rem; color: var(--primary); text-align: right; min-width: 90px;">
+            Score = -
+          </div>
+        </div>
+        
+        <!-- Alerte GCS -->
+        <div id="bloc-ts-d-alerte-gcs" style="display: none; background: #fee2e2; border: 2px solid #ef4444; padding: 10px; border-radius: 8px; margin-bottom: 14px;">
+          <div style="font-weight: 800; color: #991b1b; text-align: center; margin-bottom: 4px;">⚠️ Glasgow ≤ 8</div>
+          <div style="font-size: 0.85rem; color: #991b1b; text-align: center; font-weight: 600;">=> Indication IOT => pose de Guedel / mise en PLS si possible</div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Score AVPU -->
+        <label style="font-weight: 800; margin-bottom: 6px;">Score AVPU :</label>
+        <div class="row-2 field" id="ts-d-avpu-group">
+          <button type="button" class="btn-toggle-action" data-val="A" onclick="setTsAvpu(this)">A</button>
+          <button type="button" class="btn-toggle-action" data-val="V" onclick="setTsAvpu(this)">V</button>
+          <button type="button" class="btn-toggle-action" data-val="P" onclick="setTsAvpu(this)">P</button>
+          <button type="button" class="btn-toggle-action" data-val="U" onclick="setTsAvpu(this)">U</button>
+        </div>
+        <input type="hidden" id="ts-d-avpu-val">
+
+        <hr class="divider">
+
+        <!-- Pupilles -->
+        <div class="field">
+          <label for="ts-d-pupilles" style="font-weight: 800;">Pupilles :</label>
+          <select id="ts-d-pupilles">
+            <option value="">-- Non évaluées --</option>
+            <option value="Isocores et réactives">Isocores et réactives</option>
+            <option value="Mydriase unilatérale">Mydriase unilatérale</option>
+            <option value="Mydriase bilatérale">Mydriase bilatérale</option>
+            <option value="Myosis">Myosis</option>
+          </select>
+        </div>
       </div>
+      
 
       <div class="card">
         <div class="section-label">D : Neurologique (Disability)</div>
@@ -4457,12 +4523,40 @@ function checkDrGravite() {
       if (theraC.length > 0) {
         cParts.push("Thérapeutique : " + theraC.join(' + '));
       }
+      // ---- BLOC D ----
+      let dParts = [];
+      const e = document.getElementById('ts-d-e');
+      const v = document.getElementById('ts-d-v');
+      const m = document.getElementById('ts-d-m');
+      
+      // On affiche le Glasgow uniquement si les 3 roulettes ont été touchées
+      if (e.dataset.touched === 'true' && v.dataset.touched === 'true' && m.dataset.touched === 'true') {
+        const gcsTotal = parseInt(e.value) + parseInt(v.value) + parseInt(m.value);
+        dParts.push(`Glasgow: ${gcsTotal} (Y${e.value} V${v.value} M${m.value})`);
+      }
+
+      // On affiche l'AVPU uniquement s'il y a eu un clic
+      const avpu = document.getElementById('ts-d-avpu-val').value;
+      if (avpu) {
+        dParts.push(`AVPU: ${avpu}`);
+      }
+
+      // On affiche les pupilles uniquement si on a sélectionné autre chose que "Non évaluées"
+      const pupilles = document.getElementById('ts-d-pupilles').value;
+      if (pupilles) {
+        dParts.push(`Pupilles: ${pupilles}`);
+      }
+
+      if (dParts.length === 0) {
+        dParts.push("Neuro non évalué");
+      }
 
       return {
         x: xParts.join('\n'),
         a: aParts.join('\n'),
         b: bParts.join('\n'),
-        c: cParts.join('\n')
+        c: cParts.join('\n'),
+        d: dParts.join('\n')
       };
     }
 
@@ -4554,7 +4648,8 @@ function checkDrGravite() {
 `- [X] ${tsData.x}
 - [A] ${tsData.a}
 - [B] ${tsData.b}
-- [C] ${tsData.c}`;
+- [C] ${tsData.c}
+- [D] ${tsData.d}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -4909,7 +5004,8 @@ ${bilanBrulureLines.join('\n')}
 `- [X] ${tsData.x}
 - [A] ${tsData.a}
 - [B] ${tsData.b}
-- [C] ${tsData.c}`;
+- [C] ${tsData.c}
+- [D] ${tsData.d}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -5354,6 +5450,51 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       if (paHidden) {
         paHidden.value = (pas || pad) ? `${pas}/${pad}` : '';
       }
+    }
+    function calcGlasgow(selectEl) {
+      // 1. On marque la roulette que l'utilisateur vient de toucher
+      selectEl.dataset.touched = 'true';
+      
+      const e = document.getElementById('ts-d-e');
+      const v = document.getElementById('ts-d-v');
+      const m = document.getElementById('ts-d-m');
+      const scoreDisplay = document.getElementById('ts-d-gcs-score');
+      const alertGcs = document.getElementById('bloc-ts-d-alerte-gcs');
+      
+      // 2. On vérifie si les TROIS roulettes ont été touchées au moins une fois
+      if (e.dataset.touched === 'true' && v.dataset.touched === 'true' && m.dataset.touched === 'true') {
+        const total = parseInt(e.value) + parseInt(v.value) + parseInt(m.value);
+        scoreDisplay.textContent = `Score = ${total}`;
+        
+        // Alerte IOT
+        if (total <= 8) {
+          alertGcs.style.display = 'block';
+        } else {
+          alertGcs.style.display = 'none';
+        }
+
+        // Synchro avec la page Constantes
+        if (document.getElementById('c-glasgow')) document.getElementById('c-glasgow').value = total;
+      }
+    }
+
+    function setTsAvpu(btn) {
+      // 1. Gérer l'affichage visuel des boutons AVPU dans le bloc D
+      const container = document.getElementById('ts-d-avpu-group');
+      const buttons = container.querySelectorAll('button');
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // 2. Enregistrer la valeur cachée
+      const val = btn.dataset.val;
+      document.getElementById('ts-d-avpu-val').value = val;
+      
+      // 3. Synchroniser avec les boutons AVPU de la page Constantes (si on les retrouve)
+      // Si tes boutons AVPU Constantes ont des ID type "btn-c-avpu-A", tu peux décommenter la ligne suivante :
+      // if (document.getElementById('btn-c-avpu-' + val)) document.getElementById('btn-c-avpu-' + val).click();
+      
+      // Si tu as un champ caché "c-avpu" dans les Constantes, on le remplit direct :
+      if (document.getElementById('c-avpu')) document.getElementById('c-avpu').value = val;
     }
   </script>
 </body>
