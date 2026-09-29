@@ -5500,12 +5500,11 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       }
     }
     function syncTsDGlycemie() {
-      // Lit la valeur tapée dans le bloc D
       const glycemieVal = document.getElementById('ts-d-glycemie').value.trim();
       
-      // La copie dans le champ "Glycémie" de la page Constantes générale (si elle existe)
-      if (document.getElementById('c-glycemie')) {
-        document.getElementById('c-glycemie').value = glycemieVal;
+      // La copie dans le champ "HGT" de la page Constantes générale
+      if (document.getElementById('c-hgt')) {
+        document.getElementById('c-hgt').value = glycemieVal;
       }
     }
     function syncTsDTemp() {
