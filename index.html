@@ -1750,6 +1750,19 @@
           <label for="ts-d-glycemie" style="font-weight: 800;">Glycémie (g/L) :</label>
           <input type="number" step="0.01" inputmode="decimal" id="ts-d-glycemie" placeholder="ex: 1.05" oninput="syncTsDGlycemie()">
         </div>
+        <hr class="divider">
+
+        <!-- Température et Réchauffage -->
+        <div class="field">
+          <label for="ts-d-temp" style="font-weight: 800;">Température (°C) :</label>
+          <input type="number" step="0.1" inputmode="decimal" id="ts-d-temp" placeholder="ex: 36.5" oninput="syncTsDTemp()">
+        </div>
+
+        <div class="field" style="margin-top: 10px;">
+          <button type="button" class="btn-toggle-action" id="btn-ts-d-rechauffage" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Réchauffage posé' : 'Couverture auto-chauffante / Thermotrauma';">
+            Couverture auto-chauffante / Thermotrauma
+          </button>
+        </div>
       </div>
 
       <div class="card">
@@ -4507,6 +4520,17 @@ function checkDrGravite() {
       if (glycemie) {
         dParts.push(`Glycémie: ${glycemie} g/L`);
       }
+      // Température
+      const temp = document.getElementById('ts-d-temp') ? document.getElementById('ts-d-temp').value.trim() : '';
+      if (temp) {
+        dParts.push(`Température: ${temp} °C`);
+      }
+
+      // Réchauffage
+      const btnRechauffage = document.getElementById('btn-ts-d-rechauffage');
+      if (btnRechauffage && btnRechauffage.classList.contains('active')) {
+        dParts.push("Thérapeutique : Réchauffage posé");
+      }
 
       if (dParts.length === 0) {
         dParts.push("Neuro non évalué");
@@ -5482,6 +5506,15 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       // La copie dans le champ "Glycémie" de la page Constantes générale (si elle existe)
       if (document.getElementById('c-glycemie')) {
         document.getElementById('c-glycemie').value = glycemieVal;
+      }
+    }
+    function syncTsDTemp() {
+      // Lit la valeur tapée dans le bloc D
+      const tempVal = document.getElementById('ts-d-temp').value.trim();
+      
+      // La copie dans le champ "Température" de la page Constantes générale
+      if (document.getElementById('c-temp')) {
+        document.getElementById('c-temp').value = tempVal;
       }
     }
   </script>
