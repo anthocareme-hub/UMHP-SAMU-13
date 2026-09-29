@@ -1490,6 +1490,7 @@
 
           <label class="checkbox-item"><input type="checkbox" id="ts-x-compressif"> Pansement compressif</label>
           <label class="checkbox-item"><input type="checkbox" id="ts-x-celox"> Celox</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-x-clamp"> Agrafes / IT Clamp</label>
         </div>
 
         <!-- Bassin -->
@@ -1590,7 +1591,6 @@
           <label class="checkbox-item"><input type="checkbox" id="ts-b-silence"> Silence auscultatoire</label>
           <label class="checkbox-item"><input type="checkbox" id="ts-b-parole"> Parole impossible</label>
           <label class="checkbox-item"><input type="checkbox" id="ts-b-conscience"> Troubles de la conscience</label>
-          <label class="checkbox-item"><input type="checkbox" id="ts-b-hemo"> Défaillance hémodynamique</label>
         </div>
 
         <hr class="divider">
@@ -1641,8 +1641,7 @@
 
         <div class="field">
           <label for="ts-c-hb">Hémocue (Hb en g/L)</label>
-          <input type="number" step="0.1" inputmode="decimal" id="ts-c-hb" placeholder="ex: 12.5">
-        </div>
+<input type="number" step="0.1" inputmode="decimal" id="ts-c-hb" placeholder="ex: 12.5" oninput="syncTsCConstantes()">        </div>
 
         <!-- Alertes Dynamiques (Choc Index et PAM) -->
         <div id="bloc-ts-c-alerte-si" style="display: none; background: #fee2e2; border: 2px solid #ef4444; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
@@ -1672,9 +1671,9 @@
             💉 Pose de 2 VVP (Gros calibre)
           </button>
           
-          <label class="checkbox-item" style="margin-top: 10px; margin-bottom: 10px;">
-            <input type="checkbox" id="ts-c-exacyl"> Acide Tranexamique (Exacyl) 1g / 10 min
-          </label>
+          <button type="button" class="btn-toggle-action" id="btn-ts-c-exacyl" style="margin-bottom: 10px;" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Exacyl 1g passé' : 'Acide Tranexamique (Exacyl) 1g / 10 min';">
+  Acide Tranexamique (Exacyl) 1g / 10 min
+</button>
           
           <!-- Bouton Remplissage Vasculaire (Texte dynamique) -->
           <button type="button" class="btn-toggle-action orange" id="btn-ts-c-remplissage" onclick="toggleTsCRemplissage(this)">
@@ -1811,6 +1810,11 @@
             <input type="number" step="0.5" inputmode="decimal" id="c-trc" placeholder="ex: 2">
           </div>
         </div>
+        <!-- Hémocue conditionnel si Trauma Sévère -->
+<div class="field" id="field-hb-container" style="display: none;">
+  <label for="c-hb">Hémocue (Hb en g/L)</label>
+  <input type="number" step="0.1" inputmode="decimal" id="c-hb" placeholder="ex: 12.5">
+</div>
 
         <!-- HbCO conditionnel si brûlure + fumées -->
         <div class="field" id="field-hbco-container" style="display: none;">
@@ -3229,6 +3233,10 @@
         if (hbcoField) {
           hbcoField.style.display = (document.getElementById('motif-select').value === 'Brûlure' && fumeeInhalation) ? 'block' : 'none';
         }
+        const hbField = document.getElementById('field-hb-container');
+        if (hbField) {
+          hbField.style.display = (document.getElementById('motif-select').value === 'Traumatisé sévère') ? 'block' : 'none';
+        }
       } else if (target === 'regu') {
         indicator.textContent = 'Appel au 15';
         p0Container.style.display = 'none';
@@ -4280,6 +4288,7 @@ function checkDrGravite() {
         }
         if (document.getElementById('ts-x-compressif').checked) gestes.push('pansement compressif');
         if (document.getElementById('ts-x-celox').checked) gestes.push('Celox');
+        if (document.getElementById('ts-x-clamp').checked) gestes.push('agrafes / IT Clamp');
         
         if (gestes.length > 0) {
           xParts.push("   ↳ Gestes réalisés : " + gestes.join(' + '));
@@ -4368,7 +4377,6 @@ function checkDrGravite() {
       if (document.getElementById('ts-b-silence').checked) signesB.push('Silence auscultatoire');
       if (document.getElementById('ts-b-parole').checked) signesB.push('Parole impossible');
       if (document.getElementById('ts-b-conscience').checked) signesB.push('Tb conscience');
-      if (document.getElementById('ts-b-hemo').checked) signesB.push('Déf. hémodynamique');
       
       if (signesB.length > 0) {
         bParts.push("Signes cliniques : " + signesB.join(', '));
@@ -4379,7 +4387,6 @@ function checkDrGravite() {
       const auscCote = document.getElementById('ts-b-auscult-cote').value;
       bParts.push(`Auscultation : ${auscType} (${auscCote})`);
 
-      // ---- BLOC C ----
       // ---- BLOC C ----
 let cParts = [];
 const pasVal = document.getElementById('ts-c-pas').value;
@@ -4410,7 +4417,7 @@ const cHb = document.getElementById('ts-c-hb').value;
 
       let theraC = [];
       if (document.getElementById('btn-ts-c-vvp').classList.contains('active')) theraC.push('2 VVP posées');
-      if (document.getElementById('ts-c-exacyl').checked) theraC.push('Exacyl 1g/10min');
+      if (document.getElementById('btn-ts-c-exacyl') && document.getElementById('btn-ts-c-exacyl').classList.contains('active')) theraC.push('Exacyl 1g/10min');
       
       const btnRemp = document.getElementById('btn-ts-c-remplissage');
       if (btnRemp.classList.contains('active')) {
@@ -4568,6 +4575,7 @@ const cHb = document.getElementById('ts-c-hb').value;
       const eva = document.getElementById('c-eva').value.trim();
       const trc = document.getElementById('c-trc').value.trim();
       const hbco = document.getElementById('c-hbco') ? document.getElementById('c-hbco').value.trim() : '';
+      const hb = document.getElementById('c-hb') ? document.getElementById('c-hb').value.trim() : '';
 
       if (pa) constList.push(`PA: ${pa}`);
       if (fc) constList.push(`FC: ${fc} bpm`);
@@ -4579,6 +4587,7 @@ const cHb = document.getElementById('ts-c-hb').value;
       if (trc) constList.push(`TRC: ${trc}s`);
       if (hbco) constList.push(`HbCO: ${hbco}%`);
       if (selectedAvpu) constList.push(`AVPU: ${selectedAvpu}`);
+      if (hb) constList.push(`Hb: ${hb} g/L`);
 
       const constText = constList.length > 0 ? `- Constantes : ${constList.join(' | ')}` : ``;
 
@@ -4642,6 +4651,7 @@ ${demandeText}
       if (document.getElementById('c-eva').value) cInit.push(`EVA: ${document.getElementById('c-eva').value}/10`);
       if (document.getElementById('c-trc').value) cInit.push(`TRC: ${document.getElementById('c-trc').value}s`);
       if (document.getElementById('c-hbco') && document.getElementById('c-hbco').value) cInit.push(`HbCO: ${document.getElementById('c-hbco').value}%`);
+      if (document.getElementById('c-hb') && document.getElementById('c-hb').value) cInit.push(`Hb: ${document.getElementById('c-hb').value} g/L`);
       if (selectedAvpu) cInit.push(`AVPU: ${selectedAvpu}`);
 
       const demType = document.getElementById('demande-type').value;
@@ -5233,6 +5243,8 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       const pasInput = document.getElementById('ts-c-pas').value.trim();
       const padInput = document.getElementById('ts-c-pad').value.trim();
       const fcVal = document.getElementById('ts-c-fc').value.trim();
+      const hbVal = document.getElementById('ts-c-hb').value.trim();
+      if (document.getElementById('c-hb')) document.getElementById('c-hb').value = hbVal;
       
       // On regroupe pour l'envoyer vers la case PA de la page "Constantes" générale
       let paCombine = "";
