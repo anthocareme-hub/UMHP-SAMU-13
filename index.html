@@ -1531,10 +1531,91 @@
 
       <div class="card">
         <div class="section-label">B : Respiration (Breathing)</div>
+        
+        <!-- Plaie thoracique -->
+        <label style="font-weight: 800; margin-bottom: 6px;">Plaie thoracique ?</label>
+        <div class="row-2 field">
+          <button type="button" class="btn-toggle-action" id="btn-ts-b-plaie-oui" onclick="toggleTsBPlaie(true)">OUI</button>
+          <button type="button" class="btn-toggle-action active" id="btn-ts-b-plaie-non" onclick="toggleTsBPlaie(false)">NON</button>
+        </div>
+        <div id="bloc-ts-b-plaie" style="display: none; padding-left: 12px; border-left: 2px solid var(--danger); margin-bottom: 14px;">
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-pansement3c"> Pose de pansement 3 côtés</label>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Constantes respiratoires initiales -->
+        <label style="font-weight: 800; margin-bottom: 6px;">Constantes Respiratoires Initiales :</label>
+        <div class="row-2 field">
+          <div>
+            <label for="ts-b-fr">Fréq. respi (/min)</label>
+            <input type="number" inputmode="numeric" id="ts-b-fr" placeholder="ex: 16" oninput="syncTsBConstantes()">
+          </div>
+          <div>
+            <label for="ts-b-spo2">SpO2 (%)</label>
+            <input type="number" inputmode="numeric" id="ts-b-spo2" placeholder="ex: 98" oninput="syncTsBConstantes()">
+          </div>
+        </div>
+
+        <!-- Alerte O2 si SpO2 < 95% -->
+        <div id="bloc-ts-b-o2" style="display: none; background: #fee2e2; border: 2px solid #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 14px;">
+          <div style="font-weight: 800; color: #991b1b; margin-bottom: 6px;">⚠️ Oxygénothérapie pour SpO2 < 95%</div>
+          <div class="field" style="margin-bottom: 0;">
+            <label for="ts-b-o2-debit" style="color: #991b1b; font-size: 0.9rem;">Débit d'O2 (L/min)</label>
+            <select id="ts-b-o2-debit" style="background-color: #ffffff;">
+              <option value="1">1 L/min</option>
+              <option value="2">2 L/min</option>
+              <option value="3">3 L/min</option>
+              <option value="4">4 L/min</option>
+              <option value="5">5 L/min</option>
+              <option value="6">6 L/min</option>
+              <option value="9">9 L/min (MHC)</option>
+              <option value="12">12 L/min (MHC)</option>
+              <option value="15" selected>15 L/min (MHC)</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Reprise de la clinique Détresse Respi -->
+        <div class="section-label">Signes cliniques & critères de gravité</div>
         <div class="field">
-          <label class="checkbox-item"><input type="checkbox" id="ts-b-o2"> O2 fort débit (MHC 15L/min) d'emblée</label>
-          <label class="checkbox-item"><input type="checkbox" id="ts-b-asymetrie"> Asymétrie auscultatoire (suspicion pneumothorax/hémothorax)</label>
-          <label class="checkbox-item"><input type="checkbox" id="ts-b-plaie"> Plaie thoracique soufflante (pansement 3 côtés)</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-tirage"> Tirage intercostal / sus-claviculaire</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-balancement"> Balancement thoraco-abdominal</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-sueurs"> Sueurs</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-cyanose"> Cyanose</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-polypnee"> Polypnée > 30/min</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-bradypnee"> Bradypnée</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-silence"> Silence auscultatoire</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-parole"> Parole impossible</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-conscience"> Troubles de la conscience</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-hemo"> Défaillance hémodynamique</label>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label">Auscultation pulmonaire</div>
+        <div class="row-2 field">
+          <div>
+            <label for="ts-b-auscult-type">Bruits auscultatoires</label>
+            <select id="ts-b-auscult-type">
+              <option value="Murmure vésiculaire conservé">Murmure vésiculaire conservé</option>
+              <option value="Crépitants (OAP)">Crépitants (OAP)</option>
+              <option value="Sibilants (asthme/BPCO)">Sibilants (asthme/BPCO)</option>
+              <option value="Silence / Abolition (pneumothorax/atélectasie)">Silence / Abolition</option>
+              <option value="Ronchis">Ronchis</option>
+              <option value="Frottement pleural">Frottement pleural</option>
+            </select>
+          </div>
+          <div>
+            <label for="ts-b-auscult-cote">Localisation / Côté</label>
+            <select id="ts-b-auscult-cote">
+              <option value="bilatéral">Bilatéral</option>
+              <option value="gauche">Gauche</option>
+              <option value="droit">Droit</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -4185,10 +4266,63 @@ function checkDrGravite() {
       } else {
         aParts.push("Voies aériennes non évaluées");
       }
+      // ---- BLOC B ----
+      let bParts = [];
+      const btnPlaieOui = document.getElementById('btn-ts-b-plaie-oui');
+      
+      // Plaie thoracique
+      if (btnPlaieOui && btnPlaieOui.classList.contains('active')) {
+        let txt = "Plaie thoracique";
+        if (document.getElementById('ts-b-pansement3c').checked) {
+          txt += "\n   ↳ Geste réalisé : pose de pansement 3 côtés";
+        }
+        bParts.push(txt);
+      } else {
+        bParts.push("Pas de plaie thoracique");
+      }
+
+      // FR, SpO2 et Oxygène
+      const bFr = document.getElementById('ts-b-fr').value;
+      const bSpo2 = document.getElementById('ts-b-spo2').value;
+      if (bFr || bSpo2) {
+        let consts = [];
+        if (bFr) consts.push(`FR: ${bFr}/min`);
+        if (bSpo2) consts.push(`SpO2: ${bSpo2}%`);
+        bParts.push("Constantes : " + consts.join(' | '));
+        
+        const o2Block = document.getElementById('bloc-ts-b-o2');
+        if (o2Block && o2Block.style.display === 'block') {
+          const debitO2 = document.getElementById('ts-b-o2-debit').value;
+          bParts.push(`   ↳ Oxygénothérapie initiée à ${debitO2} L/min`);
+        }
+      }
+
+      // Signes cliniques
+      let signesB = [];
+      if (document.getElementById('ts-b-tirage').checked) signesB.push('Tirage');
+      if (document.getElementById('ts-b-balancement').checked) signesB.push('Balancement');
+      if (document.getElementById('ts-b-sueurs').checked) signesB.push('Sueurs');
+      if (document.getElementById('ts-b-cyanose').checked) signesB.push('Cyanose');
+      if (document.getElementById('ts-b-polypnee').checked) signesB.push('Polypnée');
+      if (document.getElementById('ts-b-bradypnee').checked) signesB.push('Bradypnée');
+      if (document.getElementById('ts-b-silence').checked) signesB.push('Silence auscultatoire');
+      if (document.getElementById('ts-b-parole').checked) signesB.push('Parole impossible');
+      if (document.getElementById('ts-b-conscience').checked) signesB.push('Tb conscience');
+      if (document.getElementById('ts-b-hemo').checked) signesB.push('Déf. hémodynamique');
+      
+      if (signesB.length > 0) {
+        bParts.push("Signes cliniques : " + signesB.join(', '));
+      }
+
+      // Auscultation
+      const auscType = document.getElementById('ts-b-auscult-type').value;
+      const auscCote = document.getElementById('ts-b-auscult-cote').value;
+      bParts.push(`Auscultation : ${auscType} (${auscCote})`);
 
       return {
         x: xParts.join('\n'),
-        a: aParts.join('\n')
+        a: aParts.join('\n'),
+        b: bParts.join('\n')
       };
     }
 
@@ -4278,7 +4412,8 @@ function checkDrGravite() {
         const tsData = getTraumaSevereData();
         evalMotif = 
 `- [X] ${tsData.x}
-- [A] ${tsData.a}`;
+- [A] ${tsData.a}
+- [B] ${tsData.b}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -4629,7 +4764,8 @@ ${bilanBrulureLines.join('\n')}
         specificSection = 
 `3. BILAN TRAUMATISÉ SÉVÈRE (XABCDE)
 - [X] ${tsData.x}
-- [A] ${tsData.a}`;
+- [A] ${tsData.a}
+- [B] ${tsData.b}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -4952,6 +5088,41 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
         mmSelect.value = curM;
       } else {
         timeBlock.style.display = 'none';
+      }
+    }
+    function toggleTsBPlaie(val) {
+      const btnOui = document.getElementById('btn-ts-b-plaie-oui');
+      const btnNon = document.getElementById('btn-ts-b-plaie-non');
+      const bloc = document.getElementById('bloc-ts-b-plaie');
+      
+      if (val) {
+        btnOui.classList.add('active');
+        btnNon.classList.remove('active');
+        bloc.style.display = 'block';
+      } else {
+        btnOui.classList.remove('active');
+        btnNon.classList.add('active');
+        bloc.style.display = 'none';
+      }
+    }
+
+    function syncTsBConstantes() {
+      // 1. Lire les valeurs tapées
+      const frVal = document.getElementById('ts-b-fr').value;
+      const spo2Val = document.getElementById('ts-b-spo2').value;
+      
+      // 2. Les envoyer vers la page 4 "Constantes"
+      const cFr = document.getElementById('c-fr');
+      const cSpo2 = document.getElementById('c-spo2');
+      if (cFr) cFr.value = frVal;
+      if (cSpo2) cSpo2.value = spo2Val;
+      
+      // 3. Alerte O2 si SpO2 < 95
+      const blocO2 = document.getElementById('bloc-ts-b-o2');
+      if (spo2Val !== '' && parseInt(spo2Val, 10) < 95) {
+        blocO2.style.display = 'block';
+      } else {
+        blocO2.style.display = 'none';
       }
     }
   </script>
