@@ -1626,8 +1626,12 @@
         <label style="font-weight: 800; margin-bottom: 6px;">Constantes Hémodynamiques :</label>
         <div class="row-2 field">
           <div>
-            <label for="ts-c-pa">Tension (PAS/PAD)</label>
-            <input type="text" inputmode="numeric" id="ts-c-pa" placeholder="ex: 120/80" oninput="syncTsCConstantes()">
+            <label>Tension (PAS / PAD)</label>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <input type="number" inputmode="numeric" id="ts-c-pas" placeholder="PAS" oninput="syncTsCConstantes()">
+              <span style="font-weight: 900; font-size: 1.2rem; color: var(--border);">/</span>
+              <input type="number" inputmode="numeric" id="ts-c-pad" placeholder="PAD" oninput="syncTsCConstantes()">
+            </div>
           </div>
           <div>
             <label for="ts-c-fc">Fréq. card. (bpm)</label>
@@ -4368,10 +4372,14 @@ function checkDrGravite() {
       bParts.push(`Auscultation : ${auscType} (${auscCote})`);
 
       // ---- BLOC C ----
-      let cParts = [];
-      const cPa = document.getElementById('ts-c-pa').value;
-      const cFc = document.getElementById('ts-c-fc').value;
-      const cHb = document.getElementById('ts-c-hb').value;
+      // ---- BLOC C ----
+let cParts = [];
+const pasVal = document.getElementById('ts-c-pas').value;
+const padVal = document.getElementById('ts-c-pad').value;
+let cPa = "";
+if (pasVal || padVal) cPa = `${pasVal}/${padVal}`;
+const cFc = document.getElementById('ts-c-fc').value;
+const cHb = document.getElementById('ts-c-hb').value;
       
       let constsC = [];
       if (cPa) constsC.push(`PA: ${cPa}`);
@@ -5214,21 +5222,19 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       }
     }
     function syncTsCConstantes() {
-      const paVal = document.getElementById('ts-c-pa').value.trim();
+      const pasInput = document.getElementById('ts-c-pas').value.trim();
+      const padInput = document.getElementById('ts-c-pad').value.trim();
       const fcVal = document.getElementById('ts-c-fc').value.trim();
       
-      // Synchronisation vers la page Constantes
-      if (document.getElementById('c-pa')) document.getElementById('c-pa').value = paVal;
+      // On regroupe pour l'envoyer vers la case PA de la page "Constantes" générale
+      let paCombine = "";
+      if (pasInput || padInput) paCombine = `${pasInput}/${padInput}`;
+      if (document.getElementById('c-pa')) document.getElementById('c-pa').value = paCombine;
       if (document.getElementById('c-fc')) document.getElementById('c-fc').value = fcVal;
 
-      let pas = NaN, pad = NaN, fc = parseInt(fcVal, 10);
-      if (paVal.includes('/')) {
-        let parts = paVal.split('/');
-        pas = parseFloat(parts[0].replace(',', '.'));
-        pad = parseFloat(parts[1].replace(',', '.'));
-      } else {
-        pas = parseFloat(paVal.replace(',', '.'));
-      }
+      let pas = parseFloat(pasInput);
+      let pad = parseFloat(padInput);
+      let fc = parseInt(fcVal, 10);
 
       // Si l'utilisateur tape "12" au lieu de "120"
       if (!isNaN(pas) && pas >= 4 && pas <= 30) pas *= 10;
@@ -5271,9 +5277,7 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       if (!btnRemp.classList.contains('active')) {
         if (alertActive) {
           const poids = parseInt(document.getElementById('patient-poids').value, 10) || 70;
-          // Plafonner à 1500 ml maximum
           const volume = Math.min(poids * 20, 1500); 
-          
           btnRemp.dataset.mode = 'choc';
           btnRemp.textContent = `Isofundine ${volume} mL en débit libre pour PAM > 60 mmHg`;
         } else {
