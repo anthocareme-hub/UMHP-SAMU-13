@@ -1459,19 +1459,53 @@
       
       <div class="card thera-box" style="border-left: 6px solid var(--danger);">
         <div class="section-label" style="color: var(--danger);">X : Hémorragie Exsanguinante</div>
-        <div class="field">
+        
+        <!-- Saignements extériorisés -->
+        <label style="font-weight: 800; margin-bottom: 6px;">Saignements extériorisés ?</label>
+        <div class="row-2 field">
+          <button type="button" class="btn-toggle-action" id="btn-ts-x-saign-oui" onclick="toggleTsXSaign(true)">OUI</button>
+          <button type="button" class="btn-toggle-action active" id="btn-ts-x-saign-non" onclick="toggleTsXSaign(false)">NON</button>
+        </div>
+        <div id="bloc-ts-x-saign" style="display: none; padding-left: 12px; border-left: 2px solid var(--danger); margin-bottom: 14px;">
           <label class="checkbox-item"><input type="checkbox" id="ts-x-garrot"> Pose de garrot(s) tourniquet(s)</label>
-          <label class="checkbox-item"><input type="checkbox" id="ts-x-pelvis"> Pose de ceinture pelvienne</label>
           <label class="checkbox-item"><input type="checkbox" id="ts-x-compressif"> Pansement compressif</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-x-celox"> Celox</label>
+        </div>
+
+        <!-- Bassin -->
+        <label style="font-weight: 800; margin-bottom: 6px;">Suspicion de traumatisme du bassin ?</label>
+        <div class="row-2 field">
+          <button type="button" class="btn-toggle-action" id="btn-ts-x-bassin-oui" onclick="toggleTsXBassin(true)">OUI</button>
+          <button type="button" class="btn-toggle-action active" id="btn-ts-x-bassin-non" onclick="toggleTsXBassin(false)">NON</button>
+        </div>
+        <div id="bloc-ts-x-bassin" style="display: none; padding-left: 12px; border-left: 2px solid var(--danger);">
+          <label class="checkbox-item"><input type="checkbox" id="ts-x-pelvis"> Pose de ceinture pelvienne</label>
         </div>
       </div>
 
       <div class="card">
         <div class="section-label">A : Voies Aériennes & Axe</div>
-        <div class="field">
-          <label class="checkbox-item"><input type="checkbox" id="ts-a-collier"> Pose de collier cervical (respect axe T-C-T)</label>
-          <label class="checkbox-item"><input type="checkbox" id="ts-a-vas"> Libération des Voies Aériennes (subluxation, canule)</label>
-          <label class="checkbox-item"><input type="checkbox" id="ts-a-aspi"> Aspiration des sécrétions / sang</label>
+        
+        <label style="font-weight: 800; margin-bottom: 6px;">État des voies aériennes :</label>
+        <div class="row-3 field" style="gap: 6px;">
+          <button type="button" class="btn-toggle-action" id="btn-ts-a-libre" style="border-color: #22c55e; color: #166534;" onclick="selectTsVoiesAir('libre')">Libres</button>
+          <button type="button" class="btn-toggle-action" id="btn-ts-a-risque" style="border-color: #f97316; color: #c2410c;" onclick="selectTsVoiesAir('risque')">À risque</button>
+          <button type="button" class="btn-toggle-action" id="btn-ts-a-obstruee" style="border-color: #ef4444; color: #991b1b;" onclick="selectTsVoiesAir('obstruee')">Obstruées</button>
+        </div>
+
+        <!-- Sous-menu : À risque -->
+        <div id="bloc-ts-a-risque" style="display: none; padding-left: 12px; border-left: 2px solid #f97316; margin-top: 10px;">
+          <label class="checkbox-item"><input type="checkbox" id="ts-a-risque-collier"> Pose de collier cervical</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-a-risque-guedel"> Guedel</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-a-risque-aspi"> Aspiration sécrétions / sang</label>
+        </div>
+
+        <!-- Sous-menu : Obstruée -->
+        <div id="bloc-ts-a-obstruee" style="display: none; padding-left: 12px; border-left: 2px solid #ef4444; margin-top: 10px;">
+          <label class="checkbox-item"><input type="checkbox" id="ts-a-obs-liberation"> Libération des Voies aériennes</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-a-obs-collier"> Pose de collier cervical</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-a-obs-retrait"> Retrait de corps étranger</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-a-obs-aspi"> Aspiration sécrétions / sang</label>
         </div>
       </div>
 
@@ -4713,6 +4747,70 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       savedList = savedList.filter(x => x.id !== id);
       localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
       renderUmhpList();
+    }
+    
+    // --- LOGIQUE TRAUMA SEVERE (XABCDE) ---
+    function toggleTsXSaign(val) {
+      const btnOui = document.getElementById('btn-ts-x-saign-oui');
+      const btnNon = document.getElementById('btn-ts-x-saign-non');
+      const bloc = document.getElementById('bloc-ts-x-saign');
+      
+      if (val) {
+        btnOui.classList.add('active');
+        btnNon.classList.remove('active');
+        bloc.style.display = 'block';
+      } else {
+        btnOui.classList.remove('active');
+        btnNon.classList.add('active');
+        bloc.style.display = 'none';
+      }
+    }
+
+    function toggleTsXBassin(val) {
+      const btnOui = document.getElementById('btn-ts-x-bassin-oui');
+      const btnNon = document.getElementById('btn-ts-x-bassin-non');
+      const bloc = document.getElementById('bloc-ts-x-bassin');
+      
+      if (val) {
+        btnOui.classList.add('active');
+        btnNon.classList.remove('active');
+        bloc.style.display = 'block';
+      } else {
+        btnOui.classList.remove('active');
+        btnNon.classList.add('active');
+        bloc.style.display = 'none';
+      }
+    }
+
+    function selectTsVoiesAir(etat) {
+      const btnLibre = document.getElementById('btn-ts-a-libre');
+      const btnRisque = document.getElementById('btn-ts-a-risque');
+      const btnObstruee = document.getElementById('btn-ts-a-obstruee');
+      const blocRisque = document.getElementById('bloc-ts-a-risque');
+      const blocObstruee = document.getElementById('bloc-ts-a-obstruee');
+
+      // Réinitialiser les couleurs
+      btnLibre.style.background = '#ffffff'; btnLibre.style.color = '#166534';
+      btnRisque.style.background = '#ffffff'; btnRisque.style.color = '#c2410c';
+      btnObstruee.style.background = '#ffffff'; btnObstruee.style.color = '#991b1b';
+
+      // Cacher les sous-menus
+      blocRisque.style.display = 'none';
+      blocObstruee.style.display = 'none';
+
+      // Appliquer les couleurs foncées selon le choix
+      if (etat === 'libre') {
+        btnLibre.style.background = '#22c55e'; // Vert foncé
+        btnLibre.style.color = '#ffffff';
+      } else if (etat === 'risque') {
+        btnRisque.style.background = '#f97316'; // Orange foncé
+        btnRisque.style.color = '#ffffff';
+        blocRisque.style.display = 'block';
+      } else if (etat === 'obstruee') {
+        btnObstruee.style.background = '#ef4444'; // Rouge foncé
+        btnObstruee.style.color = '#ffffff';
+        blocObstruee.style.display = 'block';
+      }
     }
   </script>
 </body>
