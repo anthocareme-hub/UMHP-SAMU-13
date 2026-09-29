@@ -1808,19 +1808,15 @@
 
         <hr class="divider">
 
-        <!-- Antalgie -->
+       <!-- Antalgie -->
         <div class="field">
           <label for="ts-e-en" style="font-weight: 800;">Antalgie : Douleur (EN) :</label>
           <input type="number" id="ts-e-en" inputmode="numeric" placeholder="0 à 10" oninput="syncTsEEn()">
         </div>
         
-        <!-- Boutons de médicaments antalgiques classiques -->
-        <div class="field" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
-          <button type="button" class="btn-toggle-action" id="btn-ts-e-para" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Paracétamol 1g passé' : 'Paracétamol 1g';">Paracétamol 1g</button>
-          <button type="button" class="btn-toggle-action" id="btn-ts-e-morphine" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Morphine (titration) débutée' : 'Morphine (titration)';">Morphine (titration)</button>
-          <button type="button" class="btn-toggle-action" id="btn-ts-e-ketamine" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Kétamine passée' : 'Kétamine (faible dose)';">Kétamine (faible dose)</button>
+        <div id="ts-e-antalgie-container" style="margin-top: 10px;">
+          <!-- Sera rempli dynamiquement par l'algorithme d'antalgie -->
         </div>
-      </div>
       
       <!-- BOUTONS DE NAVIGATION REMIS TOUT EN BAS -->
       <div class="nav-actions">
@@ -1960,7 +1956,7 @@
 <!-- ========================================== -->
     <!-- PAGE RÉÉVALUATION XABCDE                   -->
     <!-- ========================================== -->
-    <div id="page-reeval" class="page" style="display: none;">
+    <div id="page-reeval" class="page">
       <div class="card">
         <div class="section-label">Réévaluation Clinique (XABCDE)</div>
         <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Évaluez l'évolution sous traitement pendant le transport.</p>
@@ -2032,7 +2028,7 @@
     <!-- ========================================== -->
     <!-- PAGE SURVEILLANCE CONSTANTES T15 / T30     -->
     <!-- ========================================== -->
-    <div id="page-surveillance" class="page" style="display: none;">
+    <div id="page-surveillance" class="page">
       <div class="card">
         <div class="section-label">Surveillance Constantes</div>
         <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">T0 correspond aux constantes initiales saisies précédemment.</p>
@@ -3464,12 +3460,6 @@
         p0Container.style.display = 'none';
         const motif = document.getElementById('motif-select').value;
         const btnSuite = document.getElementById('btn-suite-regu');
-        } else if (target === 'reeval') {
-        indicator.textContent = 'Réévaluation XABCDE';
-        p0Container.style.display = 'none';
-      } else if (target === 'surveillance') {
-        indicator.textContent = 'Surveillance T15/T30';
-        p0Container.style.display = 'none';
 
         // Forcer "PSIS Antalgie" par défaut
         if (motif === 'Antalgie') {
@@ -3490,10 +3480,19 @@
           btnSuite.textContent = 'Thérapeutique ➔';
         } else if (motif === 'Antalgie') {
           btnSuite.textContent = 'Thérapeutique ➔';
+        } else if (motif === 'Traumatisé sévère') {
+          btnSuite.textContent = 'Réévaluation ➔';
         } else {
           btnSuite.textContent = 'Résumé final ➔';
         }
         generateSAED();
+
+      } else if (target === 'reeval') {
+        indicator.textContent = 'Réévaluation XABCDE';
+        p0Container.style.display = 'none';
+      } else if (target === 'surveillance') {
+        indicator.textContent = 'Surveillance T15/T30';
+        p0Container.style.display = 'none';
       } else if (target === 'therapeutique') {
         indicator.textContent = 'Thérapeutique';
         p0Container.style.display = 'none';
@@ -4766,14 +4765,13 @@ function checkDrGravite() {
       let antalgieStr = [];
       if (enVal) antalgieStr.push(`EN initiale = ${enVal}`);
       
+      if (document.getElementById('btn-ts-e-meopa') && document.getElementById('btn-ts-e-meopa').classList.contains('active')) antalgieStr.push("MEOPA");
       if (document.getElementById('btn-ts-e-para') && document.getElementById('btn-ts-e-para').classList.contains('active')) antalgieStr.push("Paracétamol");
       if (document.getElementById('btn-ts-e-morphine') && document.getElementById('btn-ts-e-morphine').classList.contains('active')) antalgieStr.push("Morphine");
-      if (document.getElementById('btn-ts-e-ketamine') && document.getElementById('btn-ts-e-ketamine').classList.contains('active')) antalgieStr.push("Kétamine");
       
       if (antalgieStr.length > 0) {
         eParts.push(`Antalgie : ${antalgieStr.join(' + ')}`);
       }
-
       return {
         x: xParts.join('\n'),
         a: aParts.join('\n'),
@@ -5785,9 +5783,63 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
     }
 
     function syncTsEEn() {
-      // Synchronise l'EN vers la page Constantes globale (si elle a l'ID c-en)
-      const enVal = document.getElementById('ts-e-en').value;
-      if(document.getElementById('c-en')) document.getElementById('c-en').value = enVal;
+      // 1. Synchronise l'EN vers la page Constantes globale
+      const enValStr = document.getElementById('ts-e-en').value;
+      const cEva = document.getElementById('c-eva');
+      if (cEva) cEva.value = enValStr;
+      
+      // 2. Affiche le bloc thérapeutique dynamique
+      setupTsEAntalgieUI(enValStr);
+    }
+
+    function setupTsEAntalgieUI(enValStr) {
+      const container = document.getElementById('ts-e-antalgie-container');
+      if (!container) return;
+      
+      if (!enValStr || enValStr.trim() === '') {
+        container.innerHTML = '';
+        return;
+      }
+
+      const enVal = parseInt(enValStr, 10);
+      const poidsVal = parseInt(document.getElementById('patient-poids').value || '70', 10);
+
+      if (enVal >= 1 && enVal <= 5) {
+        container.innerHTML = `
+          <div class="thera-box" style="border-left: 6px solid var(--samu-yellow);">
+            <div class="thera-title" style="margin-bottom: 12px;">1 ≤ EN ≤ 5 : Protocole Antalgique Intermédiaire</div>
+            
+            <button type="button" class="btn-toggle-action" id="btn-ts-e-meopa" onclick="this.classList.toggle('active'); document.getElementById('warn-ts-e-meopa').style.display = this.classList.contains('active') ? 'block' : 'none';">
+              MEOPA avec valve
+            </button>
+            <div id="warn-ts-e-meopa" style="display: none; background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; margin-top: -10px; margin-bottom: 14px; border: 1px solid #ef4444;">
+              ATTENTION : Tb de la conscience, HTIC, pneumothorax, bulle d’emphysème, accident de plongée...
+            </div>
+
+            <button type="button" class="btn-toggle-action" id="btn-ts-e-para" onclick="this.classList.toggle('active'); document.getElementById('warn-ts-e-para').style.display = this.classList.contains('active') ? 'block' : 'none';">
+              Paracétamol 1g IVL
+            </button>
+            <div id="warn-ts-e-para" style="display: none; background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; margin-top: -10px; margin-bottom: 14px; border: 1px solid #ef4444;">
+              Attention si insuffisance hépatique sévère
+            </div>
+          </div>
+        `;
+      } else if (enVal >= 6) {
+        let doseMorphine = poidsVal <= 60 ? "Morphine 2 mg IVD" : "Morphine 3 mg IVD";
+        container.innerHTML = `
+          <div class="thera-box" style="border-left: 6px solid var(--danger);">
+            <div class="thera-title" style="margin-bottom: 12px;">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)</div>
+            
+            <button type="button" class="btn-toggle-action" id="btn-ts-e-morphine" onclick="this.classList.toggle('active');" style="border-color: #0284c7; color: #0369a1;">
+              💉 ${doseMorphine}
+            </button>
+            
+            <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)</p>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `<div class="alert-box alert-green">EN < 1 : Surveillance et antalgique palier 1 si besoin</div>`;
+      }
     }
     function toggleReeval(btn) {
       const parent = btn.parentElement;
