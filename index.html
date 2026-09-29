@@ -1621,13 +1621,61 @@
 
       <div class="card">
         <div class="section-label">C : Circulation</div>
+        
+        <!-- Constantes Hémodynamiques Initiales -->
+        <label style="font-weight: 800; margin-bottom: 6px;">Constantes Hémodynamiques :</label>
+        <div class="row-2 field">
+          <div>
+            <label for="ts-c-pa">Tension (PAS/PAD)</label>
+            <input type="text" inputmode="numeric" id="ts-c-pa" placeholder="ex: 120/80" oninput="syncTsCConstantes()">
+          </div>
+          <div>
+            <label for="ts-c-fc">Fréq. card. (bpm)</label>
+            <input type="number" inputmode="numeric" id="ts-c-fc" placeholder="ex: 85" oninput="syncTsCConstantes()">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="ts-c-hb">Hémocue (Hb en g/L)</label>
+          <input type="number" step="0.1" inputmode="decimal" id="ts-c-hb" placeholder="ex: 12.5">
+        </div>
+
+        <!-- Alertes Dynamiques (Choc Index et PAM) -->
+        <div id="bloc-ts-c-alerte-si" style="display: none; background: #fee2e2; border: 2px solid #ef4444; padding: 10px; border-radius: 8px; margin-bottom: 8px;">
+          <div style="font-weight: 800; color: #991b1b; text-align: center;" id="text-alerte-si">⚠️ CHOC-INDEX = </div>
+        </div>
+
+        <div id="bloc-ts-c-alerte-pam" style="display: none; background: #fee2e2; border: 2px solid #ef4444; padding: 10px; border-radius: 8px; margin-bottom: 14px;">
+          <div style="font-weight: 800; color: #991b1b; text-align: center; margin-bottom: 4px;" id="text-alerte-pam">⚠️️ PAM = </div>
+          <div style="font-size: 0.85rem; color: #991b1b; text-align: center; font-weight: 600;">=> Décubitus dorsal et surélévation des jambes + remplissage vasculaire</div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label">Signes cliniques</div>
+        <div class="field">
+          <label class="checkbox-item"><input type="checkbox" id="ts-c-paleur"> Pâleur</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-c-marbrures"> Marbrures</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-c-sueurs"> Sueurs</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-c-trc"> TRC > 2 secondes</label>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label">Thérapeutique</div>
         <div class="field">
           <button type="button" class="btn-toggle-action" id="btn-ts-c-vvp" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ 2 VVP gros calibre posées' : '💉 Pose de 2 VVP (Gros calibre)';">
             💉 Pose de 2 VVP (Gros calibre)
           </button>
-          <label class="checkbox-item" style="margin-top: 10px;"><input type="checkbox" id="ts-c-exacyl"> Acide Tranexamique (Exacyl) 1g / 10 min</label>
-          <label class="checkbox-item"><input type="checkbox" id="ts-c-remplissage"> Remplissage vasculaire débuté (Cristalloïdes)</label>
-          <label class="checkbox-item"><input type="checkbox" id="ts-c-choc"> Signes de choc (Pâleur, marbrures, sueurs)</label>
+          
+          <label class="checkbox-item" style="margin-top: 10px; margin-bottom: 10px;">
+            <input type="checkbox" id="ts-c-exacyl"> Acide Tranexamique (Exacyl) 1g / 10 min
+          </label>
+          
+          <!-- Bouton Remplissage Vasculaire (Texte dynamique) -->
+          <button type="button" class="btn-toggle-action orange" id="btn-ts-c-remplissage" onclick="toggleTsCRemplissage(this)">
+            Isofundine en garde-veine
+          </button>
         </div>
       </div>
 
@@ -4319,10 +4367,49 @@ function checkDrGravite() {
       const auscCote = document.getElementById('ts-b-auscult-cote').value;
       bParts.push(`Auscultation : ${auscType} (${auscCote})`);
 
+      // ---- BLOC C ----
+      let cParts = [];
+      const cPa = document.getElementById('ts-c-pa').value;
+      const cFc = document.getElementById('ts-c-fc').value;
+      const cHb = document.getElementById('ts-c-hb').value;
+      
+      let constsC = [];
+      if (cPa) constsC.push(`PA: ${cPa}`);
+      if (cFc) constsC.push(`FC: ${cFc} bpm`);
+      if (cHb) constsC.push(`Hb: ${cHb} g/L`);
+      if (constsC.length > 0) {
+        cParts.push("Hémodynamique : " + constsC.join(' | '));
+      }
+
+      let signesC = [];
+      if (document.getElementById('ts-c-paleur').checked) signesC.push('Pâleur');
+      if (document.getElementById('ts-c-marbrures').checked) signesC.push('Marbrures');
+      if (document.getElementById('ts-c-sueurs').checked) signesC.push('Sueurs');
+      if (document.getElementById('ts-c-trc').checked) signesC.push('TRC > 2s');
+      if (signesC.length > 0) {
+        cParts.push("Signes cliniques : " + signesC.join(', '));
+      } else {
+        cParts.push("Aucun signe de choc clinique coché");
+      }
+
+      let theraC = [];
+      if (document.getElementById('btn-ts-c-vvp').classList.contains('active')) theraC.push('2 VVP posées');
+      if (document.getElementById('ts-c-exacyl').checked) theraC.push('Exacyl 1g/10min');
+      
+      const btnRemp = document.getElementById('btn-ts-c-remplissage');
+      if (btnRemp.classList.contains('active')) {
+        theraC.push((btnRemp.dataset.mode === 'choc') ? 'Remplissage vasculaire réalisé' : 'Garde-veine posé');
+      }
+
+      if (theraC.length > 0) {
+        cParts.push("Thérapeutique : " + theraC.join(' + '));
+      }
+
       return {
         x: xParts.join('\n'),
         a: aParts.join('\n'),
-        b: bParts.join('\n')
+        b: bParts.join('\n'),
+        c: cParts.join('\n')
       };
     }
 
@@ -4413,7 +4500,8 @@ function checkDrGravite() {
         evalMotif = 
 `- [X] ${tsData.x}
 - [A] ${tsData.a}
-- [B] ${tsData.b}`;
+- [B] ${tsData.b}
+- [C] ${tsData.c}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -4761,11 +4849,11 @@ ${bilanBrulureLines.join('\n')}
 - T+30 min : ${t30Str}`;
         } else if (motif === 'Traumatisé sévère') {
         const tsData = getTraumaSevereData();
-        specificSection = 
-`3. BILAN TRAUMATISÉ SÉVÈRE (XABCDE)
-- [X] ${tsData.x}
+        evalMotif = 
+`- [X] ${tsData.x}
 - [A] ${tsData.a}
-- [B] ${tsData.b}`;
+- [B] ${tsData.b}
+- [C] ${tsData.c}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -5123,6 +5211,84 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
         blocO2.style.display = 'block';
       } else {
         blocO2.style.display = 'none';
+      }
+    }
+    function syncTsCConstantes() {
+      const paVal = document.getElementById('ts-c-pa').value.trim();
+      const fcVal = document.getElementById('ts-c-fc').value.trim();
+      
+      // Synchronisation vers la page Constantes
+      if (document.getElementById('c-pa')) document.getElementById('c-pa').value = paVal;
+      if (document.getElementById('c-fc')) document.getElementById('c-fc').value = fcVal;
+
+      let pas = NaN, pad = NaN, fc = parseInt(fcVal, 10);
+      if (paVal.includes('/')) {
+        let parts = paVal.split('/');
+        pas = parseFloat(parts[0].replace(',', '.'));
+        pad = parseFloat(parts[1].replace(',', '.'));
+      } else {
+        pas = parseFloat(paVal.replace(',', '.'));
+      }
+
+      // Si l'utilisateur tape "12" au lieu de "120"
+      if (!isNaN(pas) && pas >= 4 && pas <= 30) pas *= 10;
+      if (!isNaN(pad) && pad >= 2 && pad <= 20) pad *= 10;
+
+      let alertActive = false;
+
+      // 1. Calcul du Choc-Index (FC / PAS)
+      const blocSI = document.getElementById('bloc-ts-c-alerte-si');
+      if (!isNaN(fc) && !isNaN(pas) && pas > 0) {
+        const shockIndex = fc / pas;
+        if (shockIndex >= 0.9) {
+          document.getElementById('text-alerte-si').textContent = `⚠️ CHOC-INDEX = ${shockIndex.toFixed(2)}`;
+          blocSI.style.display = 'block';
+          alertActive = true;
+        } else {
+          blocSI.style.display = 'none';
+        }
+      } else {
+        blocSI.style.display = 'none';
+      }
+
+      // 2. Calcul de la PAM : (PAS + (2 * PAD)) / 3
+      const blocPAM = document.getElementById('bloc-ts-c-alerte-pam');
+      if (!isNaN(pas) && !isNaN(pad)) {
+        const pam = (pas + (2 * pad)) / 3;
+        if (pam < 60) {
+          document.getElementById('text-alerte-pam').textContent = `⚠️ PAM = ${Math.round(pam)} mmHg`;
+          blocPAM.style.display = 'block';
+          alertActive = true;
+        } else {
+          blocPAM.style.display = 'none';
+        }
+      } else {
+        blocPAM.style.display = 'none';
+      }
+
+      // 3. Mise à jour dynamique du bouton de remplissage
+      const btnRemp = document.getElementById('btn-ts-c-remplissage');
+      if (!btnRemp.classList.contains('active')) {
+        if (alertActive) {
+          const poids = parseInt(document.getElementById('patient-poids').value, 10) || 70;
+          // Plafonner à 1500 ml maximum
+          const volume = Math.min(poids * 20, 1500); 
+          
+          btnRemp.dataset.mode = 'choc';
+          btnRemp.textContent = `Isofundine ${volume} mL en débit libre pour PAM > 60 mmHg`;
+        } else {
+          btnRemp.dataset.mode = 'normal';
+          btnRemp.textContent = `Isofundine en garde-veine`;
+        }
+      }
+    }
+
+    function toggleTsCRemplissage(btn) {
+      btn.classList.toggle('active');
+      if (btn.classList.contains('active')) {
+        btn.textContent = (btn.dataset.mode === 'choc') ? '✓ Remplissage vasculaire réalisé' : '✓ Garde-veine posé';
+      } else {
+        syncTsCConstantes(); // Remet le texte par défaut selon les alertes
       }
     }
   </script>
