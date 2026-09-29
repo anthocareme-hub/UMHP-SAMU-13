@@ -1454,6 +1454,110 @@
       </div>
     </div>
 
+<!-- ================= PAGE SPÉCIFIQUE : TRAUMATISÉ SÉVÈRE (XABCDE) ================= -->
+    <div id="page-trauma-severe" class="page">
+      
+      <div class="card thera-box" style="border-left: 6px solid var(--danger);">
+        <div class="section-label" style="color: var(--danger);">X : Hémorragie Exsanguinante</div>
+        <div class="field">
+          <label class="checkbox-item"><input type="checkbox" id="ts-x-garrot"> Pose de garrot(s) tourniquet(s)</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-x-pelvis"> Pose de ceinture pelvienne</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-x-compressif"> Pansement compressif</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">A : Voies Aériennes & Axe</div>
+        <div class="field">
+          <label class="checkbox-item"><input type="checkbox" id="ts-a-collier"> Pose de collier cervical (respect axe T-C-T)</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-a-vas"> Libération des Voies Aériennes (subluxation, canule)</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-a-aspi"> Aspiration des sécrétions / sang</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">B : Respiration (Breathing)</div>
+        <div class="field">
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-o2"> O2 fort débit (MHC 15L/min) d'emblée</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-asymetrie"> Asymétrie auscultatoire (suspicion pneumothorax/hémothorax)</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-b-plaie"> Plaie thoracique soufflante (pansement 3 côtés)</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">C : Circulation</div>
+        <div class="field">
+          <button type="button" class="btn-toggle-action" id="btn-ts-c-vvp" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ 2 VVP gros calibre posées' : '💉 Pose de 2 VVP (Gros calibre)';">
+            💉 Pose de 2 VVP (Gros calibre)
+          </button>
+          <label class="checkbox-item" style="margin-top: 10px;"><input type="checkbox" id="ts-c-exacyl"> Acide Tranexamique (Exacyl) 1g / 10 min</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-c-remplissage"> Remplissage vasculaire débuté (Cristalloïdes)</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-c-choc"> Signes de choc (Pâleur, marbrures, sueurs)</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">D : Neurologique (Disability)</div>
+        <div class="field">
+          <label>Score de Glasgow (GCS) initial :</label>
+          <div class="row-3">
+            <div>
+              <label style="font-size: 0.75rem;">Yeux (Y)</label>
+              <select id="ts-d-yeux">
+                <option value="4">4 - Spontanée</option>
+                <option value="3">3 - Au bruit</option>
+                <option value="2">2 - À la douleur</option>
+                <option value="1">1 - Aucune</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">Verbe (V)</label>
+              <select id="ts-d-verbe">
+                <option value="5">5 - Orientée</option>
+                <option value="4">4 - Confuse</option>
+                <option value="3">3 - Inappropriée</option>
+                <option value="2">2 - Incompréhensible</option>
+                <option value="1">1 - Aucune / Intubé</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size: 0.75rem;">Moteur (M)</label>
+              <select id="ts-d-moteur">
+                <option value="6">6 - Obéit</option>
+                <option value="5">5 - Oriente</option>
+                <option value="4">4 - Évite</option>
+                <option value="3">3 - Flexion (Décortication)</option>
+                <option value="2">2 - Extension (Décérébration)</option>
+                <option value="1">1 - Aucune</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="field" style="margin-top: 10px;">
+          <label>Pupilles :</label>
+          <select id="ts-d-pupilles">
+            <option value="Isocores réactives">Isocores réactives</option>
+            <option value="Mydriase unilatérale">Mydriase unilatérale (G / D)</option>
+            <option value="Mydriase bilatérale">Mydriase bilatérale aréactive</option>
+            <option value="Myosis">Myosis</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">E : Environnement / Exposition</div>
+        <div class="field">
+          <label class="checkbox-item"><input type="checkbox" id="ts-e-deshabillage"> Déshabillage total / inspection face postérieure</label>
+          <label class="checkbox-item"><input type="checkbox" id="ts-e-hypothermie"> Lutte contre l'hypothermie (chauffage, couverture survie)</label>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
+      </div>
+    </div>
+    
     <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS) ================= -->
     <div id="page-motif-autre" class="page">
       <div class="card" style="text-align: center; padding: 40px 16px;">
@@ -2841,6 +2945,9 @@
       } else if (motif === 'Antalgie') {
         previousMotifPage = 'antalgie';
         goToPage('antalgie');
+        } else if (motif === 'Traumatisé sévère') {
+        previousMotifPage = 'trauma-severe';
+        goToPage('trauma-severe');
       } else {
         document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
         previousMotifPage = 'motif-autre';
@@ -2911,6 +3018,9 @@
         p0Container.style.display = 'none';
       } else if (target === 'antalgie') {
         indicator.textContent = '3. Antalgie';
+        p0Container.style.display = 'none';
+        } else if (target === 'trauma-severe') {
+        indicator.textContent = '3. Traumatisé Sévère (XABCDE)';
         p0Container.style.display = 'none';
       } else if (target === 'motif-autre') {
         indicator.textContent = '3. Motif spécifique';
