@@ -4099,63 +4099,66 @@ function checkDrGravite() {
     }
     // CLINIQUE TRAUMATISÉ SÉVÈRE (X et A)
     function getTraumaSevereData() {
-      let xLines = [];
-      
-      // X : Saignements extériorisés
+      // ---- BLOC X ----
+      let xParts = [];
       const btnSaignOui = document.getElementById('btn-ts-x-saign-oui');
+      
       if (btnSaignOui && btnSaignOui.classList.contains('active')) {
+        xParts.push("Saignement extériorisé");
         let gestes = [];
         if (document.getElementById('ts-x-garrot').checked) gestes.push('pose de garrot');
         if (document.getElementById('ts-x-compressif').checked) gestes.push('pansement compressif');
         if (document.getElementById('ts-x-celox').checked) gestes.push('Celox');
         
-        let txt = "saignement extériorisé";
-        if (gestes.length > 0) txt += " avec " + gestes.join(' + ');
-        xLines.push(txt);
+        if (gestes.length > 0) {
+          xParts.push("   ↳ Gestes réalisés : " + gestes.join(' + '));
+        }
       } else {
-        xLines.push("pas de saignement extériorisé");
+        xParts.push("Pas de saignement extériorisé");
       }
 
-      // X : Bassin
       const btnBassinOui = document.getElementById('btn-ts-x-bassin-oui');
       if (btnBassinOui && btnBassinOui.classList.contains('active')) {
-        let txt = "suspicion de traumatisme du bassin";
+        xParts.push("- Suspicion de traumatisme du bassin");
         if (document.getElementById('ts-x-pelvis') && document.getElementById('ts-x-pelvis').checked) {
-          txt += " avec pose de ceinture pelvienne";
+          xParts.push("   ↳ Geste réalisé : pose de ceinture pelvienne");
         }
-        xLines.push(txt);
       } else {
-        xLines.push("pas de suspicion de traumatisme du bassin");
+        xParts.push("- Pas de suspicion de traumatisme du bassin");
       }
 
-      // A : Voies aériennes
-      let aLine = "";
+      // ---- BLOC A ----
+      let aParts = [];
       if (tsVoiesAeriennes === 'libre') {
-        aLine = "voie aérienne libre";
+        aParts.push("Voie aérienne libre");
       } else if (tsVoiesAeriennes === 'risque') {
+        aParts.push("Voie aérienne à risque");
         let gestes = [];
         if (document.getElementById('ts-a-risque-collier').checked) gestes.push('pose de collier cervical');
         if (document.getElementById('ts-a-risque-guedel').checked) gestes.push('Guedel');
         if (document.getElementById('ts-a-risque-aspi').checked) gestes.push('aspiration sécrétions / sang');
         
-        aLine = "voie aérienne à risque";
-        if (gestes.length > 0) aLine += " avec " + gestes.join(' + ');
+        if (gestes.length > 0) {
+          aParts.push("   ↳ Gestes réalisés : " + gestes.join(' + '));
+        }
       } else if (tsVoiesAeriennes === 'obstruee') {
+        aParts.push("Voie aérienne obstruée");
         let gestes = [];
         if (document.getElementById('ts-a-obs-liberation').checked) gestes.push('libération des voies aériennes');
         if (document.getElementById('ts-a-obs-collier').checked) gestes.push('pose de collier cervical');
         if (document.getElementById('ts-a-obs-retrait').checked) gestes.push('retrait de corps étranger');
         if (document.getElementById('ts-a-obs-aspi').checked) gestes.push('aspiration sécrétions / sang');
         
-        aLine = "voie aérienne obstruée";
-        if (gestes.length > 0) aLine += " avec " + gestes.join(' + ');
+        if (gestes.length > 0) {
+          aParts.push("   ↳ Gestes réalisés : " + gestes.join(' + '));
+        }
       } else {
-        aLine = "voies aériennes non évaluées";
+        aParts.push("Voies aériennes non évaluées");
       }
 
       return {
-        x: xLines,
-        a: aLine
+        x: xParts.join('\n'),
+        a: aParts.join('\n')
       };
     }
 
@@ -4244,8 +4247,7 @@ function checkDrGravite() {
         } else if (motif === 'Traumatisé sévère') {
         const tsData = getTraumaSevereData();
         evalMotif = 
-`- [X] ${tsData.x[0]}
-- [X] ${tsData.x[1]}
+`- [X] ${tsData.x}
 - [A] ${tsData.a}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
@@ -4594,11 +4596,9 @@ ${bilanBrulureLines.join('\n')}
 - T+30 min : ${t30Str}`;
         } else if (motif === 'Traumatisé sévère') {
         const tsData = getTraumaSevereData();
-        
         specificSection = 
 `3. BILAN TRAUMATISÉ SÉVÈRE (XABCDE)
-- [X] ${tsData.x[0]}
-- [X] ${tsData.x[1]}
+- [X] ${tsData.x}
 - [A] ${tsData.a}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
