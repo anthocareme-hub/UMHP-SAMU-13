@@ -1746,6 +1746,10 @@
             <option value="Myosis">Myosis</option>
           </select>
         </div>
+        <div class="field">
+          <label for="ts-d-glycemie" style="font-weight: 800;">Glycémie (g/L) :</label>
+          <input type="number" step="0.01" inputmode="decimal" id="ts-d-glycemie" placeholder="ex: 1.05" oninput="syncTsDGlycemie()">
+        </div>
       </div>
 
       <div class="card">
@@ -4498,6 +4502,15 @@ function checkDrGravite() {
       if (pupilles) {
         dParts.push(`Pupilles: ${pupilles}`);
       }
+      // NOUVEAU : On affiche la glycémie uniquement si elle a été remplie
+      const glycemie = document.getElementById('ts-d-glycemie') ? document.getElementById('ts-d-glycemie').value.trim() : '';
+      if (glycemie) {
+        dParts.push(`Glycémie: ${glycemie} g/L`);
+      }
+
+      if (dParts.length === 0) {
+        dParts.push("Neuro non évalué");
+      }
 
       if (dParts.length === 0) {
         dParts.push("Neuro non évalué");
@@ -5431,22 +5444,45 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
     }
 
     function setTsAvpu(btn) {
-      // 1. Gérer l'affichage visuel des boutons AVPU dans le bloc D
+      // 1. Met à jour le bouton cliqué dans le bloc Trauma (D)
       const container = document.getElementById('ts-d-avpu-group');
       const buttons = container.querySelectorAll('button');
       buttons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       
-      // 2. Enregistrer la valeur cachée
+      // 2. Enregistre la valeur pour le résumé Trauma
       const val = btn.dataset.val;
       document.getElementById('ts-d-avpu-val').value = val;
       
-      // 3. Synchroniser avec les boutons AVPU de la page Constantes (si on les retrouve)
-      // Si tes boutons AVPU Constantes ont des ID type "btn-c-avpu-A", tu peux décommenter la ligne suivante :
-      // if (document.getElementById('btn-c-avpu-' + val)) document.getElementById('btn-c-avpu-' + val).click();
+      // 3. Synchronisation visuelle et technique avec la page Constantes
+      const pageConstantes = document.getElementById('page-constantes');
+      if (pageConstantes) {
+        // On cherche les boutons A, V, P, U dans la page Constantes
+        const btnConstantes = pageConstantes.querySelectorAll('button.btn-toggle-action');
+        btnConstantes.forEach(b => {
+          const txt = b.textContent.trim();
+          if (txt === 'A' || txt === 'V' || txt === 'P' || txt === 'U') {
+            if (txt === val) {
+              b.classList.add('active'); // Colore le bouton en bleu/vert
+              
+              // Remplit le champ caché des constantes selon l'ID que tu utilises d'habitude
+              if (document.getElementById('c-avpu')) document.getElementById('c-avpu').value = val;
+              if (document.getElementById('c-avpu-val')) document.getElementById('c-avpu-val').value = val;
+            } else {
+              b.classList.remove('active'); // Décoche les autres
+            }
+          }
+        });
+      }
+    }
+    function syncTsDGlycemie() {
+      // Lit la valeur tapée dans le bloc D
+      const glycemieVal = document.getElementById('ts-d-glycemie').value.trim();
       
-      // Si tu as un champ caché "c-avpu" dans les Constantes, on le remplit direct :
-      if (document.getElementById('c-avpu')) document.getElementById('c-avpu').value = val;
+      // La copie dans le champ "Glycémie" de la page Constantes générale (si elle existe)
+      if (document.getElementById('c-glycemie')) {
+        document.getElementById('c-glycemie').value = glycemieVal;
+      }
     }
   </script>
 </body>
