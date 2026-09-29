@@ -5238,6 +5238,9 @@ ${bilanBrulureLines.join('\n')}
 - [C] ${tsData.c}
 - [D] ${tsData.d}
 - [E] ${tsData.e}`;
+
+        // Ajout du suivi (Réévaluation et Constantes T15/T30)
+        evalMotif += getSuiviTrauma();
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -5798,6 +5801,51 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       parent.querySelectorAll('button').forEach(b => b.classList.remove('active'));
       // Ajoute la couleur au bouton cliqué
       btn.classList.add('active');
+    }
+    function getSuiviTrauma() {
+      let suivi = "\n\n--- RÉÉVALUATION ET SURVEILLANCE ---\n";
+      let hasData = false;
+
+      // 1. Lecture de la Réévaluation XABCDE
+      const lettres = ['x', 'a', 'b', 'c', 'd'];
+      lettres.forEach(l => {
+        const input = document.getElementById(`reeval-${l}-notes`);
+        if (input) {
+          // On cherche le bouton actif juste au-dessus
+          const btnActive = input.parentElement.querySelector('button.active');
+          const etat = btnActive ? btnActive.textContent : '';
+          const note = input.value.trim();
+          
+          if (etat || note) {
+            suivi += `[${l.toUpperCase()}] ${etat} ${note ? '- ' + note : ''}\n`;
+            hasData = true;
+          }
+        }
+      });
+
+      // 2. Lecture des Constantes T+15
+      const t15Pa = document.getElementById('surv-t15-pa') ? document.getElementById('surv-t15-pa').value.trim() : '';
+      const t15Fc = document.getElementById('surv-t15-fc') ? document.getElementById('surv-t15-fc').value.trim() : '';
+      const t15Spo2 = document.getElementById('surv-t15-spo2') ? document.getElementById('surv-t15-spo2').value.trim() : '';
+      const t15Gcs = document.getElementById('surv-t15-gcs') ? document.getElementById('surv-t15-gcs').value.trim() : '';
+      
+      if (t15Pa || t15Fc || t15Spo2 || t15Gcs) {
+        suivi += `\nBilan T+15 : PA ${t15Pa || '?'} | FC ${t15Fc || '?'} | SpO2 ${t15Spo2 ? t15Spo2+'%' : '?'} | GCS ${t15Gcs || '?'}\n`;
+        hasData = true;
+      }
+
+      // 3. Lecture des Constantes T+30
+      const t30Pa = document.getElementById('surv-t30-pa') ? document.getElementById('surv-t30-pa').value.trim() : '';
+      const t30Fc = document.getElementById('surv-t30-fc') ? document.getElementById('surv-t30-fc').value.trim() : '';
+      const t30Spo2 = document.getElementById('surv-t30-spo2') ? document.getElementById('surv-t30-spo2').value.trim() : '';
+      const t30Gcs = document.getElementById('surv-t30-gcs') ? document.getElementById('surv-t30-gcs').value.trim() : '';
+      
+      if (t30Pa || t30Fc || t30Spo2 || t30Gcs) {
+        suivi += `Bilan T+30 : PA ${t30Pa || '?'} | FC ${t30Fc || '?'} | SpO2 ${t30Spo2 ? t30Spo2+'%' : '?'} | GCS ${t30Gcs || '?'}\n`;
+        hasData = true;
+      }
+
+      return hasData ? suivi : '';
     }
   </script>
 </body>
