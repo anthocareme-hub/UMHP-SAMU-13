@@ -1777,6 +1777,62 @@
         <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
       </div>
+      <!-- ---- BLOC E : EXPOSITION / ENVIRONNEMENT ---- -->
+      <div class="card">
+        <div class="section-label">E : Exposition / Environnement</div>
+
+        <!-- Immobilisation -->
+        <div class="field" style="display: flex; flex-direction: column; gap: 10px;">
+          <button type="button" class="btn-toggle-action" id="btn-ts-e-attelles" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Attelles posées' : 'Attelles';">
+            Attelles
+          </button>
+          <button type="button" class="btn-toggle-action" id="btn-ts-e-mid" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Conditionné dans le MID' : 'MID';">
+            MID
+          </button>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Autres lésions -->
+        <div class="field">
+          <label for="ts-e-lesions" style="font-weight: 800;">Autres lésions :</label>
+          <textarea id="ts-e-lesions" rows="2" placeholder="Ex: Plaie cuir chevelu, déformation poignet... (Laissez vide si rien à signaler)"></textarea>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Fracture ouverte / Plaie délabrante -->
+        <div class="field">
+          <label style="font-weight: 800; margin-bottom: 8px;">Fracture ouverte / Plaie délabrante ?</label>
+          <div class="row-2" style="margin-bottom: 10px;">
+            <button type="button" class="btn-toggle-action" id="btn-ts-e-frac-oui" onclick="setTsEFracture('oui')">OUI</button>
+            <button type="button" class="btn-toggle-action" id="btn-ts-e-frac-non" onclick="setTsEFracture('non')">NON</button>
+          </div>
+          <input type="hidden" id="ts-e-fracture-val">
+          
+          <!-- Bouton Augmentin (caché par défaut) -->
+          <div id="bloc-ts-e-augmentin" style="display: none;">
+            <button type="button" class="btn-toggle-action" id="btn-ts-e-augmentin" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Augmentin 2g / 20 min passé' : 'Antibioprophylaxie : Augmentin 2g / 20 min';">
+              Antibioprophylaxie : Augmentin 2g / 20 min
+            </button>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Antalgie -->
+        <div class="field">
+          <label for="ts-e-en" style="font-weight: 800;">Antalgie : Douleur (EN) :</label>
+          <input type="number" id="ts-e-en" inputmode="numeric" placeholder="0 à 10" oninput="syncTsEEn()">
+        </div>
+        <!-- Boutons de médicaments antalgiques classiques (tu pourras modifier les noms selon ta dotation) -->
+        <div class="field" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+          <button type="button" class="btn-toggle-action" id="btn-ts-e-para" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Paracétamol 1g passé' : 'Paracétamol 1g';">Paracétamol 1g</button>
+          <button type="button" class="btn-toggle-action" id="btn-ts-e-morphine" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Morphine (titration) débutée' : 'Morphine (titration)';">Morphine (titration)</button>
+          <button type="button" class="btn-toggle-action" id="btn-ts-e-ketamine" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Kétamine passée' : 'Kétamine (faible dose)';">Kétamine (faible dose)</button>
+        </div>
+
+      </div>
     </div>
     
     <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS) ================= -->
@@ -1907,7 +1963,142 @@
         <button type="button" class="btn-nav" id="btn-suite-regu" onclick="routeApresRegu()">Thérapeutique ➔</button>
       </div>
     </div>
+<!-- ========================================== -->
+    <!-- PAGE RÉÉVALUATION XABCDE                   -->
+    <!-- ========================================== -->
+    <div id="page-reeval" class="page" style="display: none;">
+      <div class="card">
+        <div class="section-label">Réévaluation Clinique (XABCDE)</div>
+        <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Évaluez l'évolution sous traitement pendant le transport.</p>
+        
+        <!-- Lettres générées dynamiquement -->
+        <div id="reeval-container" style="display: flex; flex-direction: column; gap: 15px;">
+          
+          <!-- X -->
+          <div class="field">
+            <label style="font-weight: 800;">X : Hémorragies</label>
+            <div class="row-2" style="margin-bottom: 5px;">
+              <button type="button" class="btn-toggle-action" onclick="toggleReeval(this)">Stable / Contrôlé</button>
+              <button type="button" class="btn-toggle-action orange" onclick="toggleReeval(this)">Aggravation</button>
+            </div>
+            <input type="text" id="reeval-x-notes" placeholder="Notes (ex: saignement repris...)">
+          </div>
+          
+          <!-- A -->
+          <div class="field">
+            <label style="font-weight: 800;">A : Voies Aériennes</label>
+            <div class="row-2" style="margin-bottom: 5px;">
+              <button type="button" class="btn-toggle-action" onclick="toggleReeval(this)">Libres / Stables</button>
+              <button type="button" class="btn-toggle-action orange" onclick="toggleReeval(this)">Aggravation</button>
+            </div>
+            <input type="text" id="reeval-a-notes" placeholder="Notes...">
+          </div>
 
+          <!-- B -->
+          <div class="field">
+            <label style="font-weight: 800;">B : Respiration</label>
+            <div class="row-2" style="margin-bottom: 5px;">
+              <button type="button" class="btn-toggle-action" onclick="toggleReeval(this)">Amélioration / Stable</button>
+              <button type="button" class="btn-toggle-action orange" onclick="toggleReeval(this)">Aggravation (Détresse)</button>
+            </div>
+            <input type="text" id="reeval-b-notes" placeholder="Notes...">
+          </div>
+
+          <!-- C -->
+          <div class="field">
+            <label style="font-weight: 800;">C : Hémodynamique</label>
+            <div class="row-2" style="margin-bottom: 5px;">
+              <button type="button" class="btn-toggle-action" onclick="toggleReeval(this)">Amélioration / Stable</button>
+              <button type="button" class="btn-toggle-action orange" onclick="toggleReeval(this)">Aggravation (Choc)</button>
+            </div>
+            <input type="text" id="reeval-c-notes" placeholder="Notes...">
+          </div>
+
+          <!-- D -->
+          <div class="field">
+            <label style="font-weight: 800;">D : Neurologique</label>
+            <div class="row-2" style="margin-bottom: 5px;">
+              <button type="button" class="btn-toggle-action" onclick="toggleReeval(this)">Stable / Réveil</button>
+              <button type="button" class="btn-toggle-action orange" onclick="toggleReeval(this)">Aggravation (Baisse GCS)</button>
+            </div>
+            <input type="text" id="reeval-d-notes" placeholder="Notes...">
+          </div>
+
+        </div>
+        <!-- Boutons de navigation Réévaluation -->
+        <div class="nav-actions" style="margin-top: 20px;">
+          <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Appel 15</button>
+          <button type="button" class="btn-nav" onclick="goToPage('surveillance')">Surveillance ➡</button>
+        </div>
+      </div> <!-- Fermeture de la card -->
+    </div> <!-- Fermeture de la page-reeval -->
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- PAGE SURVEILLANCE CONSTANTES T15 / T30     -->
+    <!-- ========================================== -->
+    <div id="page-surveillance" class="page" style="display: none;">
+      <div class="card">
+        <div class="section-label">Surveillance Constantes</div>
+        <p style="font-size: 0.85rem; color: #666; margin-bottom: 10px;">T0 correspond aux constantes initiales saisies précédemment.</p>
+        
+        <!-- T+15 -->
+        <h3 style="color: var(--primary); margin-top: 15px; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Bilan T+15 min</h3>
+        <div class="row-2 field" style="margin-top: 10px;">
+          <div>
+            <label>PA (ex: 120/80)</label>
+            <input type="text" inputmode="numeric" id="surv-t15-pa" placeholder="PA T+15">
+          </div>
+          <div>
+            <label>FC (bpm)</label>
+            <input type="number" inputmode="numeric" id="surv-t15-fc" placeholder="FC T+15">
+          </div>
+        </div>
+        <div class="row-2 field">
+          <div>
+            <label>SpO2 (%)</label>
+            <input type="number" inputmode="numeric" id="surv-t15-spo2" placeholder="SpO2 T+15">
+          </div>
+          <div>
+            <label>Glasgow</label>
+            <input type="number" inputmode="numeric" id="surv-t15-gcs" placeholder="GCS T+15">
+          </div>
+        </div>
+        
+        <!-- T+30 -->
+        <h3 style="color: var(--primary); margin-top: 20px; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Bilan T+30 min</h3>
+        <div class="row-2 field" style="margin-top: 10px;">
+          <div>
+            <label>PA</label>
+            <input type="text" inputmode="numeric" id="surv-t30-pa" placeholder="PA T+30">
+          </div>
+          <div>
+            <label>FC</label>
+            <input type="number" inputmode="numeric" id="surv-t30-fc" placeholder="FC T+30">
+          </div>
+        </div>
+        <div class="row-2 field">
+          <div>
+            <label>SpO2</label>
+            <input type="number" inputmode="numeric" id="surv-t30-spo2" placeholder="SpO2 T+30">
+          </div>
+          <div>
+            <label>Glasgow</label>
+            <input type="number" inputmode="numeric" id="surv-t30-gcs" placeholder="GCS T+30">
+          </div>
+        </div>
+        <!-- Boutons de navigation Surveillance -->
+        <div class="nav-actions" style="margin-top: 20px;">
+          <button type="button" class="btn-nav secondary" onclick="goToPage('reeval')">⬅ Réévaluation</button>
+          <button type="button" class="btn-nav" onclick="goToPage('resume')">Bilan Final ➡</button>
+        </div>
+      </div> <!-- Fermeture de la card -->
+    </div> <!-- Fermeture de la page-surveillance -->
+
+      </div>
+    </div>
+    
     <!-- ================= PAGE : THÉRAPEUTIQUE (ANTALGIE) ================= -->
     <div id="page-therapeutique-antalgie" class="page">
       <div class="card">
@@ -3207,6 +3398,8 @@
       } else if (motif === 'Antalgie') {
         setupAntalgieTherapeutiqueUI();
         goToPage('therapeutique-antalgie');
+        } else if (motif === 'Traumatisé sévère') {
+      goToPage('reeval');
       } else {
         goToPage('resume');
       }
@@ -3277,6 +3470,12 @@
         p0Container.style.display = 'none';
         const motif = document.getElementById('motif-select').value;
         const btnSuite = document.getElementById('btn-suite-regu');
+        } else if (target === 'reeval') {
+        indicator.textContent = 'Réévaluation XABCDE';
+        p0Container.style.display = 'none';
+      } else if (target === 'surveillance') {
+        indicator.textContent = 'Surveillance T15/T30';
+        p0Container.style.display = 'none';
 
         // Forcer "PSIS Antalgie" par défaut
         if (motif === 'Antalgie') {
@@ -4539,13 +4738,55 @@ function checkDrGravite() {
       if (dParts.length === 0) {
         dParts.push("Neuro non évalué");
       }
+      // ---- BLOC E ----
+      let eParts = [];
+      
+      // Immobilisation
+      const btnAttelles = document.getElementById('btn-ts-e-attelles');
+      if (btnAttelles && btnAttelles.classList.contains('active')) eParts.push("Immobilisation : Attelles posées");
+      
+      const btnMid = document.getElementById('btn-ts-e-mid');
+      if (btnMid && btnMid.classList.contains('active')) eParts.push("Immobilisation : Conditionné dans le MID");
+      
+      // Lésions
+      const lesions = document.getElementById('ts-e-lesions') ? document.getElementById('ts-e-lesions').value.trim() : '';
+      if (lesions) {
+        eParts.push(`Lésions : ${lesions}`);
+      } else {
+        eParts.push("Pas d'autres lésions détectées");
+      }
+      
+      // Fracture & Augmentin
+      const fracVal = document.getElementById('ts-e-fracture-val') ? document.getElementById('ts-e-fracture-val').value : '';
+      if (fracVal === 'oui') {
+        let fracStr = "Fracture ouverte / Plaie délabrante présente";
+        const btnAugmentin = document.getElementById('btn-ts-e-augmentin');
+        if (btnAugmentin && btnAugmentin.classList.contains('active')) {
+          fracStr += " -> Augmentin 2g administré";
+        }
+        eParts.push(fracStr);
+      }
+      
+      // Antalgie
+      const enVal = document.getElementById('ts-e-en') ? document.getElementById('ts-e-en').value : '';
+      let antalgieStr = [];
+      if (enVal) antalgieStr.push(`EN initiale = ${enVal}`);
+      
+      if (document.getElementById('btn-ts-e-para') && document.getElementById('btn-ts-e-para').classList.contains('active')) antalgieStr.push("Paracétamol");
+      if (document.getElementById('btn-ts-e-morphine') && document.getElementById('btn-ts-e-morphine').classList.contains('active')) antalgieStr.push("Morphine");
+      if (document.getElementById('btn-ts-e-ketamine') && document.getElementById('btn-ts-e-ketamine').classList.contains('active')) antalgieStr.push("Kétamine");
+      
+      if (antalgieStr.length > 0) {
+        eParts.push(`Antalgie : ${antalgieStr.join(' + ')}`);
+      }
 
       return {
         x: xParts.join('\n'),
         a: aParts.join('\n'),
         b: bParts.join('\n'),
         c: cParts.join('\n'),
-        d: dParts.join('\n')
+        d: dParts.join('\n'),
+        e: eParts.join('\n')
       };
     }
 
@@ -4638,7 +4879,8 @@ function checkDrGravite() {
 - [A] ${tsData.a}
 - [B] ${tsData.b}
 - [C] ${tsData.c}
-- [D] ${tsData.d}`;
+- [D] ${tsData.d}
+- [E] ${tsData.e}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -4994,7 +5236,8 @@ ${bilanBrulureLines.join('\n')}
 - [A] ${tsData.a}
 - [B] ${tsData.b}
 - [C] ${tsData.c}
-- [D] ${tsData.d}`;
+- [D] ${tsData.d}
+- [E] ${tsData.e}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -5515,6 +5758,46 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       if (document.getElementById('c-temp')) {
         document.getElementById('c-temp').value = tempVal;
       }
+    }
+    function setTsEFracture(val) {
+      const btnOui = document.getElementById('btn-ts-e-frac-oui');
+      const btnNon = document.getElementById('btn-ts-e-frac-non');
+      const blocAugmentin = document.getElementById('bloc-ts-e-augmentin');
+      const inputVal = document.getElementById('ts-e-fracture-val');
+      
+      // On réinitialise l'affichage
+      btnOui.classList.remove('active');
+      btnNon.classList.remove('active');
+      
+      if (val === 'oui') {
+        btnOui.classList.add('active');
+        blocAugmentin.style.display = 'block'; // Fait apparaître l'Augmentin
+        inputVal.value = 'oui';
+      } else {
+        btnNon.classList.add('active');
+        blocAugmentin.style.display = 'none'; // Cache l'Augmentin
+        inputVal.value = 'non';
+        
+        // On décoche l'Augmentin si on avait cliqué OUI puis qu'on change d'avis pour NON
+        const btnAugmentin = document.getElementById('btn-ts-e-augmentin');
+        if(btnAugmentin) {
+           btnAugmentin.classList.remove('active');
+           btnAugmentin.textContent = 'Antibioprophylaxie : Augmentin 2g / 20 min';
+        }
+      }
+    }
+
+    function syncTsEEn() {
+      // Synchronise l'EN vers la page Constantes globale (si elle a l'ID c-en)
+      const enVal = document.getElementById('ts-e-en').value;
+      if(document.getElementById('c-en')) document.getElementById('c-en').value = enVal;
+    }
+    function toggleReeval(btn) {
+      const parent = btn.parentElement;
+      // Enlève la couleur des autres boutons de la même ligne
+      parent.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      // Ajoute la couleur au bouton cliqué
+      btn.classList.add('active');
     }
   </script>
 </body>
