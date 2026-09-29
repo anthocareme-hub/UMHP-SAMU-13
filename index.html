@@ -1893,10 +1893,16 @@
           </div>
         </div>
         <!-- Hémocue conditionnel si Trauma Sévère -->
-<div class="field" id="field-hb-container" style="display: none;">
-  <label for="c-hb">Hémocue (Hb en g/L)</label>
-  <input type="number" step="0.1" inputmode="decimal" id="c-hb" placeholder="ex: 12.5">
-</div>
+        <div class="field" id="field-hb-container" style="display: none;">
+          <label for="c-hb">Hémocue (Hb en g/L)</label>
+          <input type="number" step="0.1" inputmode="decimal" id="c-hb" placeholder="ex: 12.5">
+        </div>
+
+        <!-- Glasgow conditionnel si Trauma Sévère -->
+        <div class="field" id="field-gcs-container" style="display: none;">
+          <label for="c-glasgow">Score de Glasgow</label>
+          <input type="number" inputmode="numeric" id="c-glasgow" placeholder="ex: 15">
+        </div>
 
         <!-- HbCO conditionnel si brûlure + fumées -->
         <div class="field" id="field-hbco-container" style="display: none;">
@@ -3446,13 +3452,21 @@
       } else if (target === 'constantes') {
         indicator.textContent = 'Constantes';
         p0Container.style.display = 'none';
+        
         const hbcoField = document.getElementById('field-hbco-container');
         if (hbcoField) {
           hbcoField.style.display = (document.getElementById('motif-select').value === 'Brûlure' && fumeeInhalation) ? 'block' : 'none';
         }
+        
         const hbField = document.getElementById('field-hb-container');
         if (hbField) {
           hbField.style.display = (document.getElementById('motif-select').value === 'Traumatisé sévère') ? 'block' : 'none';
+        }
+
+        // NOUVEAU : Affichage de la case Glasgow
+        const gcsField = document.getElementById('field-gcs-container');
+        if (gcsField) {
+          gcsField.style.display = (document.getElementById('motif-select').value === 'Traumatisé sévère') ? 'block' : 'none';
         }
       } else if (target === 'regu') {
         indicator.textContent = 'Appel au 15';
@@ -4294,8 +4308,7 @@
       document.getElementById(`res-${curApgarTab}`).textContent = `${sum}/10`;
     }
 
-    // SCORE AVPU
-    function selectAvpu(btn, score) {
+   function selectAvpu(btn, score) {
       if (btn.classList.contains('active')) {
         btn.classList.remove('active');
         selectedAvpu = '';
@@ -4304,8 +4317,21 @@
         btn.classList.add('active');
         selectedAvpu = score;
       }
+      
+      // Synchronisation vers le protocole Trauma D (Bidirectionnel)
+      const tsDAvpuGroup = document.getElementById('ts-d-avpu-group');
+      if (tsDAvpuGroup) {
+         const btnTrauma = tsDAvpuGroup.querySelectorAll('button');
+         btnTrauma.forEach(b => {
+           if (b.dataset.val === selectedAvpu) {
+             b.classList.add('active');
+             document.getElementById('ts-d-avpu-val').value = selectedAvpu;
+           } else {
+             b.classList.remove('active');
+           }
+         });
+      }
     }
-
     // TAGS
     function addAtcd(selectElem) {
       const val = selectElem.value;
@@ -5711,27 +5737,21 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       buttons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       
-      // 2. Enregistre la valeur pour le résumé Trauma
+      // 2. Enregistre la valeur
       const val = btn.dataset.val;
       document.getElementById('ts-d-avpu-val').value = val;
+      selectedAvpu = val; // Met à jour la variable globale !
       
-      // 3. Synchronisation visuelle et technique avec la page Constantes
+      // 3. Synchronisation visuelle avec la page Constantes
       const pageConstantes = document.getElementById('page-constantes');
       if (pageConstantes) {
-        // On cherche les boutons A, V, P, U dans la page Constantes
-        const btnConstantes = pageConstantes.querySelectorAll('button.btn-toggle-action');
+        // CORRECTION : on cherche les ".avpu-btn" et non les boutons classiques
+        const btnConstantes = pageConstantes.querySelectorAll('.avpu-btn');
         btnConstantes.forEach(b => {
-          const txt = b.textContent.trim();
-          if (txt === 'A' || txt === 'V' || txt === 'P' || txt === 'U') {
-            if (txt === val) {
-              b.classList.add('active'); // Colore le bouton en bleu/vert
-              
-              // Remplit le champ caché des constantes selon l'ID que tu utilises d'habitude
-              if (document.getElementById('c-avpu')) document.getElementById('c-avpu').value = val;
-              if (document.getElementById('c-avpu-val')) document.getElementById('c-avpu-val').value = val;
-            } else {
-              b.classList.remove('active'); // Décoche les autres
-            }
+          if (b.textContent.trim() === val) {
+            b.classList.add('active');
+          } else {
+            b.classList.remove('active');
           }
         });
       }
