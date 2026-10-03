@@ -4968,12 +4968,26 @@ function checkDrGravite() {
       };
     }
 
+    function calculerAge(jour, moisStr, annee) {
+      const moisIndex = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'].indexOf(moisStr);
+      const birthDate = new Date(annee, moisIndex, jour);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+      if (age === 0) {
+        let mois = m < 0 ? 12 + m : m;
+        return mois === 0 ? "< 1 mois" : mois + " mois";
+      }
+      return age + " ans";
+    }
+
     // TRANSMISSION SAED
     function generateSAED() {
       const isP0 = document.getElementById('toggle-p0').checked;
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
       const sexe = document.getElementById('patient-sexe').value || 'Non renseigné';
-      const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
+      const ageStr = calculerAge(document.getElementById('ddn-jour').value, document.getElementById('ddn-mois').value, document.getElementById('ddn-annee').value);
       const poids = document.getElementById('patient-poids').value;
       const motif = document.getElementById('motif-select').value;
 
@@ -5147,9 +5161,8 @@ function checkDrGravite() {
 `TRANSMISSION SMUR INFIRMIER (SAED / SAU)
 ----------------------------------------
 [S] SITUATION
-Patient : ${nom} | Sexe : ${sexe} | DDN : ${ddn} | Poids : ${poids} kg
+Patient : ${nom} \vert{} Sexe :${sexe} | Age : ${ageStr} \vert{} Poids :${poids} kg
 ${isP0 ? "Degré d'urgence : P0 (Urgence vitale)\n" : ""}Motif : ${motif}
-
 [A] ANTECEDENTS & TERRAIN
 ${anamnaseContent || 'Aucun renseigné'}
 [E] EVALUATION CLINIQUE & CONSTANTES
@@ -5175,7 +5188,7 @@ ${demandeText}
     function generateResumeFinal() {
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
       const sexe = document.getElementById('patient-sexe').value || 'Non renseigné';
-      const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
+      const ageStr = calculerAge(document.getElementById('ddn-jour').value, document.getElementById('ddn-mois').value, document.getElementById('ddn-annee').value);
       const poids = document.getElementById('patient-poids').value;
       const isP0 = document.getElementById('toggle-p0').checked;
       const motif = document.getElementById('motif-select').value;
@@ -5500,7 +5513,7 @@ RAPPORT D'INTERVENTION SMUR / PSIS - SAMU 13
 ==============================================
 
 1. PATIENT & SITUATION
-- Identité : ${nom} | Sexe : ${sexe} | DDN : ${ddn} | Poids : ${poids} kg
+- Identité : ${nom} | Sexe : ${sexe} | Age : ${ageStr} | Poids : ${poids} kg
 ${isP0 ? "- Statut : P0 (Urgence vitale)\n" : ""}- Motif : ${motif}
 ${getTagsText('atcd-tags') ? '- ATCD : ' + getTagsText('atcd-tags') : ''}
 ${getTagsText('ttt-tags') ? '- Traitements : ' + getTagsText('ttt-tags') : ''}
