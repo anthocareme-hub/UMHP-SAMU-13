@@ -1849,7 +1849,41 @@
       </div>
     </div>
     </div>
-    
+    <!-- ================= PAGE SPÉCIFIQUE : ACR ADULTE ================= -->
+    <div id="page-acr-adulte" class="page">
+      
+      <!-- 1. CHRONO -->
+      <div class="card" id="acr-chrono-container" style="background: #0f172a; text-align: center; border-radius: 12px; transition: 0.3s;">
+        <div style="color: #94a3b8; font-weight: 800; font-size: 1rem; margin-bottom: 4px; padding-top: 10px;">CHRONO ACR</div>
+        <div id="acr-chrono-display" style="color: #ffffff; font-family: monospace; font-size: 3.5rem; font-weight: 900; line-height: 1; padding-bottom: 16px;">
+          00:00
+        </div>
+      </div>
+
+      <!-- 2. VVP / DIO -->
+      <div class="card">
+        <button type="button" class="btn-toggle-action" id="btn-acr-voie" style="font-size: 1.2rem; padding: 18px; margin-bottom: 0;" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Voie d\\'abord posée' : '💉 Pose de VVP / DIO';">
+          💉 Pose de VVP / DIO
+        </button>
+      </div>
+
+      <!-- 3. RYTHME INITIAL -->
+      <div class="card" id="acr-rythme-card">
+        <div class="section-label" style="text-align: center; color: var(--danger); font-size: 1.2rem;">Rythme initial chocable ?</div>
+        <div class="row-2 field" style="margin-top: 14px;">
+          <button type="button" class="btn-toggle-action" style="border-color: var(--danger); color: var(--danger);" onclick="selectAcrRythme('oui')">OUI (FV/TV)</button>
+          <button type="button" class="btn-toggle-action" style="border-color: var(--primary); color: var(--primary);" onclick="selectAcrRythme('non')">NON (Asystolie/AESP)</button>
+        </div>
+      </div>
+
+      <!-- 4. TIMELINE DYNAMIQUE -->
+      <div id="acr-timeline"></div>
+
+      <div class="nav-actions" style="margin-top: 24px;">
+        <button type="button" class="btn-nav secondary" onclick="resetAcr(); goToPage('motif')">⬅ Quitter</button>
+        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+      </div>
+    </div>
     <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS) ================= -->
     <div id="page-motif-autre" class="page">
       <div class="card" style="text-align: center; padding: 40px 16px;">
@@ -3485,6 +3519,10 @@
         } else if (motif === 'Traumatisé sévère') {
         previousMotifPage = 'trauma-severe';
         goToPage('trauma-severe');
+      } else if (motif === 'ACR adulte') {
+        previousMotifPage = 'acr-adulte';
+        resetAcr();
+        goToPage('acr-adulte');
       } else {
         document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
         previousMotifPage = 'motif-autre';
@@ -3575,6 +3613,8 @@
         indicator.textContent = 'Protocole : Antalgie';
       } else if (target === 'trauma-severe') {
         indicator.textContent = 'Protocole : Traumatisé Sévère';
+      } else if (target === 'acr-adulte') {
+        indicator.textContent = 'Protocole : ACR Adulte';
       } else if (target === 'motif-autre') {
         indicator.textContent = 'Motif spécifique';
       } else if (target === 'constantes') {
@@ -3750,6 +3790,8 @@
           btnBack.onclick = () => goToPage('suivi-brulure');
         } else if (motif === 'Antalgie') {
           btnBack.onclick = () => goToPage('suivi-antalgie');
+        } else if (motif === 'ACR adulte') {
+          btnBack.onclick = () => goToPage('acr-adulte');
         } else {
           btnBack.onclick = () => goToPage('regu');
         }
@@ -5114,6 +5156,13 @@ function checkDrGravite() {
           gestesStr,
           antPrisText
         ].filter(Boolean).join('\n');
+      } else if (motif === 'ACR adulte') {
+        const acr = getAcrAdulteData();
+        evalMotif = 
+`- Rythme initial : ${acr.rythme}
+- Pose de VVP/DIO : ${acr.vvp}
+- Retour à une Activité Cardiaque Spontanée (RACS) : ${acr.racs}
+- Détail des actions : ${acr.actions}`;
       } else {
         evalMotif = `- Bilan clinique spécifique : ${motif}`;
       }
@@ -5448,6 +5497,17 @@ ${bilanBrulureLines.join('\n')}
 
         // Ajout du suivi (Réévaluation et Constantes T15/T30)
         evalMotif += getSuiviTrauma();
+        } else if (motif === 'ACR adulte') {
+        const acr = getAcrAdulteData();
+        specificSection = 
+`3. BILAN ET PRISE EN CHARGE ACR
+- Rythme initial : ${acr.rythme}
+- Pose de voie d'abord (VVP/DIO) : ${acr.vvp}
+- Cycles réalisés : ${cycleCount}
+- RACS (Retour d'Activité Cardiaque Spontanée) : ${acr.racs}
+
+4. CHRONOLOGIE DES ACTIONS RÉALISÉES
+${acr.actions.split(' | ').map(a => '- ' + a).join('\n')}`;
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
@@ -5672,7 +5732,200 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
       localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
       renderUmhpList();
     }
-    
+    // --- MOTEUR ACR ADULTE ---
+    let acrTimerInterval = null;
+    let acrSeconds = 0;
+    let acrRythmeInitial = null;
+    let adreCount = 0;
+    let isRacs = false;
+    let cycleCount = 0; 
+
+    function selectAcrRythme(choix) {
+      acrRythmeInitial = choix;
+      const card = document.getElementById('acr-rythme-card');
+      card.innerHTML = `<div class="alert-box ${choix === 'oui' ? 'alert-red' : 'alert-green'}" style="margin: 0;">Rythme initial chocable : ${choix.toUpperCase()}</div>`;
+      
+      startAcrChrono();
+
+      if (choix === 'non') {
+        ajouterInjectionAdre();
+      } else if (choix === 'oui') {
+        ajouterMessageTimeline("⚡ CHOC 1 délivré. Poursuivre MCE. Adrénaline prévue au 3ème choc.", "#fee2e2", "#991b1b");
+      }
+    }
+
+    function startAcrChrono() {
+      if (acrTimerInterval) clearInterval(acrTimerInterval);
+      const display = document.getElementById('acr-chrono-display');
+      const container = document.getElementById('acr-chrono-container');
+      
+      container.style.background = 'var(--danger)'; 
+      
+      acrTimerInterval = setInterval(() => {
+        if(isRacs) return; 
+        
+        acrSeconds++;
+        const m = Math.floor(acrSeconds / 60).toString().padStart(2, '0');
+        const s = (acrSeconds % 60).toString().padStart(2, '0');
+        display.textContent = `${m}:${s}`;
+
+        // Alerte RACS TOUTES LES 2 MINUTES (120 secondes)
+        if (acrSeconds > 0 && acrSeconds % 120 === 0) {
+          declencherAlerteRacs(m);
+        }
+      }, 1000);
+    }
+
+    function playBeep() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        gainNode.gain.setValueAtTime(1, ctx.currentTime);
+        gainNode.gain.setValueAtTime(0, ctx.currentTime + 0.2);
+        gainNode.gain.setValueAtTime(1, ctx.currentTime + 0.3);
+        gainNode.gain.setValueAtTime(0, ctx.currentTime + 0.5);
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.6);
+      } catch (e) { console.warn("Audio non supporté"); }
+    }
+
+    function declencherAlerteRacs(minuteActuelle) {
+      playBeep();
+      const timeline = document.getElementById('acr-timeline');
+      const idRacs = Date.now();
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.id = `racs-bloc-${idRacs}`;
+      div.style.border = '2px solid var(--samu-yellow)';
+      div.style.background = 'var(--warning-bg)';
+      div.innerHTML = `
+        <div class="section-label" style="text-align: center; color: var(--warning-text);">⏱️ ${minuteActuelle} MIN : Analyse du rythme / Signes de RACS ?</div>
+        <div class="row-2 field" style="margin-top: 10px; margin-bottom: 0;">
+          <button type="button" class="btn-toggle-action" style="border-color: var(--success); color: var(--success); background: #ffffff;" onclick="repondreRacs(${idRacs}, 'oui')">OUI (RACS)</button>
+          <button type="button" class="btn-toggle-action" style="border-color: var(--danger); color: var(--danger); background: #ffffff;" onclick="repondreRacs(${idRacs}, 'non')">NON (ACR)</button>
+        </div>
+      `;
+      timeline.prepend(div);
+    }
+
+    function repondreRacs(idBloc, reponse) {
+      const bloc = document.getElementById(`racs-bloc-${idBloc}`);
+      
+      if (reponse === 'oui') {
+        isRacs = true;
+        clearInterval(acrTimerInterval); 
+        document.getElementById('acr-chrono-container').style.background = 'var(--success)';
+        bloc.innerHTML = `<div class="alert-box alert-green" style="margin:0;">✓ RACS CONSTATÉ</div>`;
+        ajouterMessageTimeline("➡️ Mettre en PLS<br>➡ Pose de Guedel<br>➡️ Prendre les constantes complètes", "var(--success-bg)", "var(--success)");
+      } else {
+        cycleCount++; 
+        let messageSuite = acrRythmeInitial === 'oui' ? `⚡ CHOC ${cycleCount + 1} délivré. Reprise MCE.` : `✕ Pas de RACS. Reprise MCE.`;
+        bloc.innerHTML = `<div class="alert-box alert-red" style="margin:0;">${messageSuite}</div>`;
+        
+        // Adrénaline tous les 2 cycles (4 minutes)
+        if (cycleCount % 2 === 0) {
+          ajouterInjectionAdre();
+        } else {
+          ajouterMessageTimeline("⏳ Poursuite MCE (Pas d'adrénaline sur ce cycle)", "#f3f4f6", "#374151");
+        }
+      }
+    }
+
+    function ajouterInjectionAdre() {
+      adreCount++;
+      const timeline = document.getElementById('acr-timeline');
+      const adreDiv = document.createElement('button');
+      adreDiv.type = 'button';
+      adreDiv.className = 'btn-toggle-action orange';
+      adreDiv.style.width = '100%';
+      adreDiv.style.padding = '16px';
+      adreDiv.style.fontSize = '1.1rem';
+      adreDiv.textContent = `💉 Adrénaline 1mg IVD (Dose n°${adreCount})`;
+      adreDiv.onclick = function() {
+        this.classList.toggle('active');
+        this.textContent = this.classList.contains('active') ? `✓ Adrénaline (Dose n°${adreCount}) faite` : `💉 Adrénaline 1mg IVD (Dose n°${adreCount})`;
+      };
+      timeline.prepend(adreDiv);
+
+      if (acrRythmeInitial === 'oui') {
+        if (adreCount === 1) ajouterBoutonCordarone('300 mg');
+        else if (adreCount === 2) ajouterBoutonCordarone('150 mg');
+      }
+    }
+
+    function ajouterBoutonCordarone(dose) {
+      const timeline = document.getElementById('acr-timeline');
+      const cordaDiv = document.createElement('button');
+      cordaDiv.type = 'button';
+      cordaDiv.className = 'btn-toggle-action';
+      cordaDiv.style.width = '100%';
+      cordaDiv.style.padding = '16px';
+      cordaDiv.style.fontSize = '1.1rem';
+      cordaDiv.style.borderColor = 'var(--primary)';
+      cordaDiv.style.color = 'var(--primary)';
+      cordaDiv.textContent = `💉 Cordarone ${dose} IVD`;
+      cordaDiv.onclick = function() {
+        this.classList.toggle('active');
+        this.style.background = this.classList.contains('active') ? 'var(--primary)' : '#ffffff';
+        this.style.color = this.classList.contains('active') ? '#ffffff' : 'var(--primary)';
+        this.textContent = this.classList.contains('active') ? `✓ Cordarone ${dose} faite` : `💉 Cordarone ${dose} IVD`;
+      };
+      timeline.prepend(cordaDiv);
+    }
+
+    function ajouterMessageTimeline(texte, bgColor, textColor) {
+      const timeline = document.getElementById('acr-timeline');
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.style.background = bgColor;
+      div.style.color = textColor;
+      div.style.fontWeight = '800';
+      div.style.textAlign = 'center';
+      div.style.marginBottom = '14px';
+      div.innerHTML = texte;
+      timeline.prepend(div);
+    }
+
+    function resetAcr() {
+      if (acrTimerInterval) clearInterval(acrTimerInterval);
+      acrSeconds = 0; acrRythmeInitial = null; adreCount = 0; isRacs = false; cycleCount = 0;
+      document.getElementById('acr-chrono-display').textContent = '00:00';
+      document.getElementById('acr-chrono-container').style.background = '#0f172a';
+      const btnVoie = document.getElementById('btn-acr-voie');
+      if (btnVoie) { btnVoie.classList.remove('active'); btnVoie.textContent = '💉 Pose de VVP / DIO'; }
+      const rythmeCard = document.getElementById('acr-rythme-card');
+      if (rythmeCard) {
+        rythmeCard.innerHTML = `
+          <div class="section-label" style="text-align: center; color: var(--danger); font-size: 1.2rem;">Rythme initial chocable ?</div>
+          <div class="row-2 field" style="margin-top: 14px;">
+            <button type="button" class="btn-toggle-action" style="border-color: var(--danger); color: var(--danger);" onclick="selectAcrRythme('oui')">OUI (FV/TV)</button>
+            <button type="button" class="btn-toggle-action" style="border-color: var(--primary); color: var(--primary);" onclick="selectAcrRythme('non')">NON (Asystolie/AESP)</button>
+          </div>
+        `;
+      }
+      const timeline = document.getElementById('acr-timeline');
+      if (timeline) timeline.innerHTML = '';
+    }
+
+    function getAcrAdulteData() {
+      const rythme = acrRythmeInitial ? (acrRythmeInitial === 'oui' ? 'CHOCABLE' : 'NON CHOCABLE') : 'Non défini';
+      const racs = isRacs ? 'OUI' : 'NON';
+      const vvp = document.getElementById('btn-acr-voie') && document.getElementById('btn-acr-voie').classList.contains('active') ? 'OUI' : 'NON';
+      const actionsNodeList = document.getElementById('acr-timeline').children;
+      let actionsText = '';
+      if(actionsNodeList.length > 0) {
+        // On inverse pour les avoir dans l'ordre chronologique dans le résumé
+        const actionsArray = Array.from(actionsNodeList).reverse();
+        actionsText = actionsArray.map(el => el.textContent.trim().replace(/\n/g, ' ')).join(' | ');
+      }
+      return { rythme, racs, vvp, actions: actionsText || 'Aucune action enregistrée' };
+    }
     // --- LOGIQUE TRAUMA SEVERE (XABCDE) ---
     function toggleTsXSaign(val) {
       const btnOui = document.getElementById('btn-ts-x-saign-oui');
