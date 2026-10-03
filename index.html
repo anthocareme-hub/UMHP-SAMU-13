@@ -828,6 +828,15 @@
         </div>
 
         <div class="field">
+          <label>Sexe</label>
+          <div class="row-2" id="sexe-group">
+            <button type="button" class="btn-toggle-action" data-val="M" onclick="selectSexe(this)">Homme</button>
+            <button type="button" class="btn-toggle-action" data-val="F" onclick="selectSexe(this)">Femme</button>
+          </div>
+          <input type="hidden" id="patient-sexe" value="">
+        </div>
+
+        <div class="field">
           <label>Date de naissance</label>
           <div class="row-3">
             <select id="ddn-jour"></select>
@@ -3275,8 +3284,19 @@
       window.scrollTo(0, 0);
     }
 
+    function selectSexe(btn) {
+      const container = document.getElementById('sexe-group');
+      container.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('patient-sexe').value = btn.dataset.val;
+      autoUpdateResumes();
+    }
+
     function startNewIntervention() {
       document.getElementById('patient-nom').value = '';
+      document.getElementById('patient-sexe').value = '';
+      const sexeGroup = document.getElementById('sexe-group');
+      if (sexeGroup) sexeGroup.querySelectorAll('button').forEach(b => b.classList.remove('active'));
       document.getElementById('ddn-jour').selectedIndex = 0;
       document.getElementById('ddn-mois').selectedIndex = 0;
       document.getElementById('ddn-annee').value = '1980';
@@ -4952,6 +4972,7 @@ function checkDrGravite() {
     function generateSAED() {
       const isP0 = document.getElementById('toggle-p0').checked;
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
+      const sexe = document.getElementById('patient-sexe').value || 'Non renseigné';
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
       const poids = document.getElementById('patient-poids').value;
       const motif = document.getElementById('motif-select').value;
@@ -5126,7 +5147,7 @@ function checkDrGravite() {
 `TRANSMISSION SMUR INFIRMIER (SAED / SAU)
 ----------------------------------------
 [S] SITUATION
-Patient : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
+Patient : ${nom} | Sexe : ${sexe} | DDN : ${ddn} | Poids : ${poids} kg
 ${isP0 ? "Degré d'urgence : P0 (Urgence vitale)\n" : ""}Motif : ${motif}
 
 [A] ANTECEDENTS & TERRAIN
@@ -5153,6 +5174,7 @@ ${demandeText}
     // RÉSUMÉ FINAL & ENREGISTREMENT LOCAL
     function generateResumeFinal() {
       const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
+      const sexe = document.getElementById('patient-sexe').value || 'Non renseigné';
       const ddn = `${document.getElementById('ddn-jour').value}/${document.getElementById('ddn-mois').value}/${document.getElementById('ddn-annee').value}`;
       const poids = document.getElementById('patient-poids').value;
       const isP0 = document.getElementById('toggle-p0').checked;
@@ -5478,7 +5500,7 @@ RAPPORT D'INTERVENTION SMUR / PSIS - SAMU 13
 ==============================================
 
 1. PATIENT & SITUATION
-- Identité : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
+- Identité : ${nom} | Sexe : ${sexe} | DDN : ${ddn} | Poids : ${poids} kg
 ${isP0 ? "- Statut : P0 (Urgence vitale)\n" : ""}- Motif : ${motif}
 ${getTagsText('atcd-tags') ? '- ATCD : ' + getTagsText('atcd-tags') : ''}
 ${getTagsText('ttt-tags') ? '- Traitements : ' + getTagsText('ttt-tags') : ''}
