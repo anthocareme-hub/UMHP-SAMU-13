@@ -2749,6 +2749,9 @@
         <button type="button" class="btn-toggle-action" id="btn-vvp-mere" onclick="toggleVvpMere(this)">
           💉 Pose de VVP
         </button>
+        <button type="button" class="btn-toggle-action orange" id="btn-syntocinon" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Syntocinon administré' : 'Syntocinon 5UI/ 100ml NaCl 0,9% IVL';">
+          Syntocinon 5UI/ 100ml NaCl 0,9% IVL
+        </button>
 
         <div class="field">
           <label for="select-pertes">Pertes sanguines estimées</label>
@@ -3514,11 +3517,19 @@
       } else if (target === 'motif') {
         indicator.textContent = '2. Motif & P0';
       } else if (target === 3) {
-        indicator.textContent = '3. Anamnèse';
-        const motif = document.getElementById('motif-select').value;
-        document.getElementById('btn-back-anamnese').textContent = motifsBypassAnamnese.includes(motif) ? '⬅ Constantes' : '⬅ Motif';
-        document.getElementById('btn-next-anamnese').textContent = motifsBypassAnamnese.includes(motif) ? 'Appel au 15 ➔' : 'Protocole ➔';
-      } else if (target === 'accouchement') {
+      indicator.textContent = '3. Anamnèse';
+      const motif = document.getElementById('motif-select').value;
+      document.getElementById('btn-back-anamnese').textContent = motifsBypassAnamnese.includes(motif) ? '⬅ Constantes' : '⬅ Motif';
+      
+      const btnNext = document.getElementById('btn-next-anamnese');
+      if (motifsBypassAnamnese.includes(motif)) {
+        btnNext.textContent = 'Appel au 15 ➔';
+      } else if (motif === 'Accouchement') {
+        btnNext.textContent = 'Bilan obstétrical ➔';
+      } else {
+        btnNext.textContent = 'Protocole ➔';
+      }
+    } else if (target === 'accouchement') {
         indicator.textContent = 'Protocole : Accouchement';
       } else if (target === 'detresse-respi') {
         indicator.textContent = 'Protocole : Détresse Respiratoire';
