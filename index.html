@@ -817,15 +817,8 @@
     <!-- ================= BARRE FIXE HAUT ================= -->
     <div class="header-bar" id="app-header" style="display: none;">
       <div class="header-title" id="page-indicator">1. Identité</div>
-      <div class="toggle-wrapper" id="p0-container">
-        <span class="toggle-label" id="p0-status">P0 : NON</span>
-        <label class="switch">
-          <input type="checkbox" id="toggle-p0" onchange="onP0Change()">
-          <span class="slider"></span>
-        </label>
-      </div>
+      <div class="toggle-wrapper" id="p0-container" style="display: none;"></div>
     </div>
-
     <!-- ================= PAGE 1 : IDENTITÉ ================= -->
     <div id="page-1" class="page">
       <div class="card">
@@ -851,17 +844,37 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToHome()">🏠 Accueil</button>
-        <button type="button" class="btn-nav" onclick="goToPage(2)">Anamnèse ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('motif')">Motif ➔</button>
       </div>
     </div>
 
-    <!-- ================= PAGE 2 : ANAMNÈSE ================= -->
-    <div id="page-2" class="page">
-      <div class="card">
-        <div class="field">
-          <label for="motif-select">Motif de prise en charge</label>
-          <select id="motif-select"></select>
+    <!-- ================= PAGE MOTIF (NOUVELLE PAGE 2) ================= -->
+    <div id="page-motif" class="page">
+      <div class="card" style="text-align: center;">
+        <div style="font-size: 1.2rem; font-weight: 900; margin-bottom: 16px; color: var(--primary);">Urgence Vitale (P0) ?</div>
+        <div class="toggle-wrapper" style="justify-content: center; transform: scale(1.3); margin-bottom: 10px;">
+          <span class="toggle-label" id="p0-status" style="font-size: 0.8rem;">NON</span>
+          <label class="switch">
+            <input type="checkbox" id="toggle-p0" onchange="onP0Change()">
+            <span class="slider"></span>
+          </label>
         </div>
+      </div>
+      <div class="card">
+        <div class="section-label">Sélectionnez le motif</div>
+        <div id="motifs-grid" style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+          <!-- Boutons injectés dynamiquement -->
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage(1)">⬅ Identité</button>
+      </div>
+    </div>
+
+    <!-- ================= PAGE 3 : ANAMNÈSE ================= -->
+    <div class="card">
+        <input type="hidden" id="motif-select" value="">
+        <div class="alert-box alert-green" style="margin-bottom: 14px; text-transform: uppercase; font-size: 1.1rem;" id="anamnese-motif-display">Motif : -</div>
 
         <div class="field">
           <label for="atcd-select">Antécédents</label>
@@ -991,8 +1004,8 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(1)">⬅ Identité</button>
-        <button type="button" class="btn-nav" onclick="routeMotifPage()">Suivant ➔</button>
+        <button type="button" class="btn-nav secondary" id="btn-back-anamnese" onclick="routeBackAnamnese()">⬅ Motif</button>
+        <button type="button" class="btn-nav" id="btn-next-anamnese" onclick="routeNextAnamnese()">Protocole ➔</button>
       </div>
     </div>
 
@@ -1819,8 +1832,9 @@
         </div>
       
       <!-- BOUTONS DE NAVIGATION REMIS TOUT EN BAS -->
+      <!-- BOUTONS DE NAVIGATION REMIS TOUT EN BAS -->
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav secondary" onclick="routeBackProtocol()">⬅ Retour</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
       </div>
     </div>
@@ -1832,7 +1846,7 @@
         <h3 id="motif-autre-titre" style="margin-bottom: 12px;">Motif spécifique</h3>
         <p style="color: var(--text-muted); margin-bottom: 24px;">La page dédiée pour هذا motif sera construite selon tes consignes.</p>
         <div class="nav-actions">
-          <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+          <button type="button" class="btn-nav secondary" onclick="routeBackProtocol()">⬅ Retour</button>
           <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
         </div>
       </div>
@@ -1922,8 +1936,8 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(previousMotifPage)">⬅ Motif</button>
-        <button type="button" class="btn-nav" onclick="goToPage('regu')">Appel au 15 ➔</button>
+        <button type="button" class="btn-nav secondary" onclick="goToPage(previousMotifPage)">⬅ Protocole</button>
+        <button type="button" class="btn-nav" id="btn-next-constantes" onclick="routeNextConstantes()">Appel au 15 ➔</button>
       </div>
     </div>
 
@@ -1956,7 +1970,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage('constantes')">⬅ Constantes</button>
+        <button type="button" class="btn-nav secondary" id="btn-back-regu" onclick="routeBackRegu()">⬅ Constantes</button>
         <button type="button" class="btn-nav" id="btn-suite-regu" onclick="routeApresRegu()">Thérapeutique ➔</button>
       </div>
     </div>
@@ -3246,7 +3260,7 @@
 
       calculateApgar();
       updateTheraDoses();
-      updateMotifs(false);
+      updateMotifsGrid(false);
     });
 
     // NAVIGATION ACCUEIL & ÉCRANS
@@ -3266,6 +3280,8 @@
       
       document.getElementById('toggle-p0').checked = false;
       onP0Change();
+      document.getElementById('motif-select').value = '';
+      document.getElementById('anamnese-motif-display').textContent = 'Motif : -';
       
       document.getElementById('atcd-tags').innerHTML = '';
       document.getElementById('ttt-tags').innerHTML = '';
@@ -3332,26 +3348,96 @@
     // SWITCH P0 & MOTIFS
     const motifsP0Non = ["Allergie", "Antalgie", "Brûlure", "Dyspnée", "Hypoglycémie"];
     const motifsP0Oui = ["ACR adulte", "ACR enfant", "Accouchement", "Détresse respiratoire", "Électrisé", "Noyé", "Traumatisé sévère"];
+    const motifsBypassAnamnese = ["Traumatisé sévère", "ACR adulte", "ACR enfant"];
 
     function onP0Change() {
       const isChecked = document.getElementById('toggle-p0').checked;
       const statusLabel = document.getElementById('p0-status');
-      statusLabel.textContent = isChecked ? 'P0 : OUI' : 'P0 : NON';
-      statusLabel.classList.toggle('active', isChecked);
-      updateMotifs(isChecked);
+      statusLabel.textContent = isChecked ? 'OUI' : 'NON';
+      statusLabel.style.color = isChecked ? 'var(--danger)' : 'var(--text-muted)';
+      updateMotifsGrid(isChecked);
     }
 
-    function updateMotifs(isP0) {
-      const select = document.getElementById('motif-select');
-      select.innerHTML = '';
+    function updateMotifsGrid(isP0) {
+      const grid = document.getElementById('motifs-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
       const list = isP0 ? motifsP0Oui : motifsP0Non;
       list.forEach(item => {
-        const opt = document.createElement('option');
-        opt.value = item; opt.textContent = item;
-        select.appendChild(opt);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-toggle-action';
+        btn.style.marginBottom = '0';
+        btn.textContent = item;
+        if (isP0) {
+          btn.style.borderColor = 'var(--danger)';
+          btn.style.color = 'var(--danger)';
+          btn.style.background = 'var(--danger-bg)';
+        } else {
+          btn.style.borderColor = 'var(--primary)';
+          btn.style.color = 'var(--primary)';
+          btn.style.background = '#e0f2fe';
+        }
+        btn.onclick = () => selectMotifAndGo(item);
+        grid.appendChild(btn);
       });
     }
 
+    function selectMotifAndGo(motif) {
+      document.getElementById('motif-select').value = motif;
+      document.getElementById('anamnese-motif-display').textContent = `Motif : ${motif}`;
+      
+      if (motifsBypassAnamnese.includes(motif)) {
+        routeMotifPage();
+      } else {
+        goToPage(2);
+      }
+    }
+
+    function routeBackAnamnese() {
+      const motif = document.getElementById('motif-select').value;
+      if (motifsBypassAnamnese.includes(motif)) {
+        goToPage('constantes');
+      } else {
+        goToPage('motif');
+      }
+    }
+
+    function routeNextAnamnese() {
+      const motif = document.getElementById('motif-select').value;
+      if (motifsBypassAnamnese.includes(motif)) {
+        goToPage('regu');
+      } else {
+        routeMotifPage();
+      }
+    }
+
+    function routeBackProtocol() {
+      const motif = document.getElementById('motif-select').value;
+      if (motifsBypassAnamnese.includes(motif)) {
+        goToPage('motif');
+      } else {
+        goToPage(2);
+      }
+    }
+
+    function routeNextConstantes() {
+      const motif = document.getElementById('motif-select').value;
+      if (motifsBypassAnamnese.includes(motif)) {
+        goToPage(2); // On intercale l'anamnèse ici !
+      } else {
+        goToPage('regu');
+      }
+    }
+
+    function routeBackRegu() {
+      const motif = document.getElementById('motif-select').value;
+      if (motifsBypassAnamnese.includes(motif)) {
+        goToPage(2); // L'anamnèse est juste avant
+      } else {
+        goToPage('constantes');
+      }
+    }
     function routeMotifPage() {
       const motif = document.getElementById('motif-select').value;
       if (motif === 'Accouchement') {
@@ -3424,39 +3510,36 @@
 
       if (target === 1) {
         indicator.textContent = '1. Identité';
-        p0Container.style.display = 'none';
+      } else if (target === 'motif') {
+        indicator.textContent = '2. Motif & P0';
       } else if (target === 2) {
-        indicator.textContent = '2. Anamnèse';
-        p0Container.style.display = 'flex';
+        indicator.textContent = '3. Anamnèse';
+        const motif = document.getElementById('motif-select').value;
+        document.getElementById('btn-back-anamnese').textContent = motifsBypassAnamnese.includes(motif) ? '⬅ Constantes' : '⬅ Motif';
+        document.getElementById('btn-next-anamnese').textContent = motifsBypassAnamnese.includes(motif) ? 'Appel au 15 ➔' : 'Protocole ➔';
       } else if (target === 'accouchement') {
-        indicator.textContent = '3. Accouchement';
-        p0Container.style.display = 'none';
+        indicator.textContent = 'Protocole : Accouchement';
       } else if (target === 'detresse-respi') {
-        indicator.textContent = '3. Détresse respiratoire';
-        p0Container.style.display = 'none';
+        indicator.textContent = 'Protocole : Détresse Respiratoire';
       } else if (target === 'allergie') {
-        indicator.textContent = '3. Allergie';
-        p0Container.style.display = 'none';
+        indicator.textContent = 'Protocole : Allergie';
         checkAllergieGravite();
       } else if (target === 'hypoglycemie') {
-        indicator.textContent = '3. Hypoglycémie';
-        p0Container.style.display = 'none';
+        indicator.textContent = 'Protocole : Hypoglycémie';
         checkHypoGravite();
       } else if (target === 'brulure') {
-        indicator.textContent = '3. Brûlure';
-        p0Container.style.display = 'none';
+        indicator.textContent = 'Protocole : Brûlure';
       } else if (target === 'antalgie') {
-        indicator.textContent = '3. Antalgie';
-        p0Container.style.display = 'none';
-        } else if (target === 'trauma-severe') {
-        indicator.textContent = '3. Traumatisé Sévère (XABCDE)';
-        p0Container.style.display = 'none';
+        indicator.textContent = 'Protocole : Antalgie';
+      } else if (target === 'trauma-severe') {
+        indicator.textContent = 'Protocole : Traumatisé Sévère';
       } else if (target === 'motif-autre') {
-        indicator.textContent = '3. Motif spécifique';
-        p0Container.style.display = 'none';
+        indicator.textContent = 'Motif spécifique';
       } else if (target === 'constantes') {
         indicator.textContent = 'Constantes';
-        p0Container.style.display = 'none';
+        const motif = document.getElementById('motif-select').value;
+        const btnNextConst = document.getElementById('btn-next-constantes');
+        if (btnNextConst) btnNextConst.textContent = motifsBypassAnamnese.includes(motif) ? 'Anamnèse ➔' : 'Appel au 15 ➔';
         
         const hbcoField = document.getElementById('field-hbco-container');
         if (hbcoField) {
@@ -3476,10 +3559,9 @@
         }
       } else if (target === 'regu') {
         indicator.textContent = 'Appel au 15';
-        p0Container.style.display = 'none';
         const motif = document.getElementById('motif-select').value;
-        const btnSuite = document.getElementById('btn-suite-regu');
-
+        const btnBackRegu = document.getElementById('btn-back-regu');
+        if (btnBackRegu) btnBackRegu.textContent = motifsBypassAnamnese.includes(motif) ? '⬅ Anamnèse' : '⬅ Constantes';
         // Forcer "PSIS Antalgie" par défaut
         if (motif === 'Antalgie') {
           document.getElementById('demande-type').value = 'PSIS Antalgie';
