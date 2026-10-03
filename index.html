@@ -4635,8 +4635,11 @@ function checkDrGravite() {
         if (document.getElementById('btn-rep-oui').classList.contains('active')) {
           theraRes.push("Reprise de conscience à 5 min : OUI (poursuite resucrage per-os)");
         } else if (document.getElementById('btn-rep-non').classList.contains('active')) {
-          theraRes.push("Reprise de conscience à 5 min : NON");
-          if (document.getElementById('btn-2amp-g30').classList.contains('active')) theraRes.push("2ème resucrage administré (2 ampoules G30%)");
+          if (document.getElementById('btn-2amp-g30').classList.contains('active')) {
+            theraRes.push("pas de reprise de conscience à 5 min → 2 nouvelles ampoules de G30% administrées");
+          } else {
+            theraRes.push("pas de reprise de conscience à 5 min");
+          }
           if (document.getElementById('btn-ecg-non').classList.contains('active')) theraRes.push("ECG 18 dérivations FAIT");
         }
       }
