@@ -5145,6 +5145,11 @@ ${demandeText}
         const pertes = document.getElementById('select-pertes').value === 'sup500' ? '> 500 ml (Hémorragie délivrance)' : '< 500 ml (Physiologique)';
 
         let mereDetails = [];
+        const btnSynto = document.getElementById('btn-syntocinon');
+        if (btnSynto && btnSynto.classList.contains('active')) {
+          mereDetails.push("Syntocinon 5UI/100ml NaCl 0,9% IVL administré");
+        }
+
         if (document.getElementById('select-pertes').value === 'sup500') {
           let gestesHemo = [];
           if (document.getElementById('geste-mhc').checked) gestesHemo.push('O2 MHC');
