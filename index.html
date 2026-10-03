@@ -3562,6 +3562,7 @@
         indicator.textContent = 'Appel au 15';
         const motif = document.getElementById('motif-select').value;
         const btnBackRegu = document.getElementById('btn-back-regu');
+        const btnSuite = document.getElementById('btn-suite-regu');
         if (btnBackRegu) btnBackRegu.textContent = motifsBypassAnamnese.includes(motif) ? '⬅ Anamnèse' : '⬅ Constantes';
         // Forcer "PSIS Antalgie" par défaut
         if (motif === 'Antalgie') {
@@ -3573,7 +3574,7 @@
           document.getElementById('demande-type').value = hasGravite ? 'Renfort SMUR' : 'PSIS Dyspnée';
           btnSuite.textContent = 'Thérapeutique ➔';
         } else if (motif === 'Accouchement') {
-          btnSuite.textContent = 'Prise en charge ➔';
+          btnSuite.textContent = 'PEC mère ➔';
         } else if (motif === 'Allergie') {
           btnSuite.textContent = 'Thérapeutique ➔';
         } else if (motif === 'Hypoglycémie') {
