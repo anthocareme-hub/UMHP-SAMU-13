@@ -872,7 +872,8 @@
     </div>
 
     <!-- ================= PAGE 3 : ANAMNÈSE ================= -->
-    <div class="card">
+    <div id="page-3" class="page">
+      <div class="card">
         <input type="hidden" id="motif-select" value="">
         <div class="alert-box alert-green" style="margin-bottom: 14px; text-transform: uppercase; font-size: 1.1rem;" id="anamnese-motif-display">Motif : -</div>
 
@@ -1084,7 +1085,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav secondary" onclick="routeBackProtocol()">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
       </div>
     </div>
@@ -1199,7 +1200,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav secondary" onclick="routeBackProtocol()">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
       </div>
     </div>
@@ -1271,7 +1272,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav secondary" onclick="routeBackProtocol()">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
       </div>
     </div>
@@ -1344,7 +1345,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav secondary" onclick="routeBackProtocol()">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
       </div>
     </div>
@@ -1418,7 +1419,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav secondary" onclick="routeBackProtocol()">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
       </div>
     </div>
@@ -1462,7 +1463,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(2)">⬅ Anamnèse</button>
+        <button type="button" class="btn-nav secondary" onclick="routeBackProtocol()">⬅ Anamnèse</button>
         <button type="button" class="btn-nav" onclick="goToPage('constantes')">Constantes ➔</button>
       </div>
     </div>
@@ -3390,7 +3391,7 @@
       if (motifsBypassAnamnese.includes(motif)) {
         routeMotifPage();
       } else {
-        goToPage(2);
+        goToPage(3);
       }
     }
 
@@ -3417,14 +3418,14 @@
       if (motifsBypassAnamnese.includes(motif)) {
         goToPage('motif');
       } else {
-        goToPage(2);
+        goToPage(3);
       }
     }
 
     function routeNextConstantes() {
       const motif = document.getElementById('motif-select').value;
       if (motifsBypassAnamnese.includes(motif)) {
-        goToPage(2); // On intercale l'anamnèse ici !
+        goToPage(3); // On intercale l'anamnèse ici !
       } else {
         goToPage('regu');
       }
@@ -3433,7 +3434,7 @@
     function routeBackRegu() {
       const motif = document.getElementById('motif-select').value;
       if (motifsBypassAnamnese.includes(motif)) {
-        goToPage(2); // L'anamnèse est juste avant
+        goToPage(3); // L'anamnèse est juste avant
       } else {
         goToPage('constantes');
       }
@@ -3512,7 +3513,7 @@
         indicator.textContent = '1. Identité';
       } else if (target === 'motif') {
         indicator.textContent = '2. Motif & P0';
-      } else if (target === 2) {
+      } else if (target === 3) {
         indicator.textContent = '3. Anamnèse';
         const motif = document.getElementById('motif-select').value;
         document.getElementById('btn-back-anamnese').textContent = motifsBypassAnamnese.includes(motif) ? '⬅ Constantes' : '⬅ Motif';
