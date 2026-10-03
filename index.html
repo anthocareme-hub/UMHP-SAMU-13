@@ -4615,7 +4615,10 @@ function checkDrGravite() {
       if (document.getElementById('hypo-grav-pdc').checked) gravites.push("Perte de connaissance");
       if (document.getElementById('hypo-grav-deglutir').checked) gravites.push("Impossibilité de déglutir");
 
-      const plsFait = document.getElementById('btn-pls') && document.getElementById('btn-pls').classList.contains('active') ? 'OUI (MIS EN PLS)' : '';
+      let plsFait = '';
+      if (gravites.length > 0) {
+        plsFait = document.getElementById('btn-pls') && document.getElementById('btn-pls').classList.contains('active') ? 'patient mis en PLS' : 'non réalisée';
+      }
 
       let theraRes = [];
       const perOsOui = document.getElementById('btn-peros-oui').classList.contains('active-green');
@@ -4649,9 +4652,9 @@ function checkDrGravite() {
       }
 
       return {
-        pompe: pompeInsulineStatut,
-        causes: causes.length > 0 ? causes.join(', ') : '',
-        gravites: gravites.length > 0 ? gravites.join(', ') : '',
+        pompe: pompeInsulineStatut === 'NON' ? "pas de pompe à insuline" : "pompe à insuline présente et éteinte",
+        causes: causes.length > 0 ? causes.join(', ') : "pas d'autre cause de coma apparente",
+        gravites: gravites.length > 0 ? gravites.join(', ') : "",
         pls: plsFait,
         thera: theraRes.length > 0 ? theraRes.join(' | ') : ''
       };
@@ -4999,11 +5002,15 @@ function checkDrGravite() {
         evalMotif = evalLines.join('\n');
       } else if (motif === 'Hypoglycémie') {
         const hypo = getHypoglycemieData();
-        evalMotif =
-`- Présence pompe à insuline : ${hypo.pompe}
-- Autre cause de coma : ${hypo.causes}
-- Signes de gravité : ${hypo.gravites}
-- Position latérale de sécurité (PLS) : ${hypo.pls}`;
+        let hypoLines = [
+          `- ${hypo.pompe}`,
+          `- Autre cause de coma : ${hypo.causes}`
+        ];
+        if (hypo.gravites) {
+          hypoLines.push(`- Signes de gravité : ${hypo.gravites}`);
+          hypoLines.push(`- PLS : ${hypo.pls}`);
+        }
+        evalMotif = hypoLines.join('\n');
       } else if (motif === 'Brûlure') {
         let grav = [];
         if (document.getElementById('brul-grav-cervico') && document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
@@ -5120,8 +5127,7 @@ function checkDrGravite() {
 ----------------------------------------
 [S] SITUATION
 Patient : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
-Degré d'urgence : ${isP0 ? 'P0 (Urgence vitale)' : 'Non P0'}
-Motif : ${motif}
+${isP0 ? "Degré d'urgence : P0 (Urgence vitale)\n" : ""}Motif : ${motif}
 
 [A] ANTECEDENTS & TERRAIN
 ${anamnaseContent || 'Aucun renseigné'}
@@ -5321,12 +5327,18 @@ ${theraLines.join('\n')}
         const t5Str = `PA: ${document.getElementById('hypo-t5-pa').value || '-'}, Pouls: ${document.getElementById('hypo-t5-pouls').value || '-'} bpm, HGT: ${document.getElementById('hypo-t5-hgt').value || '-'} g/L, SpO2: ${document.getElementById('hypo-t5-spo2').value || '-'}%, AVPU: ${document.getElementById('hypo-t5-avpu').value}`;
         const t10Str = `PA: ${document.getElementById('hypo-t10-pa').value || '-'}, Pouls: ${document.getElementById('hypo-t10-pouls').value || '-'} bpm, HGT: ${document.getElementById('hypo-t10-hgt').value || '-'} g/L, SpO2: ${document.getElementById('hypo-t10-spo2').value || '-'}%, AVPU: ${document.getElementById('hypo-t10-avpu').value}`;
 
+        let hypoCliniqueLines = [
+          `- ${hypo.pompe}`,
+          `- Autre cause de coma : ${hypo.causes}`
+        ];
+        if (hypo.gravites) {
+          hypoCliniqueLines.push(`- Signes de gravité : ${hypo.gravites}`);
+          hypoCliniqueLines.push(`- PLS : ${hypo.pls}`);
+        }
+
         specificSection = 
 `3. BILAN CLINIQUE HYPOGLYCÉMIE
-- Pompe à insuline : ${hypo.pompe}
-- Autre cause de coma : ${hypo.causes}
-- Signes de gravité : ${hypo.gravites}
-- Position latérale de sécurité (PLS) : ${hypo.pls}
+${hypoCliniqueLines.join('\n')}
 
 4. THÉRAPEUTIQUE HYPOGLYCÉMIE
 - Conduite suivie : ${hypo.thera}
@@ -5467,8 +5479,7 @@ RAPPORT D'INTERVENTION SMUR / PSIS - SAMU 13
 
 1. PATIENT & SITUATION
 - Identité : ${nom} | DDN : ${ddn} | Poids : ${poids} kg
-- Statut : ${isP0 ? 'P0 (Urgence vitale)' : 'Non P0'}
-- Motif : ${motif}
+${isP0 ? "- Statut : P0 (Urgence vitale)\n" : ""}- Motif : ${motif}
 ${getTagsText('atcd-tags') ? '- ATCD : ' + getTagsText('atcd-tags') : ''}
 ${getTagsText('ttt-tags') ? '- Traitements : ' + getTagsText('ttt-tags') : ''}
 ${getTagsText('allergies-tags') ? '- Allergies : ' + getTagsText('allergies-tags') : ''}
