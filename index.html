@@ -1937,7 +1937,7 @@
       </div>
 
       <div class="nav-actions">
-        <button type="button" class="btn-nav secondary" onclick="goToPage(previousMotifPage)">⬅ Protocole</button>
+        <button type="button" class="btn-nav secondary" id="btn-back-constantes" onclick="goToPage(previousMotifPage)">⬅ Protocole</button>
         <button type="button" class="btn-nav" id="btn-next-constantes" onclick="routeNextConstantes()">Appel au 15 ➔</button>
       </div>
     </div>
@@ -3526,6 +3526,8 @@
         btnNext.textContent = 'Appel au 15 ➔';
       } else if (motif === 'Accouchement') {
         btnNext.textContent = 'Bilan obstétrical ➔';
+      } else if (motif === 'Allergie') {
+        btnNext.textContent = 'Bilan allergologique ➔';
       } else {
         btnNext.textContent = 'Protocole ➔';
       }
@@ -3551,7 +3553,19 @@
         indicator.textContent = 'Constantes';
         const motif = document.getElementById('motif-select').value;
         const btnNextConst = document.getElementById('btn-next-constantes');
+        const btnBackConst = document.getElementById('btn-back-constantes');
+        
         if (btnNextConst) btnNextConst.textContent = motifsBypassAnamnese.includes(motif) ? 'Anamnèse ➔' : 'Appel au 15 ➔';
+        
+        if (btnBackConst) {
+          if (motif === 'Accouchement') {
+            btnBackConst.textContent = '⬅ Bilan obstétrical';
+          } else if (motif === 'Allergie') {
+            btnBackConst.textContent = '⬅ Bilan allergologique';
+          } else {
+            btnBackConst.textContent = '⬅ Protocole';
+          }
+        }
         
         const hbcoField = document.getElementById('field-hbco-container');
         if (hbcoField) {
