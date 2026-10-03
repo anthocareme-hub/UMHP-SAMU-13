@@ -3530,6 +3530,12 @@
         btnNext.textContent = 'Bilan allergologique ➔';
       } else if (motif === 'Antalgie') {
         btnNext.textContent = 'Bilan antalgie ➔';
+      } else if (motif === 'Brûlure') {
+        btnNext.textContent = 'Bilan brûlure ➔';
+      } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
+        btnNext.textContent = 'Bilan respiratoire ➔';
+      } else if (motif === 'Hypoglycémie') {
+        btnNext.textContent = 'Bilan hypoglycémie ➔';
       } else {
         btnNext.textContent = 'Protocole ➔';
       }
@@ -3566,6 +3572,12 @@
             btnBackConst.textContent = '⬅ Bilan allergologique';
           } else if (motif === 'Antalgie') {
             btnBackConst.textContent = '⬅ Bilan antalgie';
+          } else if (motif === 'Brûlure') {
+            btnBackConst.textContent = '⬅ Bilan brûlure';
+          } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
+            btnBackConst.textContent = '⬅ Bilan respiratoire';
+          } else if (motif === 'Hypoglycémie') {
+            btnBackConst.textContent = '⬅ Bilan hypoglycémie';
           } else {
             btnBackConst.textContent = '⬅ Protocole';
           }
