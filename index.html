@@ -5608,7 +5608,7 @@ ${bilanBrulureLines.join('\n')}
 - Cycles MCE débutés : ${acr.cycles}
 - Chocs délivrés : ${acr.chocs}
 - Adrénaline totale : ${acr.adre} mg
-- 4H/4T (Causes réversibles cochées) : ${acr.causesReversibles}
+- 4H/4T (Causes réversibles contrôlées) : ${acr.causesReversibles}
 - RACS (Retour d'Activité Cardiaque Spontanée) : ${acr.racs}`;
 
       } else if (motif === 'Antalgie') {
@@ -5916,12 +5916,9 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
         html += `<div class="alert-box alert-red" style="font-size: 1.1rem; padding: 16px;">RYTHME NON CHOCABLE</div>`;
       }
 
-      html += `<div id="acr-mce-instructions" style="${rythme === 'oui' ? 'display:none;' : 'display:block;'}">
-        <div class="alert-box" style="background: #f3f4f6; color: #374151; margin-top: 10px; font-size: 1.05rem;">
-          🔄 REPRISE MCE IMMÉDIATE (30:2)
-        </div>`;
+      html += `<div id="acr-mce-instructions" style="${rythme === 'oui' ? 'display:none;' : 'display:block;'}">`;
 
-      // Logique d'apparition de l'adrénaline
+      // Logique d'apparition de l'adrénaline calculée avant l'affichage
       let showAdre = false;
       if (rythme === 'non' && (cycleCount === 1 || cycleCount % 2 === 1)) {
         showAdre = true; 
@@ -5929,13 +5926,18 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
         showAdre = true;
       }
 
+      // Le bouton Adrénaline est maintenant placé AU-DESSUS de la reprise MCE
       if (showAdre) {
-        html += `<button type="button" class="btn-toggle-action" style="border-color: #0284c7; color: #0369a1; margin-top: 14px; padding: 16px; font-size: 1.1rem;" onclick="donnerAdre(this)">
-          💉 Adrénaline 1mg IVD
+        html += `<button type="button" class="btn-toggle-action" style="border-color: #0284c7; color: #0369a1; margin-top: 10px; margin-bottom: 10px; padding: 16px; font-size: 1.1rem;" onclick="donnerAdre(this)">
+          💉 FAIRE adrénaline 1mg IVD
         </button>`;
       }
 
-      html += `</div>`;
+      html += `  <div class="alert-box" style="background: #f3f4f6; color: #374151; margin-top: 10px; font-size: 1.05rem;">
+          🔄 REPRISE MCE IMMÉDIATE (30:2)
+        </div>
+      </div>`;
+      
       document.getElementById('acr-action-box').innerHTML = html;
       
       // Vérifie si on doit afficher les 4H/4T (sans cacher l'action box)
@@ -6477,24 +6479,28 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
 
       return hasData ? suivi : '';
     }
-    // Fonction pour faire biper le chrono ACR
+    // Fonction générant un vrai "BIP" d'alarme médicale (fort et perçant)
     function playBeep() {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
 
-        oscillator.type = 'sine';
-        oscillator.frequency.value = 800; // Fréquence du bip
+        // 'square' donne un son électronique strident (style scope) au lieu d'un son doux
+        oscillator.type = 'square'; 
+        // 1000 Hz est plus aigu, idéal pour capter l'attention
+        oscillator.frequency.value = 1000; 
         
-        gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        // Volume poussé au maximum (1 au lieu de 0.5)
+        gainNode.gain.setValueAtTime(1, audioCtx.currentTime); 
+        // Coupe plus franche et courte (0.4s) pour un effet "alarme"
+        gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
 
         oscillator.connect(gainNode);
         gainNode.connect(audioCtx.destination);
 
         oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.5);
+        oscillator.stop(audioCtx.currentTime + 0.4);
       } catch(e) {
         console.warn("Son bloqué par le navigateur", e);
       }
