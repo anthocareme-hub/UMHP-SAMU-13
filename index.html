@@ -1854,7 +1854,7 @@
       </div>
     </div>
     </div>
-    <!<!-- ================= PAGE SPÉCIFIQUE : ACR ADULTE ================= -->
+    <!-- ================= PAGE SPÉCIFIQUE : ACR ADULTE ================= -->
     <div id="page-acr-adulte" class="page">
       
       <!-- 1. CHRONO & COMPTEURS -->
@@ -1905,6 +1905,11 @@
         </div>
       </div>
 
+      <!-- BOUTON DÉCLARER RACS (Il manquait dans ton code !) -->
+      <button type="button" id="btn-racs-declare" class="btn-toggle-action" style="border-color: var(--success); color: var(--success); padding: 16px; margin-bottom: 16px; font-weight: 900;" onclick="declarerRacs()">
+        ❤️ DÉCLARER RACS
+      </button>
+
       <!-- 4. RACS SUCCESS BOX -->
       <div class="card" id="acr-racs-success" style="display: none; border-left: 6px solid var(--success); text-align: center;">
         <div style="font-size: 1.4rem; font-weight: 900; color: var(--success); margin-bottom: 10px;">❤️ RACS CONFIRMÉ</div>
@@ -1920,40 +1925,12 @@
         </div>
       </div>
 
-    </div>- ================= PAGE SPÉCIFIQUE : ACR ADULTE ================= -->
-    <div id="page-acr-adulte" class="page">
-      
-      <!-- 1. CHRONO -->
-      <div class="card" id="acr-chrono-container" style="background: #0f172a; text-align: center; border-radius: 12px; transition: 0.3s;">
-        <div style="color: #94a3b8; font-weight: 800; font-size: 1rem; margin-bottom: 4px; padding-top: 10px;">CHRONO ACR</div>
-        <div id="acr-chrono-display" style="color: #ffffff; font-family: monospace; font-size: 3.5rem; font-weight: 900; line-height: 1; padding-bottom: 16px;">
-          00:00
-        </div>
-      </div>
-
-      <!-- 2. VVP / DIO -->
-      <div class="card">
-        <button type="button" class="btn-toggle-action" id="btn-acr-voie" style="font-size: 1.2rem; padding: 18px; margin-bottom: 0;" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Voie d\\'abord posée' : '💉 Pose de VVP / DIO';">
-          💉 Pose de VVP / DIO
-        </button>
-      </div>
-
-      <!-- 3. RYTHME INITIAL -->
-      <div class="card" id="acr-rythme-card">
-        <div class="section-label" style="text-align: center; color: var(--danger); font-size: 1.2rem;">Rythme initial chocable ?</div>
-        <div class="row-2 field" style="margin-top: 14px;">
-          <button type="button" class="btn-toggle-action" style="border-color: var(--danger); color: var(--danger);" onclick="selectAcrRythme('oui')">OUI (FV/TV)</button>
-          <button type="button" class="btn-toggle-action" style="border-color: var(--primary); color: var(--primary);" onclick="selectAcrRythme('non')">NON (Asystolie/AESP)</button>
-        </div>
-      </div>
-
-      <!-- 4. TIMELINE DYNAMIQUE -->
-      <div id="acr-timeline"></div>
-
+      <!-- Boutons de navigation (ils manquaient dans ton premier bloc) -->
       <div class="nav-actions" style="margin-top: 24px;">
         <button type="button" class="btn-nav secondary" onclick="resetAcr(); goToPage('motif')">⬅ Quitter</button>
         <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
       </div>
+
     </div>
     <!-- ================= PAGE SPÉCIFIQUE : SUIVI POST-RACS ================= -->
     <div id="page-suivi-racs" class="page">
@@ -2273,9 +2250,6 @@
         </div>
       </div> <!-- Fermeture de la card -->
     </div> <!-- Fermeture de la page-surveillance -->
-
-      </div>
-    </div>
     
     <!-- ================= PAGE : THÉRAPEUTIQUE (ANTALGIE) ================= -->
     <div id="page-therapeutique-antalgie" class="page">
@@ -3919,7 +3893,7 @@
         } else if (motif === 'Antalgie') {
           btnBack.onclick = () => goToPage('suivi-antalgie');
         } else if (motif === 'ACR adulte') {
-          bbtnBack.onclick = () => isRacs ? goToPage('suivi-racs') : goToPage('acr-adulte');
+          btnBack.onclick = () => isRacs ? goToPage('suivi-racs') : goToPage('acr-adulte');
         } else {
           btnBack.onclick = () => goToPage('regu');
         }
