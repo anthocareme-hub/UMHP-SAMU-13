@@ -1909,22 +1909,15 @@
       <div class="card" id="acr-racs-success" style="display: none; border-left: 6px solid var(--success); text-align: center;">
         <div style="font-size: 1.4rem; font-weight: 900; color: var(--success); margin-bottom: 10px;">❤️ RACS CONFIRMÉ</div>
         <p style="font-weight: 700; margin-bottom: 14px; color: var(--text);">Maintien de la surveillance. Prendre les constantes complètes. Sécuriser les voies aériennes.</p>
-        <button type="button" class="btn-toggle-action orange" onclick="reprendreAcr()" style="padding: 16px; font-size: 1.05rem;">
-          🚨 ARRÊT RÉCIDIVANT (Reprendre ACR)
-        </button>
-      </div>
-
-      <!-- BOUTONS QUITTER / RÉSUMÉ -->
-      <div class="nav-actions" style="margin-top: 16px;">
-        <button type="button" class="btn-nav secondary" onclick="resetAcr(); goToPage('motif')">⬅ Quitter</button>
-        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
-      </div>
-
-      <!-- 5. BOUTON FIXE RACS (Bottom) -->
-      <div id="btn-racs-declare" style="position: sticky; bottom: 0; background: #fff; padding: 10px; border-top: 2px solid var(--border); margin: 0 -16px -16px -16px; z-index: 100;">
-        <button type="button" class="btn-toggle-action" style="border-color: var(--success); color: var(--success); font-size: 1.2rem; font-weight: 900; margin: 0; width: 100%; padding: 16px; background: #f0fdf4;" onclick="declarerRacs()">
-          ❤️ SIGNES DE RACS (Activité Cardiaque)
-        </button>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <button type="button" class="btn-toggle-action" style="border-color: var(--success); color: var(--success); padding: 16px; font-size: 1.05rem;" onclick="goToPage('suivi-racs')">
+            📊 SAISIR CONSTANTES POST-RACS ➔
+          </button>
+          <button type="button" class="btn-toggle-action orange" onclick="reprendreAcr()" style="padding: 16px; font-size: 1.05rem;">
+            🚨 ARRÊT RÉCIDIVANT (Reprendre ACR)
+          </button>
+        </div>
       </div>
 
     </div>- ================= PAGE SPÉCIFIQUE : ACR ADULTE ================= -->
@@ -1959,6 +1952,60 @@
 
       <div class="nav-actions" style="margin-top: 24px;">
         <button type="button" class="btn-nav secondary" onclick="resetAcr(); goToPage('motif')">⬅ Quitter</button>
+        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+      </div>
+    </div>
+    <!-- ================= PAGE SPÉCIFIQUE : SUIVI POST-RACS ================= -->
+    <div id="page-suivi-racs" class="page">
+      <div class="card">
+        <div class="section-label">Constantes Post-RACS (T0)</div>
+        
+        <div class="row-2 field">
+          <div>
+            <label>Pression artérielle</label>
+            <input type="text" inputmode="numeric" id="racs-pa" placeholder="ex: 110/70">
+          </div>
+          <div>
+            <label>Fréquence card.</label>
+            <input type="number" inputmode="numeric" id="racs-fc" placeholder="ex: 90">
+          </div>
+        </div>
+
+        <div class="row-2 field">
+          <div>
+            <label>SpO2 (%)</label>
+            <input type="number" inputmode="numeric" id="racs-spo2" placeholder="ex: 98">
+          </div>
+          <div>
+            <label>EtCO2 (mmHg)</label>
+            <input type="number" inputmode="numeric" id="racs-etco2" placeholder="ex: 35">
+          </div>
+        </div>
+
+        <div class="row-2 field">
+          <div>
+            <label>Température (°C)</label>
+            <input type="number" step="0.1" inputmode="decimal" id="racs-temp" placeholder="ex: 34.5">
+          </div>
+          <div>
+            <label>Glasgow</label>
+            <input type="number" inputmode="numeric" id="racs-glasgow" placeholder="ex: 3">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Pupilles</label>
+          <select id="racs-pupilles">
+            <option value="">-- Non évaluées --</option>
+            <option value="Isocores et réactives">Isocores et réactives</option>
+            <option value="Mydriase bilatérale aréactive">Mydriase bilatérale aréactive</option>
+            <option value="Anisocorie">Anisocorie</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('acr-adulte')">⬅ Retour Chrono</button>
         <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
       </div>
     </div>
@@ -3693,6 +3740,9 @@
         indicator.textContent = 'Protocole : Traumatisé Sévère';
       } else if (target === 'acr-adulte') {
         indicator.textContent = 'Protocole : ACR Adulte';
+        } else if (target === 'suivi-racs') {
+        indicator.textContent = 'Constantes Post-RACS';
+        p0Container.style.display = 'none';
       } else if (target === 'motif-autre') {
         indicator.textContent = 'Motif spécifique';
       } else if (target === 'constantes') {
@@ -3869,7 +3919,7 @@
         } else if (motif === 'Antalgie') {
           btnBack.onclick = () => goToPage('suivi-antalgie');
         } else if (motif === 'ACR adulte') {
-          btnBack.onclick = () => goToPage('acr-adulte');
+          bbtnBack.onclick = () => isRacs ? goToPage('suivi-racs') : goToPage('acr-adulte');
         } else {
           btnBack.onclick = () => goToPage('regu');
         }
@@ -5978,6 +6028,11 @@ ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
     function resetAcr() {
       if (acrTimerInterval) clearInterval(acrTimerInterval);
       acrSeconds = 0; cycleCount = 0; adreCount = 0; chocCount = 0; isRacs = false; firstAdreGiven = false; acrRythmeInitial = null;
+
+      ['racs-pa', 'racs-fc', 'racs-spo2', 'racs-etco2', 'racs-temp', 'racs-glasgow', 'racs-pupilles'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
       
       document.getElementById('acr-chrono-display').textContent = '00:00';
       document.getElementById('acr-chrono-container').style.background = '#0f172a';
