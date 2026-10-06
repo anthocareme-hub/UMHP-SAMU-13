@@ -38,15 +38,21 @@
     }
 
     body {
-      background: var(--bg);
+      background: #000000; /* Le fond de l'écran d'ordinateur sera noir */
       color: var(--text);
-      padding: 16px;
+      padding: 0; /* On déplace le padding... */
+      margin: 0;
       font-size: 16px;
+      min-height: 100vh; /* Le noir descend jusqu'en bas */
     }
 
     .container {
       max-width: 500px;
       margin: 0 auto;
+      background: var(--bg); /* ...et on remet le fond clair uniquement dans le téléphone */
+      min-height: 100vh; /* L'application prend toujours 100% de la hauteur */
+      padding: 16px; /* ...et on remet le padding ici */
+      position: relative;
     }
 
     /* PAGE D'ACCUEIL PLEIN ÉCRAN */
