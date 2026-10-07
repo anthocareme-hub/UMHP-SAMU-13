@@ -789,8 +789,8 @@
 .legal-link:hover {
   text-decoration: underline;
 }
-    /* ================= MODALE ANTÉCÉDENTS MULTI-SÉLECTION ================= */
-    #modal-atcd {
+    /* ================= MODALES DE SÉLECTION (ATCD & HOSPIT) ================= */
+    .modal-selection {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -801,7 +801,7 @@
       justify-content: center;
       backdrop-filter: blur(3px);
     }
-    .atcd-content-card {
+    .modal-selection-card {
       background: #ffffff;
       border-radius: 12px;
       max-width: 480px;
@@ -812,7 +812,7 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
       overflow: hidden;
     }
-    .atcd-header {
+    .modal-selection-header {
       padding: 14px 16px;
       background: #f8fafc;
       border-bottom: 2px solid var(--border);
@@ -820,47 +820,57 @@
       justify-content: space-between;
       align-items: center;
     }
-    .atcd-header h3 {
+    .modal-selection-header h3 {
       color: var(--primary);
       font-weight: 900;
       font-size: 1.1rem;
       margin: 0;
     }
-    .atcd-body {
+    .modal-selection-body {
       overflow-y: auto;
       flex: 1;
-      padding: 0;
+      padding: 12px; /* Ajout d'un padding global */
     }
-    .atcd-category {
-      background: var(--primary);
-      color: #ffffff;
+    .modal-category-title {
+      color: var(--primary);
       font-weight: 800;
-      padding: 6px 12px;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       text-transform: uppercase;
-      position: sticky;
-      top: 0;
-      z-index: 2;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 2px solid #e2e8f0;
     }
-    .atcd-item-row {
+    .modal-category-title:first-child {
+      margin-top: 0;
+    }
+    /* --- LE STYLE CASE GRISE --- */
+    .modal-item-box {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 12px;
-      border-bottom: 1px solid #f1f5f9;
+      padding: 12px;
+      margin-bottom: 8px;
+      border: 1.5px solid var(--border); /* Contour gris */
+      border-radius: 8px; /* Coins arrondis */
+      background: #ffffff;
       font-size: 0.95rem;
       font-weight: 600;
       color: var(--text);
       cursor: pointer;
-      margin-bottom: 0;
+      transition: all 0.1s ease;
     }
-    .atcd-item-row input[type="checkbox"] {
+    .modal-item-box:active {
+      background: #f1f5f9;
+      border-color: var(--primary);
+    }
+    .modal-item-box input[type="checkbox"] {
       width: 20px;
       height: 20px;
       accent-color: var(--primary);
       margin: 0;
     }
-    .atcd-footer {
+    .modal-selection-footer {
       padding: 12px 16px;
       border-top: 2px solid var(--border);
       background: #ffffff;
@@ -974,12 +984,12 @@
         <div class="alert-box alert-green" style="margin-bottom: 14px; text-transform: uppercase; font-size: 1.1rem;" id="anamnese-motif-display">Motif : -</div>
 
         <div class="field">
-          <label for="atcd-select">Antécédents</label>
-          <button type="button" class="btn-toggle-action" style="border: 2px dashed var(--primary); color: var(--primary); margin-bottom: 8px;" onclick="toggleAtcdModal(true)">
-  + Sélectionner les antécédents
-</button>
-          <div class="tag-container" id="atcd-tags"></div>
-        </div>
+  <label>Antécédents</label>
+  <button type="button" class="btn-toggle-action" style="border: 2px dashed var(--primary); color: var(--primary); margin-bottom: 8px;" onclick="toggleSelectionModal('modal-atcd', true)">
+    + Sélectionner les antécédents
+  </button>
+  <div class="tag-container" id="atcd-tags"></div>
+</div>
 
         <div class="field">
           <label for="ttt-input">Traitements en cours</label>
@@ -1000,58 +1010,16 @@
         </div>
 
         <div class="field">
-          <label>Hospitalisation récente</label>
-          <div class="row-2" style="margin-bottom: 8px;">
-            <select id="hospit-mois"></select>
-            <select id="hospit-annee"></select>
-          </div>
-          <div class="input-btn-group">
-            <select id="hospit-service">
-              <optgroup label="Soins critiques et urgences">
-                <option value="Urgences / UHCD">Urgences / UHCD</option>
-                <option value="Réanimation">Réanimation polyvalente / médicale / chirurgicale</option>
-                <option value="Soins intensifs (USIC/USINV)">Soins intensifs polyvalents / USIC / USINV</option>
-                <option value="Surveillance continue (USC)">Surveillance continue (USC)</option>
-              </optgroup>
-              <optgroup label="Médecine de spécialité">
-                <option value="Cardiologie">Cardiologie</option>
-                <option value="Pneumologie">Pneumologie</option>
-                <option value="Gastro-entérologie">Gastro-entérologie et hépatologie</option>
-                <option value="Neurologie">Neurologie</option>
-                <option value="Médecine interne">Médecine interne</option>
-                <option value="Maladies infectieuses (MIT)">Maladies infectieuses et tropicales (MIT)</option>
-                <option value="Oncologie médicale">Oncologie médicale</option>
-                <option value="Hématologie clinique">Hématologie clinique</option>
-                <option value="Néphrologie">Néphrologie</option>
-                <option value="Endocrinologie-diabétologie">Endocrinologie-diabétologie</option>
-                <option value="Rhumatologie">Rhumatologie</option>
-                <option value="Dermatologie">Dermatologie</option>
-                <option value="Gériatrie aiguë (UGA)">Gériatrie aiguë (UGA)</option>
-              </optgroup>
-              <optgroup label="Chirurgie">
-                <option value="Chirurgie orthopédique">Chirurgie orthopédique et traumatologique</option>
-                <option value="Chirurgie viscérale">Chirurgie viscérale et digestive</option>
-                <option value="Chirurgie vasculaire">Chirurgie vasculaire</option>
-                <option value="Urologie">Urologie</option>
-                <option value="Neurochirurgie">Neurochirurgie</option>
-                <option value="ORL">ORL et chirurgie cervico-faciale</option>
-                <option value="Chirurgie thoracique">Chirurgie thoracique</option>
-              </optgroup>
-              <optgroup label="Femme, mère, enfant">
-                <option value="Maternité">Maternité / Suites de couches</option>
-                <option value="Gynécologie">Gynécologie médicale et chirurgicale</option>
-                <option value="Pédiatrie générale">Pédiatrie générale</option>
-                <option value="Néonatologie">Néonatologie</option>
-              </optgroup>
-              <optgroup label="Santé mentale et post-aigu">
-                <option value="Psychiatrie générale">Psychiatrie générale (adulte)</option>
-                <option value="SMR / SSR">Soins médicaux et de réadaptation (SMR, ex-SSR)</option>
-              </optgroup>
-            </select>
-            <button type="button" class="btn-add" onclick="addHospit()">Ajouter</button>
-          </div>
-          <div class="tag-container" id="hospit-tags"></div>
-        </div>
+  <label>Hospitalisation récente</label>
+  <div class="row-2" style="margin-bottom: 8px;">
+    <select id="hospit-mois"></select>
+    <select id="hospit-annee"></select>
+  </div>
+  <button type="button" class="btn-toggle-action" style="border: 2px dashed var(--primary); color: var(--primary); margin-bottom: 8px;" onclick="toggleSelectionModal('modal-hospit', true)">
+    + Sélectionner le(s) service(s)
+  </button>
+  <div class="tag-container" id="hospit-tags"></div>
+</div>
       </div>
 
       <div class="nav-actions">
@@ -3302,68 +3270,107 @@
       </div>
     </div>
   <!-- ================= MODALE SÉLECTION ANTÉCÉDENTS ================= -->
-    <div id="modal-atcd">
-      <div class="atcd-content-card">
-        
-        <div class="atcd-header">
+    <div id="modal-atcd" class="modal-selection">
+      <div class="modal-selection-card">
+        <div class="modal-selection-header">
           <h3>Antécédents médicaux</h3>
-          <button type="button" class="legal-close-btn" style="position:static;" onclick="toggleAtcdModal(false)">✕</button>
+          <button type="button" class="legal-close-btn" style="position:static;" onclick="toggleSelectionModal('modal-atcd', false)">✕</button>
         </div>
-        
-        <div class="atcd-body">
-          <div class="atcd-category">Cardiovasculaire et vasculaire</div>
-          <label class="atcd-item-row"><input type="checkbox" value="HTA"> Hypertension artérielle (HTA)</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Maladie coronarienne"> Maladie coronarienne (angor, IDM, stents)</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Fibrillation atriale"> Fibrillation atriale (FA)</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Insuffisance cardiaque"> Insuffisance cardiaque chronique</label>
-          <label class="atcd-item-row"><input type="checkbox" value="AOMI"> AOMI</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Maladie thromboembolique"> Maladie veineuse thromboembolique (TVP/EP)</label>
+        <div class="modal-selection-body">
+          <div class="modal-category-title">Cardio & Vasculaire</div>
+          <label class="modal-item-box"><input type="checkbox" value="HTA"> Hypertension artérielle (HTA)</label>
+          <label class="modal-item-box"><input type="checkbox" value="Maladie coronarienne"> Maladie coronarienne (angor, IDM...)</label>
+          <label class="modal-item-box"><input type="checkbox" value="Fibrillation atriale"> Fibrillation atriale (FA)</label>
+          <label class="modal-item-box"><input type="checkbox" value="Insuffisance cardiaque"> Insuffisance cardiaque chronique</label>
+          <label class="modal-item-box"><input type="checkbox" value="AOMI"> AOMI</label>
+          <label class="modal-item-box"><input type="checkbox" value="Maladie thromboembolique"> Maladie thromboembolique (TVP/EP)</label>
 
-          <div class="atcd-category">Pneumologie</div>
-          <label class="atcd-item-row"><input type="checkbox" value="Asthme"> Asthme</label>
-          <label class="atcd-item-row"><input type="checkbox" value="BPCO"> BPCO</label>
-          <label class="atcd-item-row"><input type="checkbox" value="SAOS"> Syndrome d'apnées du sommeil (SAOS)</label>
+          <div class="modal-category-title">Pneumologie</div>
+          <label class="modal-item-box"><input type="checkbox" value="Asthme"> Asthme</label>
+          <label class="modal-item-box"><input type="checkbox" value="BPCO"> BPCO</label>
+          <label class="modal-item-box"><input type="checkbox" value="SAOS"> Syndrome d'apnées du sommeil</label>
 
-          <div class="atcd-category">Métabolisme et endocrinologie</div>
-          <label class="atcd-item-row"><input type="checkbox" value="Diabète"> Diabète</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Dyslipidémie"> Dyslipidémie / Hypercholestérolémie</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Hypothyroïdie"> Hypothyroïdie</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Goutte"> Goutte / Hyperuricémie</label>
+          <div class="modal-category-title">Métabolisme & Endocrinologie</div>
+          <label class="modal-item-box"><input type="checkbox" value="Diabète"> Diabète</label>
+          <label class="modal-item-box"><input type="checkbox" value="Dyslipidémie"> Dyslipidémie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Hypothyroïdie"> Hypothyroïdie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Goutte"> Goutte / Hyperuricémie</label>
 
-          <div class="atcd-category">Neurologie et psychiatrie</div>
-          <label class="atcd-item-row"><input type="checkbox" value="AVC / AIT"> AVC ou AIT</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Épilepsie"> Épilepsie</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Parkinson"> Maladie de Parkinson</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Migraine chronique"> Migraine chronique</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Troubles cognitifs"> Troubles cognitifs / Démence</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Dépression / Anxiété"> Dépression / Troubles anxieux</label>
+          <div class="modal-category-title">Neuro & Psychiatrie</div>
+          <label class="modal-item-box"><input type="checkbox" value="AVC / AIT"> AVC ou AIT</label>
+          <label class="modal-item-box"><input type="checkbox" value="Épilepsie"> Épilepsie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Parkinson"> Maladie de Parkinson</label>
+          <label class="modal-item-box"><input type="checkbox" value="Migraine chronique"> Migraine chronique</label>
+          <label class="modal-item-box"><input type="checkbox" value="Troubles cognitifs"> Troubles cognitifs / Démence</label>
+          <label class="modal-item-box"><input type="checkbox" value="Dépression / Anxiété"> Dépression / Troubles anxieux</label>
 
-          <div class="atcd-category">Gastro-entérologie et hépatologie</div>
-          <label class="atcd-item-row"><input type="checkbox" value="RGO"> Reflux gastro-œsophagien (RGO)</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Ulcère / Gastrite"> Ulcère gastro-duodénal / Gastrite</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Lithiase biliaire"> Lithiase biliaire</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Hépatopathie chronique"> Hépatopathie chronique / Cirrhose</label>
+          <div class="modal-category-title">Gastro & Hépatologie</div>
+          <label class="modal-item-box"><input type="checkbox" value="RGO"> Reflux gastro-œsophagien (RGO)</label>
+          <label class="modal-item-box"><input type="checkbox" value="Ulcère / Gastrite"> Ulcère gastro-duodénal / Gastrite</label>
+          <label class="modal-item-box"><input type="checkbox" value="Lithiase biliaire"> Lithiase biliaire</label>
+          <label class="modal-item-box"><input type="checkbox" value="Hépatopathie chronique"> Hépatopathie chronique / Cirrhose</label>
 
-          <div class="atcd-category">Néphrologie et urologie</div>
-          <label class="atcd-item-row"><input type="checkbox" value="Insuffisance rénale"> Insuffisance rénale chronique</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Lithiase urinaire"> Lithiase urinaire</label>
-          <label class="atcd-item-row"><input type="checkbox" value="HBP"> Hypertrophie bénigne prostate (HBP)</label>
+          <div class="modal-category-title">Néphrologie & Urologie</div>
+          <label class="modal-item-box"><input type="checkbox" value="Insuffisance rénale"> Insuffisance rénale chronique</label>
+          <label class="modal-item-box"><input type="checkbox" value="Lithiase urinaire"> Lithiase urinaire</label>
+          <label class="modal-item-box"><input type="checkbox" value="HBP"> Hypertrophie bénigne prostate</label>
 
-          <div class="atcd-category">Appareil locomoteur</div>
-          <label class="atcd-item-row"><input type="checkbox" value="Arthrose"> Arthrose</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Ostéoporose"> Ostéoporose</label>
-
-          <div class="atcd-category">Oncologie et immuno-allergie</div>
-          <label class="atcd-item-row"><input type="checkbox" value="Cancer rémission/traité"> Cancer traité ou en rémission</label>
-          <label class="atcd-item-row"><input type="checkbox" value="Terrain allergique"> Terrain allergique documenté</label>
+          <div class="modal-category-title">Autres</div>
+          <label class="modal-item-box"><input type="checkbox" value="Arthrose"> Arthrose</label>
+          <label class="modal-item-box"><input type="checkbox" value="Cancer rémission/traité"> Cancer traité / rémission</label>
+          <label class="modal-item-box"><input type="checkbox" value="Terrain allergique"> Terrain allergique documenté</label>
         </div>
-        
-        <div class="atcd-footer">
-          <button type="button" class="btn-nav" style="width: 100%; padding: 14px; margin: 0; box-shadow:none;" onclick="validerAtcd()">
+        <div class="modal-selection-footer">
+          <button type="button" class="btn-nav" style="width: 100%; padding: 14px; margin: 0; box-shadow:none;" onclick="validerSelection('modal-atcd', 'atcd-tags')">
             ✓ Ajouter la sélection
           </button>
         </div>
-        
+      </div>
+    </div>
+
+    <!-- ================= MODALE SÉLECTION HOSPITALISATION ================= -->
+    <div id="modal-hospit" class="modal-selection">
+      <div class="modal-selection-card">
+        <div class="modal-selection-header">
+          <h3>Services d'hospitalisation</h3>
+          <button type="button" class="legal-close-btn" style="position:static;" onclick="toggleSelectionModal('modal-hospit', false)">✕</button>
+        </div>
+        <div class="modal-selection-body">
+          <div class="modal-category-title">Soins critiques & Urgences</div>
+          <label class="modal-item-box"><input type="checkbox" value="Urgences / UHCD"> Urgences / UHCD</label>
+          <label class="modal-item-box"><input type="checkbox" value="Réanimation"> Réanimation polyvalente / med / chir</label>
+          <label class="modal-item-box"><input type="checkbox" value="Soins intensifs (USIC/USINV)"> Soins intensifs (USIC / USINV)</label>
+          <label class="modal-item-box"><input type="checkbox" value="Surveillance continue (USC)"> Surveillance continue (USC)</label>
+
+          <div class="modal-category-title">Médecine de spécialité</div>
+          <label class="modal-item-box"><input type="checkbox" value="Cardiologie"> Cardiologie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Pneumologie"> Pneumologie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Gastro-entérologie"> Gastro-entérologie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Neurologie"> Neurologie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Médecine interne"> Médecine interne</label>
+          <label class="modal-item-box"><input type="checkbox" value="MIT"> Maladies infectieuses (MIT)</label>
+          <label class="modal-item-box"><input type="checkbox" value="Oncologie / Hématologie"> Oncologie / Hématologie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Néphrologie"> Néphrologie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Gériatrie aiguë (UGA)"> Gériatrie aiguë (UGA)</label>
+
+          <div class="modal-category-title">Chirurgie</div>
+          <label class="modal-item-box"><input type="checkbox" value="Chirurgie orthopédique"> Orthopédie / Traumatologie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Chirurgie viscérale"> Viscérale / Digestive</label>
+          <label class="modal-item-box"><input type="checkbox" value="Chirurgie vasculaire"> Chirurgie vasculaire</label>
+          <label class="modal-item-box"><input type="checkbox" value="Urologie"> Urologie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Neurochirurgie"> Neurochirurgie</label>
+
+          <div class="modal-category-title">Mère, Enfant & Psychiatrie</div>
+          <label class="modal-item-box"><input type="checkbox" value="Maternité / Gynéco"> Maternité / Gynécologie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Pédiatrie / Néonat"> Pédiatrie / Néonatologie</label>
+          <label class="modal-item-box"><input type="checkbox" value="Psychiatrie"> Psychiatrie générale</label>
+          <label class="modal-item-box"><input type="checkbox" value="SMR / SSR"> Soins de suite (SMR / SSR)</label>
+        </div>
+        <div class="modal-selection-footer">
+          <button type="button" class="btn-nav" style="width: 100%; padding: 14px; margin: 0; box-shadow:none;" onclick="validerSelectionHospit()">
+            ✓ Ajouter la sélection
+          </button>
+        </div>
       </div>
     </div>
   <script>
@@ -4730,24 +4737,41 @@
     }
     // TAGS
     // MODALE ANTÉCÉDENTS
-    function toggleAtcdModal(show) {
-      const modal = document.getElementById('modal-atcd');
-      modal.style.display = show ? 'flex' : 'none';
+    // ================= MODALES DE SÉLECTION (ATCD & HOSPIT) =================
+    
+    function toggleSelectionModal(modalId, show) {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.style.display = show ? 'flex' : 'none';
+      }
     }
 
-    function validerAtcd() {
-      // Récupère toutes les cases cochées dans la modale
-      const checkboxes = document.querySelectorAll('#modal-atcd .atcd-item-row input[type="checkbox"]:checked');
+    // Validation générique (utilisée pour les ATCD)
+    function validerSelection(modalId, containerId) {
+      const checkboxes = document.querySelectorAll(`#${modalId} .modal-item-box input[type="checkbox"]:checked`);
       
       checkboxes.forEach(cb => {
-        // Crée le tag bleu sur la page
-        createTagBadge(cb.value, 'atcd-tags');
-        // Décoche la case pour remettre la modale à zéro
+        createTagBadge(cb.value, containerId);
         cb.checked = false; 
       });
       
-      // Ferme la modale et actualise le SAED
-      toggleAtcdModal(false);
+      toggleSelectionModal(modalId, false);
+      autoUpdateResumes();
+    }
+
+    // Validation spécifique pour l'Hospitalisation (ajoute la date)
+    function validerSelectionHospit() {
+      const checkboxes = document.querySelectorAll('#modal-hospit .modal-item-box input[type="checkbox"]:checked');
+      const mois = document.getElementById('hospit-mois').value;
+      const annee = document.getElementById('hospit-annee').value;
+      
+      checkboxes.forEach(cb => {
+        const label = `${cb.value} (${mois} ${annee})`;
+        createTagBadge(label, 'hospit-tags', true);
+        cb.checked = false; 
+      });
+      
+      toggleSelectionModal('modal-hospit', false);
       autoUpdateResumes();
     }
 
@@ -4758,14 +4782,6 @@
       createTagBadge(val, containerId);
       input.value = '';
       input.focus();
-    }
-
-    function addHospit() {
-      const mois = document.getElementById('hospit-mois').value;
-      const annee = document.getElementById('hospit-annee').value;
-      const service = document.getElementById('hospit-service').value;
-      const label = `${service} (${mois} ${annee})`;
-      createTagBadge(label, 'hospit-tags', true);
     }
 
     function createTagBadge(text, containerId, isHospit = false, isMed = false) {
