@@ -1301,20 +1301,27 @@
         <!-- Nouvel encart rouge demandé -->
         <div class="alert-box alert-red" style="margin-bottom: 14px;">Oxygénothérapie pour SpO2 ≥ 95%</div>
 
-        <div class="section-label">Signes cliniques & critères de gravité</div>
-
-        <div class="field" onchange="checkDrGravite()">
+        <div class="section-label">Signes cliniques</div>
+        <div class="field">
           <label class="checkbox-item"><input type="checkbox" id="dr-tirage"> Tirage intercostal / sus-claviculaire</label>
           <label class="checkbox-item"><input type="checkbox" id="dr-balancement"> Balancement thoraco-abdominal</label>
-          <label class="checkbox-item"><input type="checkbox" id="dr-sueurs"> Sueurs</label>
-          <label class="checkbox-item"><input type="checkbox" id="dr-cyanose"> Cyanose</label>
           <label class="checkbox-item"><input type="checkbox" id="dr-polypnee"> Polypnée > 30/min</label>
-          <label class="checkbox-item"><input type="checkbox" id="dr-bradypnee"> Bradypnée</label>
           <label class="checkbox-item"><input type="checkbox" id="dr-silence"> Silence auscultatoire</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-frein"> Frein expiratoire</label>
+        </div>
+
+        <hr class="divider">
+
+        <div class="section-label" style="color: var(--danger);">Signes de gravité</div>
+        <div class="field" onchange="checkDrGravite()">
           <label class="checkbox-item"><input type="checkbox" id="dr-parole"> Parole impossible</label>
           <label class="checkbox-item"><input type="checkbox" id="dr-conscience"> Troubles de la conscience</label>
-          <!-- Ajout de la défaillance hémodynamique -->
           <label class="checkbox-item"><input type="checkbox" id="dr-hemo"> Défaillance hémodynamique</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-bradypnee"> Bradypnée / apnées</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-sueurs"> Sueurs</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-cyanose"> Cyanose</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-spo2-inf90"> SpO2 < 90%</label>
+          <label class="checkbox-item"><input type="checkbox" id="dr-kussmaul"> Respiration de Kussmaul</label>
         </div>
 
         <!-- Message renfort SMUR -->
@@ -4886,28 +4893,34 @@
 
     // CLINIQUE DÉTRESSE RESPIRATOIRE
     function getDetresseRespiData() {
-      let signes = [];
-      if (document.getElementById('dr-tirage').checked) signes.push('Tirage intercostal/sus-claviculaire');
-      if (document.getElementById('dr-balancement').checked) signes.push('Balancement thoraco-abdominal');
-      if (document.getElementById('dr-sueurs').checked) signes.push('Sueurs');
-      if (document.getElementById('dr-cyanose').checked) signes.push('Cyanose');
-      if (document.getElementById('dr-polypnee').checked) signes.push('Polypnée > 30/min');
-      if (document.getElementById('dr-bradypnee').checked) signes.push('Bradypnée');
-      if (document.getElementById('dr-silence').checked) signes.push('Silence auscultatoire');
-      if (document.getElementById('dr-parole').checked) signes.push('Parole impossible');
-      if (document.getElementById('dr-conscience').checked) signes.push('Troubles de la conscience');
-      if (document.getElementById('dr-hemo').checked) signes.push('Défaillance hémodynamique');
+      let cliniques = [];
+      if (document.getElementById('dr-tirage') && document.getElementById('dr-tirage').checked) cliniques.push('Tirage intercostal/sus-claviculaire');
+      if (document.getElementById('dr-balancement') && document.getElementById('dr-balancement').checked) cliniques.push('Balancement thoraco-abdominal');
+      if (document.getElementById('dr-polypnee') && document.getElementById('dr-polypnee').checked) cliniques.push('Polypnée > 30/min');
+      if (document.getElementById('dr-silence') && document.getElementById('dr-silence').checked) cliniques.push('Silence auscultatoire');
+      if (document.getElementById('dr-frein') && document.getElementById('dr-frein').checked) cliniques.push('Frein expiratoire');
+
+      let gravites = [];
+      if (document.getElementById('dr-parole') && document.getElementById('dr-parole').checked) gravites.push('Parole impossible');
+      if (document.getElementById('dr-conscience') && document.getElementById('dr-conscience').checked) gravites.push('Troubles de la conscience');
+      if (document.getElementById('dr-hemo') && document.getElementById('dr-hemo').checked) gravites.push('Défaillance hémodynamique');
+      if (document.getElementById('dr-bradypnee') && document.getElementById('dr-bradypnee').checked) gravites.push('Bradypnée / apnées');
+      if (document.getElementById('dr-sueurs') && document.getElementById('dr-sueurs').checked) gravites.push('Sueurs');
+      if (document.getElementById('dr-cyanose') && document.getElementById('dr-cyanose').checked) gravites.push('Cyanose');
+      if (document.getElementById('dr-spo2-inf90') && document.getElementById('dr-spo2-inf90').checked) gravites.push('SpO2 < 90%');
+      if (document.getElementById('dr-kussmaul') && document.getElementById('dr-kussmaul').checked) gravites.push('Respiration de Kussmaul');
 
       const auscult = `${document.getElementById('dr-auscult-type').value} (${document.getElementById('dr-auscult-cote').value})`;
 
       let gestes = [];
-      if (document.getElementById('dr-demi-assis').checked) gestes.push('Position demi-assise');
-      if (document.getElementById('dr-o2').checked) {
+      if (document.getElementById('dr-demi-assis') && document.getElementById('dr-demi-assis').checked) gestes.push('Position demi-assise');
+      if (document.getElementById('dr-o2') && document.getElementById('dr-o2').checked) {
         gestes.push(`Oxygénothérapie à ${document.getElementById('dr-o2-debit').value} L/min`);
       }
 
       return {
-        signes: signes.length > 0 ? signes.join(', ') : 'Aucun signe grave coché',
+        cliniques: cliniques.length > 0 ? cliniques.join(', ') : 'Aucun',
+        gravites: gravites.length > 0 ? gravites.join(', ') : 'Pas de signes de gravité',
         auscult: auscult,
         gestes: gestes.length > 0 ? gestes.join(', ') : 'Aucun'
       };
@@ -4915,9 +4928,8 @@
 
 function checkDrGravite() {
       const checkboxes = [
-        'dr-tirage', 'dr-balancement', 'dr-sueurs', 'dr-cyanose',
-        'dr-polypnee', 'dr-bradypnee', 'dr-silence', 'dr-parole',
-        'dr-conscience', 'dr-hemo'
+        'dr-parole', 'dr-conscience', 'dr-hemo', 'dr-bradypnee', 
+        'dr-sueurs', 'dr-cyanose', 'dr-spo2-inf90', 'dr-kussmaul'
       ];
       const hasGravite = checkboxes.some(id => document.getElementById(id) && document.getElementById(id).checked);
       
@@ -5388,13 +5400,16 @@ function checkDrGravite() {
 - Perte des eaux : ${perteEaux}
 - Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
 - Mesures associées : ${prepa.length > 0 ? prepa.join(', ') : 'En cours'}`;
-      } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
+      } 
+      else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
         const dr = getDetresseRespiData();
         evalMotif = 
-`- Signes de gravité : ${dr.signes}
+`- Signes cliniques : ${dr.cliniques}
 - Auscultation : ${dr.auscult}
+- Signes de gravité : ${dr.gravites}
 - Gestes réflexes entrepris : ${dr.gestes}`;
-      } else if (motif === 'Allergie') {
+      }
+      else if (motif === 'Allergie') {
         const alg = getAllergieData();
         let evalLines = [];
         
@@ -5700,7 +5715,7 @@ ${demandeText}
         const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls: ${document.getElementById('dr-t10-pouls').value || '-'} bpm, SpO2: ${document.getElementById('dr-t10-spo2').value || '-'}%, FR: ${document.getElementById('dr-t10-fr').value || '-'}/min, AVPU: ${document.getElementById('dr-t10-avpu').value}`;
         const t20Str = `PA: ${document.getElementById('dr-t20-pa').value || '-'}, Pouls: ${document.getElementById('dr-t20-pouls').value || '-'} bpm, SpO2: ${document.getElementById('dr-t20-spo2').value || '-'}%, FR: ${document.getElementById('dr-t20-fr').value || '-'}/min, AVPU: ${document.getElementById('dr-t20-avpu').value}`;
 
-        bilanSection = `- Critères de gravité : ${dr.signes}\n- Auscultation : ${dr.auscult}\n- Gestes initiaux : ${dr.gestes}`;
+        bilanSection = `- Signes cliniques : ${dr.cliniques}\n- Auscultation : ${dr.auscult}\n- Signes de gravité : ${dr.gravites}\n- Gestes initiaux : ${dr.gestes}`;
         theraSection = `- VVP : ${vvpThera}\n- Thérapeutiques appliquées : ${theraList.join(', ') || 'Aucune'}`;
         suiviSection = `- T+10 min : ${t10Str}\n- T+20 min : ${t20Str}`;
 
