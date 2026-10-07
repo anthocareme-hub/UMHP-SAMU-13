@@ -4603,10 +4603,12 @@
     function toggleDrpModal(show) {
       const modal = document.getElementById('modal-drp');
       modal.style.display = show ? 'flex' : 'none';
+      document.body.style.overflow = show ? 'hidden' : '';
     }
     function toggleLegalModal(show) {
       const modal = document.getElementById('modal-legal');
       modal.style.display = show ? 'flex' : 'none';
+      document.body.style.overflow = show ? 'hidden' : '';
     }
     
     function setOxygeneProfile(mode) {
@@ -4843,12 +4845,14 @@
     }
     // TAGS
     // MODALE ANTÉCÉDENTS
-    // ================= MODALES DE SÉLECTION (ATCD & HOSPIT) =================
+   // ================= MODALES DE SÉLECTION (ATCD & HOSPIT) =================
     
     function toggleSelectionModal(modalId, show) {
       const modal = document.getElementById(modalId);
       if (modal) {
         modal.style.display = show ? 'flex' : 'none';
+        // Bloque le défilement du fond si une modale s'ouvre, le libère à la fermeture
+        document.body.style.overflow = show ? 'hidden' : ''; 
       }
     }
     // NOUVELLES FONCTIONS D'ORIENTATION DIRECTE
@@ -6023,33 +6027,16 @@ ${suiviSection}
       };
     }
 
-    // ================= CALCUL DU TEMPS & ACTUALISATION AUTOMATIQUE =================
-    function getDureeDepuis(heureSaisie) {
-      if (!heureSaisie || !heureSaisie.includes(':')) return "";
-      const now = new Date();
-      const [h, m] = heureSaisie.split(':').map(Number);
-      if (isNaN(h) || isNaN(m)) return "";
+    // ================= ACTUALISATION AUTOMATIQUE (DEBOUNCING) =================
+    let updateTimer; // Variable pour stocker le délai en cours
 
-      let debut = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m);
-      if (debut > now) debut.setDate(debut.getDate() - 1); // Si l'heure est dans le futur, c'était hier
-
-      const diffMins = Math.floor((now - debut) / 60000);
-      const heures = Math.floor(diffMins / 60);
-      const minutes = diffMins % 60;
-
-      let resultat = "depuis : ";
-      if (heures > 0) resultat += `${heures}h `;
-      resultat += `${minutes}min`;
-      return resultat;
-    }
-
-    // Met à jour les résumés dès qu'on tape, clique ou coche quelque chose
     function autoUpdateResumes() {
-      setTimeout(() => {
+      clearTimeout(updateTimer); // Annule le calcul précédent s'il y a eu une nouvelle frappe
+      updateTimer = setTimeout(() => { // Relance le chrono de 300ms
         if (document.getElementById('page-regu').classList.contains('active')) generateSAED();
         if (document.getElementById('page-resume').classList.contains('active')) generateResumeFinal();
         if (typeof saveDraft === 'function') saveDraft(); // Sauvegarde silencieuse
-      }, 50);
+      }, 300); // 300ms est le standard idéal pour la saisie clavier
     }
     document.addEventListener('input', autoUpdateResumes);
     document.addEventListener('change', autoUpdateResumes);
@@ -6933,8 +6920,6 @@ ${suiviSection}
       }
     });
 
-  </script>
-</body>
   </script>
 </body>
 </html>
