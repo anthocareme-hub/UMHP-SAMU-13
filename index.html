@@ -3443,7 +3443,7 @@
         </div>
       </div>
     </div>
-  <script>
+ <script>
     const moisNoms = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
     let previousMotifPage = 'detresse-respi';
     let tsVoiesAeriennes = '';
@@ -3866,7 +3866,7 @@
     function goToPage(target) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
-      let pageElem = document.getElementById(`page-${target}`);
+      let pageElem = typeof target === 'number' ? document.getElementById(`page-${target}`) : document.getElementById(`page-${target}`);
       if (pageElem) pageElem.classList.add('active');
 
       const indicator = document.getElementById('page-indicator');
@@ -5736,8 +5736,7 @@ ${demandeText}
         const apgar3 = apgarScores['3m'] !== null ? `${apgarScores['3m']}/10` : '';
         const apgar5 = apgarScores['5m'] !== null ? `${apgarScores['5m']}/10` : '';
 
-        const vvpPosee = document.getElementById('btn-vvp-mere').classList.contains('active') ? 'VVP posée' : 'VVP non posée';
-        const pertes = document.getElementById('select-pertes').value === 'sup500' ? '> 500 ml (Hémorragie délivrance)' : '< 500 ml (Physiologique)';
+        const vvpPoseeStatus = document.getElementById('btn-vvp-mere').classList.contains('active') ? 'VVP posée' : 'VVP non posée';
         suiviSection = `[Nouveau-né]\n- Évolution clinique : ${statutNouveauNe}\n- Clampage (15 cm) & réchauffement Neohelp réalisés\n- Score d'APGAR : 1 min: ${apgar1} | 3 min: ${apgar3} | 5 min: ${apgar5}\n- Pose de SpO2 : Effectuée`;
 
       } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
@@ -5907,7 +5906,6 @@ ${demandeText}
         }
         
         bilanSection = `- Rythme initial : ${acr.rythme}\n- 4H/4T (Causes réversibles contrôlées) : ${acr.causesReversibles}`;
-        // La modification est à la ligne juste en dessous (Pose de voie d'abord devient Voie d'abord)
         theraSection = `- Voie d'abord (VVP/DIO) : ${acr.vvp}\n- Cycles MCE débutés : ${acr.cycles}\n- Chocs délivrés : ${acr.chocs}\n- Adrénaline totale : ${acr.adre} mg`;
         suiviSection = `- RACS (Retour d'Activité Cardiaque Spontanée) : ${acr.racs}${racsDetails}`;
       }
@@ -6028,25 +6026,22 @@ ${suiviSection}
     }
 
     // ================= ACTUALISATION AUTOMATIQUE (DEBOUNCING) =================
-    let updateTimer; // Variable pour stocker le délai en cours
+    let updateTimer;
 
     function autoUpdateResumes() {
-      clearTimeout(updateTimer); // Annule le calcul précédent s'il y a eu une nouvelle frappe
-      updateTimer = setTimeout(() => { // Relance le chrono de 300ms
+      clearTimeout(updateTimer); 
+      updateTimer = setTimeout(() => { 
         if (document.getElementById('page-regu').classList.contains('active')) generateSAED();
         if (document.getElementById('page-resume').classList.contains('active')) generateResumeFinal();
-        if (typeof saveDraft === 'function') saveDraft(); // Sauvegarde silencieuse
-      }, 300); // 300ms est le standard idéal pour la saisie clavier
+        if (typeof saveDraft === 'function') saveDraft(); 
+      }, 300); 
     }
     document.addEventListener('input', autoUpdateResumes);
     document.addEventListener('change', autoUpdateResumes);
     document.addEventListener('click', autoUpdateResumes);
 
-    // Fait avancer le chronomètre (depuis X min) toutes les 60 secondes
     setInterval(autoUpdateResumes, 60000);
 
-    // SAUVEGARDE EN MÉMOIRE LOCALE (LOCALSTORAGE)
-    // FONCTION POUR COPIER LE RÉSUMÉ FINAL
     function copyResume() {
       const output = document.getElementById('resume-output');
       if (!output.value) generateResumeFinal();
@@ -6058,7 +6053,6 @@ ${suiviSection}
       });
     }
 
-    // FONCTION POUR PARTAGER LE RÉSUMÉ (SMS, MAIL, ETC.)
     function shareResume() {
       const output = document.getElementById('resume-output');
       if (!output.value) generateResumeFinal();
@@ -6075,7 +6069,7 @@ ${suiviSection}
         alert("La fonction de partage natif n'est pas supportée sur ce navigateur. Utilisez le bouton 'Copier'.");
       }
     }
-    // ================= ENREGISTREMENT PWA (HORS-LIGNE) =================
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
@@ -6083,27 +6077,34 @@ ${suiviSection}
           .catch(err => console.log('Erreur PWA :', err));
       });
     }
-    function saveCurrentIntervention() {
-      clearDraft(); // Sécurise la fin du dossier
-      const data = generateResumeFinal();
-      let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
-      
-      const newEntry = {
-        id: Date.now(),
-        date: data.date,
-        nom: data.nom,
-        motif: data.motif,
-        texte: data.texte
-      };
 
-      savedList.unshift(newEntry);
-      localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
-      alert('✓ Intervention enregistrée avec succès dans « Mes UMHP » !');
+    function saveCurrentIntervention() {
+      try { clearDraft(); } catch(e) {}
+      const data = generateResumeFinal();
+      
+      try {
+        let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+        const newEntry = {
+          id: Date.now(),
+          date: data.date,
+          nom: data.nom,
+          motif: data.motif,
+          texte: data.texte
+        };
+        savedList.unshift(newEntry);
+        localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
+        alert('✓ Intervention enregistrée avec succès dans « Mes UMHP » !');
+      } catch(e) {
+        alert("Impossible d'enregistrer : la mémoire locale est bloquée par votre navigateur.");
+      }
     }
 
     function renderUmhpList() {
       const container = document.getElementById('umhp-list-container');
-      const savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+      let savedList = [];
+      try {
+        savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+      } catch(e) {}
 
       if (savedList.length === 0) {
         container.innerHTML = `
@@ -6131,21 +6132,26 @@ ${suiviSection}
     }
 
     function viewUmhpDetail(id) {
-      const savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
-      const entry = savedList.find(x => x.id === id);
-      if (!entry) return;
+      try {
+        const savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+        const entry = savedList.find(x => x.id === id);
+        if (!entry) return;
 
-      document.getElementById('resume-output').value = entry.texte;
-      goToPage('resume');
+        document.getElementById('resume-output').value = entry.texte;
+        goToPage('resume');
+      } catch(e) {}
     }
 
     function deleteUmhp(id) {
       if (!confirm('Supprimer définitivement cette intervention ?')) return;
-      let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
-      savedList = savedList.filter(x => x.id !== id);
-      localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
-      renderUmhpList();
+      try {
+        let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+        savedList = savedList.filter(x => x.id !== id);
+        localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
+        renderUmhpList();
+      } catch(e) {}
     }
+
     // --- MOTEUR ACR ADULTE REVISITÉ ---
     let acrTimerInterval = null;
     let acrSeconds = 0;
@@ -6208,7 +6214,7 @@ ${suiviSection}
       
       const html = `
         <div class="alert-box" style="background: #fef3c7; color: #b45309; border: 2px solid #f59e0b; font-size: 1.1rem; padding: 16px;">
-          ⏱️️ ${minutes} MIN : ANALYSE DU RYTHME<br>Le rythme est-il chocable ?
+          ⏱ ${minutes} MIN : ANALYSE DU RYTHME<br>Le rythme est-il chocable ?
         </div>
         <div class="row-2 field" style="margin-top: 14px; margin-bottom: 0;">
           <button type="button" class="btn-toggle-action" style="border-color: var(--danger); color: var(--danger); padding: 16px;" onclick="gererCycleAcr('oui')">OUI</button>
@@ -6821,7 +6827,7 @@ ${suiviSection}
       }
     }
 
-   // ================= SÉCURITÉ ANTI-PERTE DE DONNÉES =================
+    // ================= SÉCURITÉ ANTI-PERTE DE DONNÉES =================
     function saveDraft() {
       if (document.getElementById('page-home') && document.getElementById('page-home').classList.contains('active')) return;
 
@@ -6852,9 +6858,7 @@ ${suiviSection}
 
       try {
         localStorage.setItem('samu13_draft', JSON.stringify(draft));
-      } catch (e) {
-        console.warn("Mode privé ou accès local : impossible de sauvegarder le brouillon.");
-      }
+      } catch (e) {}
     }
 
     function restoreDraft() {
@@ -6865,17 +6869,17 @@ ${suiviSection}
         const draft = JSON.parse(draftStr);
 
         if (draft.globals) {
-          tsVoiesAeriennes = draft.globals.tsVoiesAeriennes;
-          selectedAvpu = draft.globals.selectedAvpu;
-          statutNouveauNe = draft.globals.statutNouveauNe;
-          oxygeneMode = draft.globals.oxygeneMode;
-          pompeInsulineStatut = draft.globals.pompeInsulineStatut;
-          brulureType = draft.globals.brulureType;
-          fumeeInhalation = draft.globals.fumeeInhalation;
-          brulureProfondeur = draft.globals.brulureProfondeur;
-          totalScb = draft.globals.totalScb;
-          antalgieTrauma = draft.globals.antalgieTrauma;
-          antalgiquesPrisStatut = draft.globals.antalgiquesPrisStatut;
+          tsVoiesAeriennes = draft.globals.tsVoiesAeriennes || '';
+          selectedAvpu = draft.globals.selectedAvpu || '';
+          statutNouveauNe = draft.globals.statutNouveauNe || 'Non évalué';
+          oxygeneMode = draft.globals.oxygeneMode || '';
+          pompeInsulineStatut = draft.globals.pompeInsulineStatut || 'NON';
+          brulureType = draft.globals.brulureType || '';
+          fumeeInhalation = draft.globals.fumeeInhalation || false;
+          brulureProfondeur = draft.globals.brulureProfondeur || '';
+          totalScb = draft.globals.totalScb || 0;
+          antalgieTrauma = draft.globals.antalgieTrauma || null;
+          antalgiquesPrisStatut = draft.globals.antalgiquesPrisStatut || null;
           previousMotifPage = draft.globals.previousMotifPage || 'detresse-respi';
           totalMorphineDose = draft.globals.totalMorphineDose || 0;
         }
@@ -6906,91 +6910,13 @@ ${suiviSection}
           goToPage(isNaN(target) ? target : parseInt(target));
         }
 
-      } catch (e) {
-        console.warn("Erreur de restauration du brouillon", e);
-      }
+      } catch (e) {}
     }
 
     function clearDraft() {
       try {
         localStorage.removeItem('samu13_draft');
       } catch (e) {}
-    }
-
-    function saveCurrentIntervention() {
-      clearDraft(); 
-      const data = generateResumeFinal();
-      
-      try {
-        let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
-        const newEntry = {
-          id: Date.now(),
-          date: data.date,
-          nom: data.nom,
-          motif: data.motif,
-          texte: data.texte
-        };
-        savedList.unshift(newEntry);
-        localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
-        alert('✓ Intervention enregistrée avec succès dans « Mes UMHP » !');
-      } catch(e) {
-        alert("Impossible d'enregistrer : la mémoire locale est bloquée par votre navigateur.");
-      }
-    }
-
-    function renderUmhpList() {
-      const container = document.getElementById('umhp-list-container');
-      let savedList = [];
-      try {
-        savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
-      } catch(e) {
-        console.warn("Accès mémoire bloqué");
-      }
-
-      if (savedList.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; color: var(--text-muted); padding: 30px 10px;">
-            Aucune intervention enregistrée pour le moment.
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = '';
-      savedList.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'umhp-item';
-        div.innerHTML = `
-          <div class="umhp-item-title">${item.nom} — ${item.motif}</div>
-          <div class="umhp-item-meta">📅 ${item.date}</div>
-          <div style="margin-top: 8px; display: flex; gap: 8px;">
-            <button type="button" style="flex:1; padding: 6px; font-size: 0.85rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--primary); background: #f0f9ff; color: var(--primary); cursor: pointer;" onclick="event.stopPropagation(); viewUmhpDetail(${item.id})">Consulter</button>
-            <button type="button" style="padding: 6px 12px; font-size: 0.85rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--danger); background: #fef2f2; color: var(--danger); cursor: pointer;" onclick="event.stopPropagation(); deleteUmhp(${item.id})">Supprimer</button>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function viewUmhpDetail(id) {
-      try {
-        const savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
-        const entry = savedList.find(x => x.id === id);
-        if (!entry) return;
-
-        document.getElementById('resume-output').value = entry.texte;
-        goToPage('resume');
-      } catch(e) {}
-    }
-
-    function deleteUmhp(id) {
-      if (!confirm('Supprimer définitivement cette intervention ?')) return;
-      try {
-        let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
-        savedList = savedList.filter(x => x.id !== id);
-        localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
-        renderUmhpList();
-      } catch(e) {}
     }
 
     // Alerte anti-fermeture / rafraichissement accidentel
