@@ -5894,8 +5894,42 @@ RAPPORT D'INTERVENTION SMUR / PSIS - SAMU 13
 ==============================================
 
 1. PATIENT ET SITUATION
-Patient : ${affichageSexe}${nom}
-Age :
+Patient : ${affichageSexe} ${nom}
+Age : ${ageStr} | Poids : ${poids} kg
+${isP0 ? "- Statut : P0 (Urgence vitale)\n" : ""}- Motif : ${motif}
+${getTagsText('atcd-tags') ? '- ATCD : ' + getTagsText('atcd-tags') : ''}
+${getTagsText('ttt-tags') ? '- Traitements : ' + getTagsText('ttt-tags') : ''}
+${getTagsText('allergies-tags') ? '- Allergies : ' + getTagsText('allergies-tags') : ''}
+
+2. BILAN
+${bilanSection}
+
+3. PARAMÈTRES VITAUX
+${cInit.length > 0 ? cInit.join(' | ') : 'Non renseignés'}
+
+4. RÉGULATION CENTRE 15
+- Demande : ${demType}
+${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
+
+5. THÉRAPEUTIQUES
+${theraSection}
+
+6. SUIVI CHRONOLOGIQUE ET ÉVOLUTION
+${suiviSection}
+
+7. ORIENTATION
+- Transport : ${orientTrans}
+- Destination : ${orientDest}
+==============================================`;
+
+      document.getElementById('resume-output').value = resumeTxt;
+      return {
+        nom: nom,
+        motif: motif,
+        date: new Date().toLocaleString('fr-FR'),
+        texte: resumeTxt
+      };
+    }
 
     // ================= CALCUL DU TEMPS & ACTUALISATION AUTOMATIQUE =================
     function getDureeDepuis(heureSaisie) {
