@@ -3606,54 +3606,39 @@
     }
 
     function startNewIntervention() {
-      clearDraft(); // Vide le brouillon précédent
-      document.getElementById('patient-nom').value = '';
-      document.getElementById('patient-sexe').value = '';
-      const sexeGroup = document.getElementById('sexe-group');
-      if (sexeGroup) sexeGroup.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-      document.getElementById('ddn-jour').selectedIndex = 0;
-      document.getElementById('ddn-mois').selectedIndex = 0;
+      clearDraft(); // Vide le brouillon précédent en mémoire locale
+      
+      // 1. Vider TOUS les champs de texte, de nombres, cachés et zones de texte (textareas)
+      document.querySelectorAll('input[type="text"], input[type="number"], input[type="hidden"], textarea').forEach(el => {
+        el.value = '';
+      });
+
+      // 2. Décocher TOUTES les cases à cocher (checkboxes)
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+      });
+
+      // 3. Remettre TOUS les menus déroulants à leur première option
+      document.querySelectorAll('select').forEach(sel => {
+        sel.selectedIndex = 0;
+        if(sel.dataset.touched) sel.dataset.touched = 'false'; // Reset spécifique pour le Glasgow
+      });
+
+      // --- EXCEPTIONS (Valeurs par défaut à forcer) ---
       document.getElementById('ddn-annee').value = '1980';
       document.getElementById('patient-poids').value = '70';
       
-      document.getElementById('toggle-p0').checked = false;
-      onP0Change();
-      document.getElementById('motif-select').value = '';
-      document.getElementById('anamnese-motif-display').textContent = 'Motif : -';
-      
-      document.getElementById('atcd-tags').innerHTML = '';
-      document.getElementById('ttt-tags').innerHTML = '';
-      document.getElementById('allergies-tags').innerHTML = '';
-      document.getElementById('hospit-tags').innerHTML = '';
-      document.getElementById('prescription-tags').innerHTML = '';
-      
-      const btnTrans = document.getElementById('btn-transport-select');
-      if (btnTrans) { btnTrans.textContent = '+ Sélectionner le transport'; btnTrans.classList.remove('active'); }
-      const btnDest = document.getElementById('btn-destination-select');
-      if (btnDest) { btnDest.textContent = '+ Sélectionner la destination'; btnDest.classList.remove('active'); }
-      if (document.getElementById('val-transport')) document.getElementById('val-transport').value = '';
-      if (document.getElementById('val-destination')) document.getElementById('val-destination').value = '';
-      
-      if(document.getElementById('c-pas')) document.getElementById('c-pas').value = '';
-      if(document.getElementById('c-pad')) document.getElementById('c-pad').value = '';
-      document.getElementById('c-pa').value = '';
-      document.getElementById('c-fc').value = '';
-      document.getElementById('c-spo2').value = '';
-      document.getElementById('c-fr').value = '';
-      document.getElementById('c-hgt').value = '';
-      document.getElementById('c-temp').value = '';
-      document.getElementById('c-eva').value = '';
-      document.getElementById('c-trc').value = '';
-      if(document.getElementById('c-hbco')) document.getElementById('c-hbco').value = '';
-      if(document.getElementById('c-glasgow')) document.getElementById('c-glasgow').value = '';
-      if(document.getElementById('ts-d-e')) document.getElementById('ts-d-e').dataset.touched = 'false';
-      if(document.getElementById('ts-d-v')) document.getElementById('ts-d-v').dataset.touched = 'false';
-      if(document.getElementById('ts-d-m')) document.getElementById('ts-d-m').dataset.touched = 'false';
-      if(document.getElementById('ts-d-gcs-score')) document.getElementById('ts-d-gcs-score').textContent = 'Score = -';
-      
-      document.querySelectorAll('.avpu-btn').forEach(b => b.classList.remove('active'));
+      // 4. Désactiver TOUS les boutons sélectionnables (boutons colorés)
+      document.querySelectorAll('.btn-toggle-action, .scb-part, .algo-branch-btn, .algo-btn, .avpu-btn').forEach(b => {
+        b.classList.remove('active', 'active-green', 'active-red');
+      });
+
+      // 5. Réinitialiser TOUTES les variables globales
+      tsVoiesAeriennes = '';
       selectedAvpu = '';
-      
+      statutNouveauNe = 'Non évalué';
+      oxygeneMode = '';
+      pompeInsulineStatut = 'NON';
       brulureType = '';
       fumeeInhalation = false;
       brulureProfondeur = '';
@@ -3661,29 +3646,43 @@
       antalgieTrauma = null;
       antalgiquesPrisStatut = null;
       totalMorphineDose = 0;
-      tsVoiesAeriennes = '';
 
-      document.querySelectorAll('.btn-toggle-action').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.scb-part').forEach(b => b.classList.remove('active'));
+      // 6. Nettoyer les encarts de Tags (ATCD, Traitements, etc.)
+      document.getElementById('anamnese-motif-display').textContent = 'Motif : -';
+      ['atcd-tags', 'ttt-tags', 'allergies-tags', 'hospit-tags', 'prescription-tags', 'antalgiques-pris-tags'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+      });
+
+      // 7. Réinitialiser les textes dynamiques spécifiques
+      const btnTrans = document.getElementById('btn-transport-select');
+      if (btnTrans) btnTrans.textContent = '+ Sélectionner le transport';
+      const btnDest = document.getElementById('btn-destination-select');
+      if (btnDest) btnDest.textContent = '+ Sélectionner la destination';
+      
       const scbDisp = document.getElementById('scb-total-display');
       if (scbDisp) scbDisp.value = '0';
-      const brulRenfort = document.getElementById('brul-renfort-msg');
-      if (brulRenfort) brulRenfort.style.display = 'none';
+      const gcsScore = document.getElementById('ts-d-gcs-score');
+      if (gcsScore) gcsScore.textContent = 'Score = -';
 
-      // Reset Antalgie fields
-      const encTrauma = document.getElementById('encart-trauma');
-      if (encTrauma) encTrauma.style.display = 'none';
-      const encAntPris = document.getElementById('encart-antalgiques-pris');
-      if (encAntPris) encAntPris.style.display = 'none';
-      const antTags = document.getElementById('antalgiques-pris-tags');
-      if (antTags) antTags.innerHTML = '';
-      ['sit-siege', 'sit-intensite', 'sit-type', 'sit-irradiations', 'sit-duree', 'sit-rythme', 'sit-aggravants', 'sit-calmants', 'sit-associes'].forEach(id => {
+      // 8. Stopper proprement le chrono ACR et ses constantes
+      if (typeof resetAcr === 'function') resetAcr();
+
+      // 9. Cacher tous les encarts conditionnels qui ont pu s'ouvrir
+      const idsToHide = [
+        'encart-trauma', 'encart-antalgiques-pris', 'brul-renfort-msg', 'dr-renfort-msg', 'alg-renfort-msg', 
+        'bloc-ts-x-saign', 'bloc-ts-x-bassin', 'bloc-ts-x-garrot-time', 'bloc-ts-b-plaie', 'bloc-ts-b-o2', 
+        'bloc-ts-c-alerte-si', 'bloc-ts-c-alerte-pam', 'bloc-ts-d-alerte-gcs', 'bloc-ts-e-augmentin', 
+        'hypo-bloc-pls', 'hypo-bloc-glucagon', 'hypo-sub-oui', 'hypo-sub-non', 'box-oap-hta', 'field-hbco-container', 'field-gcs-container'
+      ];
+      idsToHide.forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.value = '';
+        if(el) el.style.display = 'none';
       });
-      
-      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-      
+
+      // 10. Relancer la mécanique de base pour revenir à l'écran 1
+      document.getElementById('toggle-p0').checked = false;
+      onP0Change();
       goToPage(1);
     }
 
