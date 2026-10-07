@@ -3580,6 +3580,7 @@
       calculateApgar();
       updateTheraDoses();
       updateMotifsGrid(false);
+      restoreDraft(); // Charge le brouillon s'il existe
     });
 
     // NAVIGATION ACCUEIL & ÉCRANS
@@ -3599,6 +3600,7 @@
     }
 
     function startNewIntervention() {
+      clearDraft(); // Vide le brouillon précédent
       document.getElementById('patient-nom').value = '';
       document.getElementById('patient-sexe').value = '';
       const sexeGroup = document.getElementById('sexe-group');
@@ -5956,6 +5958,7 @@ ${suiviSection}
       setTimeout(() => {
         if (document.getElementById('page-regu').classList.contains('active')) generateSAED();
         if (document.getElementById('page-resume').classList.contains('active')) generateResumeFinal();
+        if (typeof saveDraft === 'function') saveDraft(); // Sauvegarde silencieuse
       }, 50);
     }
     document.addEventListener('input', autoUpdateResumes);
@@ -6004,6 +6007,7 @@ ${suiviSection}
       });
     }
     function saveCurrentIntervention() {
+      clearDraft(); // Sécurise la fin du dossier
       const data = generateResumeFinal();
       let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
       
@@ -6735,6 +6739,107 @@ ${suiviSection}
         console.warn("Son bloqué par le navigateur", e);
       }
     }
+
+    // ================= SÉCURITÉ ANTI-PERTE DE DONNÉES =================
+    function saveDraft() {
+      // Pas de sauvegarde si on est juste sur l'accueil
+      if (document.getElementById('page-home') && document.getElementById('page-home').classList.contains('active')) return;
+
+      const draft = {
+        inputs: {},
+        checkboxes: {},
+        tags: {},
+        globals: {
+          tsVoiesAeriennes, selectedAvpu, statutNouveauNe, oxygeneMode,
+          pompeInsulineStatut, brulureType, fumeeInhalation, brulureProfondeur,
+          totalScb, antalgieTrauma, antalgiquesPrisStatut, previousMotifPage
+        },
+        activePageId: document.querySelector('.page.active') ? document.querySelector('.page.active').id : 'page-1'
+      };
+
+      document.querySelectorAll('input[type="text"], input[type="number"], input[type="hidden"], select, textarea').forEach(el => {
+        if (el.id) draft.inputs[el.id] = el.value;
+      });
+
+      document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+        if (el.id) draft.checkboxes[el.id] = el.checked;
+      });
+
+      ['atcd-tags', 'ttt-tags', 'allergies-tags', 'hospit-tags', 'transport-tags', 'destination-tags', 'prescription-tags'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) draft.tags[id] = el.innerHTML;
+      });
+
+      localStorage.setItem('samu13_draft', JSON.stringify(draft));
+    }
+
+    function restoreDraft() {
+      const draftStr = localStorage.getItem('samu13_draft');
+      if (!draftStr) return;
+
+      try {
+        const draft = JSON.parse(draftStr);
+
+        if (draft.globals) {
+          tsVoiesAeriennes = draft.globals.tsVoiesAeriennes;
+          selectedAvpu = draft.globals.selectedAvpu;
+          statutNouveauNe = draft.globals.statutNouveauNe;
+          oxygeneMode = draft.globals.oxygeneMode;
+          pompeInsulineStatut = draft.globals.pompeInsulineStatut;
+          brulureType = draft.globals.brulureType;
+          fumeeInhalation = draft.globals.fumeeInhalation;
+          brulureProfondeur = draft.globals.brulureProfondeur;
+          totalScb = draft.globals.totalScb;
+          antalgieTrauma = draft.globals.antalgieTrauma;
+          antalgiquesPrisStatut = draft.globals.antalgiquesPrisStatut;
+          previousMotifPage = draft.globals.previousMotifPage || 'detresse-respi';
+        }
+
+        if (draft.inputs) {
+          for (const [id, value] of Object.entries(draft.inputs)) {
+            const el = document.getElementById(id);
+            if (el) el.value = value;
+          }
+        }
+
+        if (draft.checkboxes) {
+          for (const [id, checked] of Object.entries(draft.checkboxes)) {
+            const el = document.getElementById(id);
+            if (el) el.checked = checked;
+          }
+        }
+
+        if (draft.tags) {
+          for (const [id, html] of Object.entries(draft.tags)) {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = html;
+          }
+        }
+
+        if (draft.activePageId) {
+          const target = draft.activePageId.replace('page-', '');
+          goToPage(isNaN(target) ? target : parseInt(target));
+        }
+
+      } catch (e) {
+        console.error("Erreur de restauration du brouillon", e);
+      }
+    }
+
+    function clearDraft() {
+      localStorage.removeItem('samu13_draft');
+    }
+
+    // Alerte anti-fermeture / rafraichissement accidentel
+    window.addEventListener('beforeunload', function (e) {
+      if (document.getElementById('page-home') && !document.getElementById('page-home').classList.contains('active')) {
+        e.preventDefault();
+        e.returnValue = ''; 
+      }
+    });
+
+  </script>
+</body>
   </script>
 </body>
 </html>
