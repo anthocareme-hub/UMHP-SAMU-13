@@ -3617,6 +3617,9 @@
       document.getElementById('ttt-tags').innerHTML = '';
       document.getElementById('allergies-tags').innerHTML = '';
       document.getElementById('hospit-tags').innerHTML = '';
+      document.getElementById('transport-tags').innerHTML = '';
+      document.getElementById('destination-tags').innerHTML = '';
+      document.getElementById('prescription-tags').innerHTML = '';
       
       if(document.getElementById('c-pas')) document.getElementById('c-pas').value = '';
       if(document.getElementById('c-pad')) document.getElementById('c-pad').value = '';
@@ -5364,12 +5367,12 @@ function checkDrGravite() {
 
       let evalMotif = '';
       if (motif === 'Accouchement') {
-        const terme = `${document.getElementById('acc-terme-mois').value}${document.getElementById('acc-terme-annee').value}`;
+        const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
         const gemellaire = document.getElementById('acc-gemellaire').checked ? 'OUI' : 'NON';
         const debutTravail = `${document.getElementById('acc-debut-hh').value}:${document.getElementById('acc-debut-mm').value}`;
         const perteEaux = document.getElementById('acc-perte-eaux').checked ? 'OUI' : 'NON';
-        const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value}${document.getElementById('acc-contractions-duree-unite').value}`;
-        const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value}${document.getElementById('acc-contractions-delai-unite').value}`;
+        const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
+        const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
 
         let prepa = [];
         if (document.getElementById('acc-rechauffe').checked) prepa.push('cellule réchauffée');
@@ -5381,7 +5384,7 @@ function checkDrGravite() {
 `- Terme prévu : ${terme} | Grossesse gémellaire : ${gemellaire}
 - Début du travail : ${debutTravail}
 - Perte des eaux : ${perteEaux}
-- Contractions : durée ${dureeContrac} / toutes les${delaiContrac}
+- Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
 - Mesures associées : ${prepa.length > 0 ? prepa.join(', ') : 'En cours'}`;
       } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
         const dr = getDetresseRespiData();
@@ -5639,6 +5642,15 @@ ${demandeText}
 
           const prescr = getTagsText('prescription-tags');
           if(prescr) mereDetails.push(`Prescriptions médicales : ${prescr}`);
+        } else {
+          let mereConst = [];
+          if (document.getElementById('c10-pa').value) mereConst.push(`PA: ${document.getElementById('c10-pa').value}`);
+          if (document.getElementById('c10-fc').value) mereConst.push(`FC: ${document.getElementById('c10-fc').value} bpm`);
+          if (document.getElementById('c10-spo2').value) mereConst.push(`SpO2: ${document.getElementById('c10-spo2').value}%`);
+          if (document.getElementById('c10-fr').value) mereConst.push(`FR: ${document.getElementById('c10-fr').value}/min`);
+          if (document.getElementById('c10-temp').value) mereConst.push(`T°: ${document.getElementById('c10-temp').value}°C`);
+          if (document.getElementById('c10-hgt').value) mereConst.push(`HGT: ${document.getElementById('c10-hgt').value} g/L`);
+          if (mereConst.length > 0) mereDetails.push(`Constantes de surveillance : ${mereConst.join(' | ')}`);
         }
 
         const apgar1 = apgarScores['1m'] !== null ? `${apgarScores['1m']}/10` : '';
@@ -5845,6 +5857,19 @@ ${bilanBrulureLines.join('\n')}
         evalMotif += getSuiviTrauma();
         } else if (motif === 'ACR adulte') {
         const acr = getAcrAdulteData();
+        let racsDetails = "";
+        if (acr.racs === 'OUI') {
+          let racsConst = [];
+          if (document.getElementById('racs-pa').value) racsConst.push(`PA: ${document.getElementById('racs-pa').value}`);
+          if (document.getElementById('racs-fc').value) racsConst.push(`FC: ${document.getElementById('racs-fc').value} bpm`);
+          if (document.getElementById('racs-spo2').value) racsConst.push(`SpO2: ${document.getElementById('racs-spo2').value}%`);
+          if (document.getElementById('racs-etco2').value) racsConst.push(`EtCO2: ${document.getElementById('racs-etco2').value} mmHg`);
+          if (document.getElementById('racs-temp').value) racsConst.push(`T°: ${document.getElementById('racs-temp').value}°C`);
+          if (document.getElementById('racs-glasgow').value) racsConst.push(`Glasgow: ${document.getElementById('racs-glasgow').value}`);
+          if (document.getElementById('racs-pupilles').value) racsConst.push(`Pupilles: ${document.getElementById('racs-pupilles').value}`);
+          racsDetails = racsConst.length > 0 ? `\n- Constantes Post-RACS : ${racsConst.join(' | ')}` : "";
+        }
+
         specificSection = 
 `3. BILAN ET PRISE EN CHARGE ACR
 - Rythme initial : ${acr.rythme}
@@ -5853,7 +5878,7 @@ ${bilanBrulureLines.join('\n')}
 - Chocs délivrés : ${acr.chocs}
 - Adrénaline totale : ${acr.adre} mg
 - 4H/4T (Causes réversibles contrôlées) : ${acr.causesReversibles}
-- RACS (Retour d'Activité Cardiaque Spontanée) : ${acr.racs}`;
+- RACS (Retour d'Activité Cardiaque Spontanée) : ${acr.racs}${racsDetails}`;
 
       } else if (motif === 'Antalgie') {
         let traumaStr = '';
@@ -5935,6 +5960,10 @@ ${specificSection}
 6. RÉGULATION CENTRE 15 / BILAN COMPLÉMENTAIRE
 - Demande : ${demType}
 ${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
+
+7. ORIENTATION
+- Transport : ${orientTrans}
+- Destination : ${orientDest}
 ==============================================`;
 
       document.getElementById('resume-output').value = resumeTxt;
