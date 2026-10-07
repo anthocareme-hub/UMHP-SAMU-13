@@ -5261,8 +5261,17 @@ function checkDrGravite() {
     // TRANSMISSION SAED
     function generateSAED() {
       const isP0 = document.getElementById('toggle-p0').checked;
-      const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
-      const sexe = document.getElementById('patient-sexe').value || 'Non renseigné';
+      
+      const sexe = document.getElementById('patient-sexe').value; 
+      const rawNom = document.getElementById('patient-nom').value.trim();
+      let nom = rawNom;
+      if (!rawNom) {
+        if (sexe === 'M') nom = 'XY';
+        else if (sexe === 'F') nom = 'XX';
+        else nom = 'Non renseigné';
+      }
+      const affichageSexe = sexe ? sexe : '?';
+
       const ageStr = calculerAge(document.getElementById('ddn-jour').value, document.getElementById('ddn-mois').value, document.getElementById('ddn-annee').value);
       const poids = document.getElementById('patient-poids').value;
       const motif = document.getElementById('motif-select').value;
@@ -5274,12 +5283,12 @@ function checkDrGravite() {
 
       let evalMotif = '';
       if (motif === 'Accouchement') {
-        const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
+        const terme = `${document.getElementById('acc-terme-mois').value}${document.getElementById('acc-terme-annee').value}`;
         const gemellaire = document.getElementById('acc-gemellaire').checked ? 'OUI' : 'NON';
         const debutTravail = `${document.getElementById('acc-debut-hh').value}:${document.getElementById('acc-debut-mm').value}`;
         const perteEaux = document.getElementById('acc-perte-eaux').checked ? 'OUI' : 'NON';
-        const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
-        const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
+        const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value}${document.getElementById('acc-contractions-duree-unite').value}`;
+        const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value}${document.getElementById('acc-contractions-delai-unite').value}`;
 
         let prepa = [];
         if (document.getElementById('acc-rechauffe').checked) prepa.push('cellule réchauffée');
@@ -5291,7 +5300,7 @@ function checkDrGravite() {
 `- Terme prévu : ${terme} | Grossesse gémellaire : ${gemellaire}
 - Début du travail : ${debutTravail}
 - Perte des eaux : ${perteEaux}
-- Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}
+- Contractions : durée ${dureeContrac} / toutes les${delaiContrac}
 - Mesures associées : ${prepa.length > 0 ? prepa.join(', ') : 'En cours'}`;
       } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
         const dr = getDetresseRespiData();
@@ -5304,7 +5313,7 @@ function checkDrGravite() {
         let evalLines = [];
         
         if (alg.signes) evalLines.push(`- Signes cliniques : ${alg.signes}`);
-        if (alg.heure && alg.heure !== ':') evalLines.push(`- Heure de début : ${getDureeDepuis(alg.heure)} (saisi:${alg.heure})`);
+        if (alg.heure && alg.heure !== ':') evalLines.push(`- Heure de début : ${alg.heure}`);
         if (alg.facteur) evalLines.push(`- Facteur déclenchant : ${alg.facteur}`);
         if (alg.gravites) evalLines.push(`- Signes de gravité : ${alg.gravites}`);
         if (alg.actions) evalLines.push(`- Gestes réalisés : ${alg.actions}`);
@@ -5345,7 +5354,7 @@ function checkDrGravite() {
         if (gestes.length > 0) evalLines.push(`- Gestes réalisés : ${gestes.join(', ')}`);
 
         evalMotif = evalLines.join('\n');
-        } else if (motif === 'Traumatisé sévère') {
+      } else if (motif === 'Traumatisé sévère') {
         const tsData = getTraumaSevereData();
         evalMotif = 
 `- [X] ${tsData.x}
@@ -5444,7 +5453,8 @@ function checkDrGravite() {
 `TRANSMISSION SMUR INFIRMIER (SAED / SAU)
 ----------------------------------------
 [S] SITUATION
-Patient : ${nom} | Sexe : ${sexe} | Age : ${ageStr} | Poids : ${poids} kg
+Patient : ${affichageSexe} ${nom}
+Age : ${ageStr} | Poids : ${poids} kg
 ${isP0 ? "Degré d'urgence : P0 (Urgence vitale)\n" : ""}Motif : ${motif}
 [A] ANTECEDENTS & TERRAIN
 ${anamnaseContent || 'Aucun renseigné'}
@@ -5469,8 +5479,16 @@ ${demandeText}
 
     // RÉSUMÉ FINAL & ENREGISTREMENT LOCAL
     function generateResumeFinal() {
-      const nom = document.getElementById('patient-nom').value.trim() || 'Non renseigné';
-      const sexe = document.getElementById('patient-sexe').value || 'Non renseigné';
+      const sexe = document.getElementById('patient-sexe').value; 
+      const rawNom = document.getElementById('patient-nom').value.trim();
+      let nom = rawNom;
+      if (!rawNom) {
+        if (sexe === 'M') nom = 'XY';
+        else if (sexe === 'F') nom = 'XX';
+        else nom = 'Non renseigné';
+      }
+      const affichageSexe = sexe ? sexe : '?'; 
+      
       const ageStr = calculerAge(document.getElementById('ddn-jour').value, document.getElementById('ddn-mois').value, document.getElementById('ddn-annee').value);
       const poids = document.getElementById('patient-poids').value;
       const isP0 = document.getElementById('toggle-p0').checked;
@@ -5580,7 +5598,7 @@ ${mereDetails.map(l => '- ' + l).join('\n')}
           theraList.push('Pose de SNG');
         }
 
-const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls: ${document.getElementById('dr-t10-pouls').value || '-'} bpm, SpO2: ${document.getElementById('dr-t10-spo2').value || '-'}%, FR: ${document.getElementById('dr-t10-fr').value || '-'}/min, AVPU: ${document.getElementById('dr-t10-avpu').value}`;
+        const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls: ${document.getElementById('dr-t10-pouls').value || '-'} bpm, SpO2: ${document.getElementById('dr-t10-spo2').value || '-'}%, FR: ${document.getElementById('dr-t10-fr').value || '-'}/min, AVPU: ${document.getElementById('dr-t10-avpu').value}`;
         const t20Str = `PA: ${document.getElementById('dr-t20-pa').value || '-'}, Pouls: ${document.getElementById('dr-t20-pouls').value || '-'} bpm, SpO2: ${document.getElementById('dr-t20-spo2').value || '-'}%, FR: ${document.getElementById('dr-t20-fr').value || '-'}/min, AVPU: ${document.getElementById('dr-t20-avpu').value}`;
 
         specificSection = 
@@ -5615,7 +5633,7 @@ const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls:
 
         let evalLines = [];
         if (alg.signes) evalLines.push(`- Signes cliniques : ${alg.signes}`);
-        if (alg.heure && alg.heure !== ':') evalLines.push(`- Heure de début : ${getDureeDepuis(alg.heure)} (saisi: ${alg.heure})`);
+        if (alg.heure && alg.heure !== ':') evalLines.push(`- Heure de début : ${alg.heure}`);
         if (alg.facteur) evalLines.push(`- Facteur déclenchant : ${alg.facteur}`);
         if (alg.gravites) evalLines.push(`- Signes de gravité : ${alg.gravites}`);
         if (alg.actions) evalLines.push(`- Gestes réalisés : ${alg.actions}`);
@@ -5749,10 +5767,10 @@ ${bilanBrulureLines.join('\n')}
         if (antalgieTrauma !== null) {
           traumaStr = `Trauma : ${antalgieTrauma ? 'OUI' : 'NON'}`;
           if (antalgieTrauma) {
-            let attelle = document.getElementById('chk-attelle') && document.getElementById('chk-attelle').checked ? 'Immobilisation par attelle' : '';
-            let vsm = document.getElementById('chk-vsm') && document.getElementById('chk-vsm').checked ? 'Bonne vascularisation' : '';
-            let vss = document.getElementById('chk-vss') && document.getElementById('chk-vss').checked ? 'Bonne sensibilité' : '';
-            let vmr = document.getElementById('chk-vmr') && document.getElementById('chk-vmr').checked ? 'Bonne motricité' : '';
+            let attelle = document.getElementById('chk-attelle').checked ? 'Immobilisation par attelle' : '';
+            let vsm = document.getElementById('chk-vsm').checked ? 'Bonne vascularisation' : '';
+            let vss = document.getElementById('chk-vss').checked ? 'Bonne sensibilité' : '';
+            let vmr = document.getElementById('chk-vmr').checked ? 'Bonne motricité' : '';
             let items = [attelle, vsm, vss, vmr].filter(Boolean);
             if (items.length > 0) gestesStr = `- Gestes / Vérifications : ${items.join(', ')}`;
           }
@@ -5808,7 +5826,8 @@ RAPPORT D'INTERVENTION SMUR / PSIS - SAMU 13
 ==============================================
 
 1. PATIENT & SITUATION
-- Identité : ${nom} | Sexe : ${sexe} | Age : ${ageStr} | Poids : ${poids} kg
+Patient : ${affichageSexe} ${nom}
+Age : ${ageStr} | Poids : ${poids} kg
 ${isP0 ? "- Statut : P0 (Urgence vitale)\n" : ""}- Motif : ${motif}
 ${getTagsText('atcd-tags') ? '- ATCD : ' + getTagsText('atcd-tags') : ''}
 ${getTagsText('ttt-tags') ? '- Traitements : ' + getTagsText('ttt-tags') : ''}
