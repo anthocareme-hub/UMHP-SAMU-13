@@ -3461,7 +3461,8 @@
     // Variables spécifiques Antalgie
     let antalgieTrauma = null;
     let antalgiquesPrisStatut = null;
-
+    let totalMorphineDose = 0; // Ajout du compteur de morphine
+    
     window.addEventListener('DOMContentLoaded', () => {
       
       // DATE DE NAISSANCE
@@ -3659,6 +3660,7 @@
       totalScb = 0;
       antalgieTrauma = null;
       antalgiquesPrisStatut = null;
+      totalMorphineDose = 0;
       tsVoiesAeriennes = '';
 
       document.querySelectorAll('.btn-toggle-action').forEach(b => b.classList.remove('active'));
@@ -4101,6 +4103,13 @@
 
       window.scrollTo(0, 0);
     }
+    function addMorphineDose(btn) {
+      const increment = parseInt(btn.getAttribute('data-increment') || '2', 10);
+      totalMorphineDose += increment;
+      btn.classList.add('active');
+      btn.textContent = `✓ ${totalMorphineDose} mg administrés (cliquer pour +${increment}mg)`;
+      autoUpdateResumes();
+    }
 
     // LOGIQUE SPÉCIFIQUE ANTALGIE (PAGE 3)
     function selectTrauma(val) {
@@ -4166,13 +4175,18 @@
           </div>
         `;
       } else if (enVal >= 6) {
-        let doseMorphine = poidsVal <= 60 ? "Morphine 2 mg IVD" : "Morphine 3 mg IVD";
+        let doseInc = poidsVal <= 60 ? 2 : 3;
+        let btnText = totalMorphineDose > 0 
+          ? `✓ ${totalMorphineDose} mg administrés (cliquer pour +${doseInc}mg)`
+          : `💉 Morphine ${doseInc} mg IVD`;
+        let activeClass = totalMorphineDose > 0 ? 'active' : '';
+
         container.innerHTML = `
           <div class="thera-box" style="border-left: 6px solid var(--danger);">
             <div class="thera-title" style="margin-bottom: 12px;">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)</div>
             
-            <button type="button" class="btn-toggle-action" id="btn-ant-morphine" onclick="this.classList.toggle('active');" style="border-color: #0284c7; color: #0369a1;">
-              💉 ${doseMorphine}
+            <button type="button" class="btn-toggle-action ${activeClass}" id="btn-ant-morphine" data-increment="${doseInc}" onclick="addMorphineDose(this)" style="border-color: #0284c7; color: #0369a1;">
+              ${btnText}
             </button>
             
             <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)</p>
@@ -4350,13 +4364,18 @@
             </div>
           `;
         } else if (enVal >= 6) {
-          let doseMorphine = poidsVal <= 60 ? "Morphine 2 mg IVD" : "Morphine 3 mg IVD";
+          let doseInc = poidsVal <= 60 ? 2 : 3;
+          let btnText = totalMorphineDose > 0 
+            ? `✓ ${totalMorphineDose} mg administrés (cliquer pour +${doseInc}mg)`
+            : `💉 Morphine ${doseInc} mg IVD`;
+          let activeClass = totalMorphineDose > 0 ? 'active' : '';
+
           douleurContainer.innerHTML = `
             <div class="thera-box" style="border-left: 6px solid var(--danger);">
               <div class="thera-title" style="margin-bottom: 12px;">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)</div>
               
-              <button type="button" class="btn-toggle-action" id="btn-brul-morphine" onclick="this.classList.toggle('active');" style="border-color: #0284c7; color: #0369a1;">
-                💉 ${doseMorphine}
+              <button type="button" class="btn-toggle-action ${activeClass}" id="btn-brul-morphine" data-increment="${doseInc}" onclick="addMorphineDose(this)" style="border-color: #0284c7; color: #0369a1;">
+                ${btnText}
               </button>
               
               <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)</p>
@@ -5352,7 +5371,7 @@ function checkDrGravite() {
       
       if (document.getElementById('btn-ts-e-meopa') && document.getElementById('btn-ts-e-meopa').classList.contains('active')) antalgieStr.push("MEOPA");
       if (document.getElementById('btn-ts-e-para') && document.getElementById('btn-ts-e-para').classList.contains('active')) antalgieStr.push("Paracétamol");
-      if (document.getElementById('btn-ts-e-morphine') && document.getElementById('btn-ts-e-morphine').classList.contains('active')) antalgieStr.push("Morphine");
+      if (document.getElementById('btn-ts-e-morphine') && document.getElementById('btn-ts-e-morphine').classList.contains('active')) antalgieStr.push(`Morphine (${totalMorphineDose} mg)`);
       
       if (antalgieStr.length > 0) {
         eParts.push(`Antalgie : ${antalgieStr.join(' + ')}`);
@@ -5850,7 +5869,7 @@ ${demandeText}
         const btnBrulPara = document.getElementById('btn-brul-para');
         if (btnBrulPara && btnBrulPara.classList.contains('active')) theraBrulure.push("Paracétamol 1g IVL administré");
         const btnBrulMorph = document.getElementById('btn-brul-morphine');
-        if (btnBrulMorph && btnBrulMorph.classList.contains('active')) theraBrulure.push(btnBrulMorph.textContent.replace('💉', '').trim() + " administré");
+        if (btnBrulMorph && btnBrulMorph.classList.contains('active')) theraBrulure.push(`Morphine administrée (${totalMorphineDose} mg)`);
 
         const t0Str = `PA: ${document.getElementById('brul-t0-pa').value}, Pouls: ${document.getElementById('brul-t0-pouls').value}, SpO2: ${document.getElementById('brul-t0-spo2').value}, HbCO: ${document.getElementById('brul-t0-hbco').value}, EN: ${document.getElementById('brul-t0-en').value}, AVPU: ${document.getElementById('brul-t0-avpu').value}`;
         const t15Str = `PA: ${document.getElementById('brul-t15-pa').value || '-'}, Pouls: ${document.getElementById('brul-t15-pouls').value || '-'}, SpO2: ${document.getElementById('brul-t15-spo2').value || '-'}%, HbCO: ${document.getElementById('brul-t15-hbco').value || '-'}%, EN: ${document.getElementById('brul-t15-en').value || '-'}, AVPU: ${document.getElementById('brul-t15-avpu').value}`;
@@ -5924,7 +5943,7 @@ ${demandeText}
         const btnPara = document.getElementById('btn-ant-para');
         if (btnPara && btnPara.classList.contains('active')) theraAnt.push("Paracétamol 1g IVL administré");
         const btnMorph = document.getElementById('btn-ant-morphine');
-        if (btnMorph && btnMorph.classList.contains('active')) theraAnt.push(btnMorph.textContent.replace('💉', '').trim() + " administré");
+        if (btnMorph && btnMorph.classList.contains('active')) theraAnt.push(`Morphine administrée (${totalMorphineDose} mg)`);
 
         const t0Str = `PA: ${document.getElementById('ant-t0-pa').value}, Pouls: ${document.getElementById('ant-t0-pouls').value}, SpO2: ${document.getElementById('ant-t0-spo2').value}, EN: ${document.getElementById('ant-t0-en').value}, AVPU: ${document.getElementById('ant-t0-avpu').value}`;
         const t10Str = `PA: ${document.getElementById('ant-t10-pa').value || '-'}, Pouls: ${document.getElementById('ant-t10-pouls').value || '-'} bpm, SpO2: ${document.getElementById('ant-t10-spo2').value || '-'}%, EN: ${document.getElementById('ant-t10-en').value || '-'}, AVPU: ${document.getElementById('ant-t10-avpu').value}`;
@@ -6702,13 +6721,18 @@ ${suiviSection}
           </div>
         `;
       } else if (enVal >= 6) {
-        let doseMorphine = poidsVal <= 60 ? "Morphine 2 mg IVD" : "Morphine 3 mg IVD";
+        let doseInc = poidsVal <= 60 ? 2 : 3;
+        let btnText = totalMorphineDose > 0 
+          ? `✓ ${totalMorphineDose} mg administrés (cliquer pour +${doseInc}mg)`
+          : `💉 Morphine ${doseInc} mg IVD`;
+        let activeClass = totalMorphineDose > 0 ? 'active' : '';
+
         container.innerHTML = `
           <div class="thera-box" style="border-left: 6px solid var(--danger);">
             <div class="thera-title" style="margin-bottom: 12px;">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)</div>
             
-            <button type="button" class="btn-toggle-action" id="btn-ts-e-morphine" onclick="this.classList.toggle('active');" style="border-color: #0284c7; color: #0369a1;">
-              💉 ${doseMorphine}
+            <button type="button" class="btn-toggle-action ${activeClass}" id="btn-ts-e-morphine" data-increment="${doseInc}" onclick="addMorphineDose(this)" style="border-color: #0284c7; color: #0369a1;">
+              ${btnText}
             </button>
             
             <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)</p>
@@ -6809,7 +6833,7 @@ ${suiviSection}
         globals: {
           tsVoiesAeriennes, selectedAvpu, statutNouveauNe, oxygeneMode,
           pompeInsulineStatut, brulureType, fumeeInhalation, brulureProfondeur,
-          totalScb, antalgieTrauma, antalgiquesPrisStatut, previousMotifPage
+          totalScb, antalgieTrauma, antalgiquesPrisStatut, previousMotifPage, totalMorphineDose
         },
         activePageId: document.querySelector('.page.active') ? document.querySelector('.page.active').id : 'page-1'
       };
@@ -6850,6 +6874,7 @@ ${suiviSection}
           antalgieTrauma = draft.globals.antalgieTrauma;
           antalgiquesPrisStatut = draft.globals.antalgiquesPrisStatut;
           previousMotifPage = draft.globals.previousMotifPage || 'detresse-respi';
+          totalMorphineDose = draft.globals.totalMorphineDose || 0;
         }
 
         if (draft.inputs) {
