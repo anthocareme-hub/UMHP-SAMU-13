@@ -1932,7 +1932,7 @@
       <!-- Boutons de navigation (ils manquaient dans ton premier bloc) -->
       <div class="nav-actions" style="margin-top: 24px;">
         <button type="button" class="btn-nav secondary" onclick="resetAcr(); goToPage('motif')">⬅ Quitter</button>
-        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
       </div>
 
     </div>
@@ -1987,7 +1987,7 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('acr-adulte')">⬅ Retour Chrono</button>
-        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
       </div>
     </div>
     <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS) ================= -->
@@ -2250,7 +2250,7 @@
         <!-- Boutons de navigation Surveillance -->
         <div class="nav-actions" style="margin-top: 20px;">
           <button type="button" class="btn-nav secondary" onclick="goToPage('reeval')">⬅ Réévaluation</button>
-          <button type="button" class="btn-nav" onclick="goToPage('resume')">Bilan Final ➡</button>
+          <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
         </div>
       </div> <!-- Fermeture de la card -->
     </div> <!-- Fermeture de la page-surveillance -->
@@ -2338,7 +2338,7 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('therapeutique-antalgie')">⬅ Thérapeutique</button>
-        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
       </div>
     </div>
 
@@ -2426,7 +2426,7 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('therapeutique-brulure')">⬅ Thérapeutique</button>
-        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
       </div>
     </div>
 
@@ -2576,7 +2576,7 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('therapeutique')">⬅ Thérapeutique</button>
-        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
       </div>
     </div>
     <!-- ================= PAGE : THÉRAPEUTIQUE (ALLERGIE) ================= -->
@@ -2775,7 +2775,7 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('therapeutique-allergie')">⬅ Thérapeutique</button>
-        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
       </div>
     </div>
 
@@ -2838,7 +2838,7 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('therapeutique-hypo')">⬅ Thérapeutique</button>
-        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
       </div>
     </div>
 
@@ -3199,7 +3199,34 @@
 
       <div class="nav-actions">
         <button type="button" class="btn-nav secondary" onclick="goToPage('pec-mere')">⬅ PEC Mère</button>
-        <button type="button" class="btn-nav" onclick="goToPage('resume')">Résumé final ➔</button>
+        <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
+      </div>
+    </div>
+    <!-- ================= PAGE : ORIENTATION ================= -->
+    <div id="page-orientation" class="page">
+      <div class="card">
+        <div class="section-label">Orientation du patient</div>
+        
+        <div class="field">
+          <label>Moyen de transport</label>
+          <button type="button" class="btn-toggle-action" style="margin-bottom: 8px;" onclick="toggleSelectionModal('modal-transport', true)">
+            + Sélectionner le transport
+          </button>
+          <div class="tag-container" id="transport-tags"></div>
+        </div>
+
+        <div class="field" style="margin-top: 20px;">
+          <label>Destination</label>
+          <button type="button" class="btn-toggle-action" style="margin-bottom: 8px;" onclick="toggleSelectionModal('modal-destination', true)">
+            + Sélectionner la destination
+          </button>
+          <div class="tag-container" id="destination-tags"></div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" id="btn-back-orientation" onclick="routeBackOrientation()">⬅ Précédent</button>
+        <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
       </div>
     </div>
 
@@ -3369,6 +3396,44 @@
         <div class="modal-selection-footer">
           <button type="button" class="btn-nav" style="width: 100%; padding: 14px; margin: 0; box-shadow:none;" onclick="validerSelectionHospit()">
             ✓ Ajouter la sélection
+          </button>
+        </div>
+      </div>
+    </div>
+  <!-- ================= MODALES TRANSPORT ET DESTINATION ================= -->
+    <div id="modal-transport" class="modal-selection">
+      <div class="modal-selection-card">
+        <div class="modal-selection-header">
+          <h3>Moyen de transport</h3>
+          <button type="button" class="legal-close-btn" style="position:static;" onclick="toggleSelectionModal('modal-transport', false)">✕</button>
+        </div>
+        <div class="modal-selection-body">
+          <label class="modal-item-box"><input type="checkbox" value="Laissé sur place"> Laissé sur place</label>
+          <label class="modal-item-box"><input type="checkbox" value="Paramédicalisé"> Paramédicalisé</label>
+          <label class="modal-item-box"><input type="checkbox" value="Médicalisé"> Médicalisé</label>
+        </div>
+        <div class="modal-selection-footer">
+          <button type="button" class="btn-nav" style="width: 100%; padding: 14px; margin: 0; box-shadow:none;" onclick="validerSelection('modal-transport', 'transport-tags')">
+            ✓ Valider
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-destination" class="modal-selection">
+      <div class="modal-selection-card">
+        <div class="modal-selection-header">
+          <h3>Destination</h3>
+          <button type="button" class="legal-close-btn" style="position:static;" onclick="toggleSelectionModal('modal-destination', false)">✕</button>
+        </div>
+        <div class="modal-selection-body">
+          <label class="modal-item-box"><input type="checkbox" value="Urgences"> Urgences</label>
+          <label class="modal-item-box"><input type="checkbox" value="USC (Surveillance Continue)"> USC</label>
+          <label class="modal-item-box"><input type="checkbox" value="Réanimation"> Réanimation</label>
+        </div>
+        <div class="modal-selection-footer">
+          <button type="button" class="btn-nav" style="width: 100%; padding: 14px; margin: 0; box-shadow:none;" onclick="validerSelection('modal-destination', 'destination-tags')">
+            ✓ Valider
           </button>
         </div>
       </div>
@@ -3736,6 +3801,28 @@
         goToPage('motif-autre');
       }
     }
+    function routeBackOrientation() {
+      const motif = document.getElementById('motif-select').value;
+      if (motif === 'Accouchement') {
+        goToPage('pec-enfant');
+      } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
+        goToPage('suivi-dr');
+      } else if (motif === 'Allergie') {
+        goToPage('suivi-allergie');
+      } else if (motif === 'Hypoglycémie') {
+        goToPage('suivi-hypo');
+      } else if (motif === 'Brûlure') {
+        goToPage('suivi-brulure');
+      } else if (motif === 'Antalgie') {
+        goToPage('suivi-antalgie');
+      } else if (motif === 'ACR adulte') {
+        isRacs ? goToPage('suivi-racs') : goToPage('acr-adulte');
+      } else if (motif === 'Traumatisé sévère') {
+        goToPage('surveillance');
+      } else {
+        goToPage('regu');
+      }
+    }
 
     function routeApresRegu() {
       const motif = document.getElementById('motif-select').value;
@@ -3756,7 +3843,7 @@
         } else if (motif === 'Traumatisé sévère') {
       goToPage('reeval');
       } else {
-        goToPage('resume');
+        goToPage('orientation');
       }
     }
 
@@ -3897,7 +3984,7 @@
         } else if (motif === 'Traumatisé sévère') {
           btnSuite.textContent = 'Réévaluation ➔';
         } else {
-          btnSuite.textContent = 'Résumé final ➔';
+          btnSuite.textContent = 'Orientation ➔';
         }
         generateSAED();
 
@@ -3983,28 +4070,14 @@
       } else if (target === 'pec-enfant') {
         indicator.textContent = 'PEC du nouveau-né';
         p0Container.style.display = 'none';
+      } else if (target === 'orientation') {
+        indicator.textContent = 'Orientation';
+        p0Container.style.display = 'none';
       } else if (target === 'resume') {
         indicator.textContent = 'Résumé global';
         p0Container.style.display = 'none';
-        const motif = document.getElementById('motif-select').value;
         const btnBack = document.getElementById('btn-back-resume');
-        if (motif === 'Accouchement') {
-          btnBack.onclick = () => goToPage('pec-enfant');
-        } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
-          btnBack.onclick = () => goToPage('suivi-dr');
-        } else if (motif === 'Allergie') {
-          btnBack.onclick = () => goToPage('suivi-allergie');
-        } else if (motif === 'Hypoglycémie') {
-          btnBack.onclick = () => goToPage('suivi-hypo');
-        } else if (motif === 'Brûlure') {
-          btnBack.onclick = () => goToPage('suivi-brulure');
-        } else if (motif === 'Antalgie') {
-          btnBack.onclick = () => goToPage('suivi-antalgie');
-        } else if (motif === 'ACR adulte') {
-          btnBack.onclick = () => isRacs ? goToPage('suivi-racs') : goToPage('acr-adulte');
-        } else {
-          btnBack.onclick = () => goToPage('regu');
-        }
+        btnBack.onclick = () => goToPage('orientation');
         generateResumeFinal();
       } else if (target === 'mes-umhp') {
         indicator.textContent = 'Mes UMHP';
@@ -5276,10 +5349,18 @@ function checkDrGravite() {
       const poids = document.getElementById('patient-poids').value;
       const motif = document.getElementById('motif-select').value;
 
-      const atcd = getTagsText('atcd-tags');
+      let atcd = getTagsText('atcd-tags') || "Pas d'antécédent connu";
+      let allergies = getTagsText('allergies-tags');
       const ttt = getTagsText('ttt-tags');
-      const allergies = getTagsText('allergies-tags');
       const hospit = getTagsText('hospit-tags');
+
+      // FUSION ALLERGIE
+      if (atcd.includes('Terrain allergique')) {
+        if (allergies) {
+          atcd = atcd.replace('Terrain allergique', `Terrain allergique : ${allergies}`);
+          allergies = ''; // on vide pour ne pas l'afficher une 2ème fois en dessous
+        }
+      }
 
       let evalMotif = '';
       if (motif === 'Accouchement') {
@@ -5443,7 +5524,7 @@ function checkDrGravite() {
         demandeText += `\nPrécisions / Actions : ${demandeDetails}`;
       }
 
-      let atcdBlock = atcd ? `- ATCD : ${atcd}\n` : '';
+      let atcdBlock = `- ATCD : ${atcd}\n`;
       let tttBlock = ttt ? `- Traitements : ${ttt}\n` : '';
       let allergiesBlock = allergies ? `- Allergies : ${allergies}\n` : '';
       let hospitBlock = hospit ? `- Hospitalisation récente : ${hospit}\n` : '';
@@ -5457,7 +5538,7 @@ Patient : ${affichageSexe} ${nom}
 Age : ${ageStr} | Poids : ${poids} kg
 ${isP0 ? "Degré d'urgence : P0 (Urgence vitale)\n" : ""}Motif : ${motif}
 [A] ANTECEDENTS & TERRAIN
-${anamnaseContent || 'Aucun renseigné'}
+${anamnaseContent}
 [E] EVALUATION CLINIQUE & CONSTANTES
 ${evalMotif}
 ${constText}
@@ -5468,7 +5549,6 @@ ${demandeText}
 
       document.getElementById('cr-output').value = cr;
     }
-
     function copySAED() {
       const output = document.getElementById('cr-output');
       if (!output.value) generateSAED();
@@ -5510,6 +5590,22 @@ ${demandeText}
       const demType = document.getElementById('demande-type').value;
       const demTxt = document.getElementById('saed-demande').value.trim();
 
+      const orientTrans = getTagsText('transport-tags') || 'Non renseigné';
+      const orientDest = getTagsText('destination-tags') || 'Non renseigné';
+
+      let atcd = getTagsText('atcd-tags') || "Pas d'antécédent connu";
+      let allergies = getTagsText('allergies-tags');
+      const ttt = getTagsText('ttt-tags');
+      const hospit = getTagsText('hospit-tags');
+
+      // FUSION ALLERGIE
+      if (atcd.includes('Terrain allergique')) {
+        if (allergies) {
+          atcd = atcd.replace('Terrain allergique', `Terrain allergique : ${allergies}`);
+          allergies = ''; 
+        }
+      }
+
       let specificSection = '';
 
       if (motif === 'Accouchement') {
@@ -5525,9 +5621,7 @@ ${demandeText}
 
         let mereDetails = [];
         const btnSynto = document.getElementById('btn-syntocinon');
-        if (btnSynto && btnSynto.classList.contains('active')) {
-          mereDetails.push("Syntocinon 5UI/100ml NaCl 0,9% IVL administré");
-        }
+        if (btnSynto && btnSynto.classList.contains('active')) mereDetails.push("Syntocinon 5UI/100ml NaCl 0,9% IVL administré");
 
         if (document.getElementById('select-pertes').value === 'sup500') {
           let gestesHemo = [];
