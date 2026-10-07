@@ -5051,7 +5051,7 @@ function checkDrGravite() {
         if (document.getElementById('btn-resucrage-pos').classList.contains('active')) theraRes.push("Resucrage administré (Objectif > 0,7 g/L)");
         if (document.getElementById('btn-ecg-pos').classList.contains('active')) theraRes.push("ECG 18 dérivations FAIT");
       } else if (perOsNon) {
-        theraRes.push("Per Os : NON");
+        // La mention "Per Os : NON" a été retirée pour alléger le bilan
         if (document.getElementById('btn-vvp-hypo').classList.contains('active')) theraRes.push("VVP posée");
         if (document.getElementById('btn-g30-g10').classList.contains('active')) theraRes.push("2 ampoules G30% + 250mL G10% administrées");
         if (document.getElementById('btn-rep-oui').classList.contains('active-green')) {
@@ -5456,16 +5456,20 @@ function checkDrGravite() {
         evalMotif = evalLines.join('\n');
       } else if (motif === 'Hypoglycémie') {
         const hypo = getHypoglycemieData();
-        let hypoLines = [
-          `- ${hypo.pompe}`,
-          `- Autre cause de coma : ${hypo.causes}`
-        ];
+        let hypoLines = [];
+        const hgt = document.getElementById('c-hgt').value.trim();
+        if (hgt) {
+          hypoLines.push(`- Glycémie (HGT) : ${hgt} g/L`);
+        }
+        hypoLines.push(`- ${hypo.pompe}`);
+        hypoLines.push(`- Autre cause de coma : ${hypo.causes}`);
         if (hypo.gravites) {
           hypoLines.push(`- Signes de gravité : ${hypo.gravites}`);
           hypoLines.push(`- PLS : ${hypo.pls}`);
         }
         evalMotif = hypoLines.join('\n');
-      } else if (motif === 'Brûlure') {
+      }
+      else if (motif === 'Brûlure') {
         let grav = [];
         if (document.getElementById('brul-grav-cervico') && document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
         if (document.getElementById('brul-grav-circulaire') && document.getElementById('brul-grav-circulaire').checked) grav.push('circulaire');
@@ -5560,7 +5564,7 @@ function checkDrGravite() {
       if (fc) constList.push(`FC: ${fc} bpm`);
       if (spo2) constList.push(`SpO2: ${spo2}%`);
       if (fr) constList.push(`FR: ${fr}/min`);
-      if (hgt) constList.push(`HGT: ${hgt} g/L`);
+      if (hgt && motif !== 'Hypoglycémie') constList.push(`HGT: ${hgt} g/L`);
       if (temp) constList.push(`T°: ${temp}°C`);
       if (eva) constList.push(`EVA/EN: ${eva}/10`);
       if (trc) constList.push(`TRC: ${trc}s`);
@@ -5632,7 +5636,7 @@ ${demandeText}
       if (document.getElementById('c-fc').value) cInit.push(`FC: ${document.getElementById('c-fc').value} bpm`);
       if (document.getElementById('c-spo2').value) cInit.push(`SpO2: ${document.getElementById('c-spo2').value}%`);
       if (document.getElementById('c-fr').value) cInit.push(`FR: ${document.getElementById('c-fr').value}/min`);
-      if (document.getElementById('c-hgt').value) cInit.push(`HGT: ${document.getElementById('c-hgt').value} g/L`);
+      if (document.getElementById('c-hgt').value && motif !== 'Hypoglycémie') cInit.push(`HGT: ${document.getElementById('c-hgt').value} g/L`);
       if (document.getElementById('c-temp').value) cInit.push(`T°: ${document.getElementById('c-temp').value}°C`);
       if (document.getElementById('c-eva').value) cInit.push(`EVA: ${document.getElementById('c-eva').value}/10`);
       if (document.getElementById('c-trc').value) cInit.push(`TRC: ${document.getElementById('c-trc').value}s`);
@@ -5793,10 +5797,14 @@ ${demandeText}
         const t5Str = `PA: ${document.getElementById('hypo-t5-pa').value || '-'}, Pouls: ${document.getElementById('hypo-t5-pouls').value || '-'} bpm, HGT: ${document.getElementById('hypo-t5-hgt').value || '-'} g/L, SpO2: ${document.getElementById('hypo-t5-spo2').value || '-'}%, AVPU: ${document.getElementById('hypo-t5-avpu').value}`;
         const t10Str = `PA: ${document.getElementById('hypo-t10-pa').value || '-'}, Pouls: ${document.getElementById('hypo-t10-pouls').value || '-'} bpm, HGT: ${document.getElementById('hypo-t10-hgt').value || '-'} g/L, SpO2: ${document.getElementById('hypo-t10-spo2').value || '-'}%, AVPU: ${document.getElementById('hypo-t10-avpu').value}`;
 
-        let hypoCliniqueLines = [
-          `- ${hypo.pompe}`,
-          `- Autre cause de coma : ${hypo.causes}`
-        ];
+        let hypoCliniqueLines = [];
+        const hgt = document.getElementById('c-hgt').value.trim();
+        if (hgt) {
+          hypoCliniqueLines.push(`- Glycémie (HGT) : ${hgt} g/L`);
+        }
+        hypoCliniqueLines.push(`- ${hypo.pompe}`);
+        hypoCliniqueLines.push(`- Autre cause de coma : ${hypo.causes}`);
+        
         if (hypo.gravites) {
           hypoCliniqueLines.push(`- Signes de gravité : ${hypo.gravites}`);
           hypoCliniqueLines.push(`- PLS : ${hypo.pls}`);
@@ -5806,7 +5814,8 @@ ${demandeText}
         theraSection = `- Conduite suivie : ${hypo.thera || 'Aucune'}`;
         suiviSection = `- T0 : ${t0Str}\n- T+5 min : ${t5Str}\n- T+10 min : ${t10Str}`;
 
-      } else if (motif === 'Brûlure') {
+      }
+      else if (motif === 'Brûlure') {
         let grav = [];
         if (document.getElementById('brul-grav-cervico') && document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
         if (document.getElementById('brul-grav-circulaire') && document.getElementById('brul-grav-circulaire').checked) grav.push('circulaire');
