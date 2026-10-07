@@ -3216,18 +3216,18 @@
         
         <div class="field">
           <label>Moyen de transport</label>
-          <button type="button" class="btn-toggle-action" style="margin-bottom: 8px;" onclick="toggleSelectionModal('modal-transport', true)">
+          <button type="button" id="btn-transport-select" class="btn-toggle-action" style="margin-bottom: 0; font-weight: 800;" onclick="toggleSelectionModal('modal-transport', true)">
             + Sélectionner le transport
           </button>
-          <div class="tag-container" id="transport-tags"></div>
+          <input type="hidden" id="val-transport" value="">
         </div>
 
         <div class="field" style="margin-top: 20px;">
           <label>Destination</label>
-          <button type="button" class="btn-toggle-action" style="margin-bottom: 8px;" onclick="toggleSelectionModal('modal-destination', true)">
+          <button type="button" id="btn-destination-select" class="btn-toggle-action" style="margin-bottom: 0; font-weight: 800;" onclick="openDestinationModal()">
             + Sélectionner la destination
           </button>
-          <div class="tag-container" id="destination-tags"></div>
+          <input type="hidden" id="val-destination" value="">
         </div>
       </div>
 
@@ -3414,15 +3414,10 @@
           <h3>Moyen de transport</h3>
           <button type="button" class="legal-close-btn" style="position:static;" onclick="toggleSelectionModal('modal-transport', false)">✕</button>
         </div>
-        <div class="modal-selection-body">
-          <label class="modal-item-box"><input type="checkbox" value="Laissé sur place"> Laissé sur place</label>
-          <label class="modal-item-box"><input type="checkbox" value="Paramédicalisé"> Paramédicalisé</label>
-          <label class="modal-item-box"><input type="checkbox" value="Médicalisé"> Médicalisé</label>
-        </div>
-        <div class="modal-selection-footer">
-          <button type="button" class="btn-nav" style="width: 100%; padding: 14px; margin: 0; box-shadow:none;" onclick="validerSelection('modal-transport', 'transport-tags')">
-            ✓ Valider
-          </button>
+        <div class="modal-selection-body" style="padding-bottom: 24px;">
+          <div class="modal-item-box" onclick="selectOrientation('modal-transport', 'btn-transport-select', 'val-transport', 'Laissé sur place')">Laissé sur place</div>
+          <div class="modal-item-box" onclick="selectOrientation('modal-transport', 'btn-transport-select', 'val-transport', 'Paramédicalisé')">Paramédicalisé</div>
+          <div class="modal-item-box" onclick="selectOrientation('modal-transport', 'btn-transport-select', 'val-transport', 'Médicalisé')">Médicalisé</div>
         </div>
       </div>
     </div>
@@ -3433,15 +3428,18 @@
           <h3>Destination</h3>
           <button type="button" class="legal-close-btn" style="position:static;" onclick="toggleSelectionModal('modal-destination', false)">✕</button>
         </div>
-        <div class="modal-selection-body">
-          <label class="modal-item-box"><input type="checkbox" value="Urgences"> Urgences</label>
-          <label class="modal-item-box"><input type="checkbox" value="USC (Surveillance Continue)"> USC</label>
-          <label class="modal-item-box"><input type="checkbox" value="Réanimation"> Réanimation</label>
-        </div>
-        <div class="modal-selection-footer">
-          <button type="button" class="btn-nav" style="width: 100%; padding: 14px; margin: 0; box-shadow:none;" onclick="validerSelection('modal-destination', 'destination-tags')">
-            ✓ Valider
-          </button>
+        <div class="modal-selection-body" style="padding-bottom: 24px;">
+          <div class="modal-item-box" onclick="selectOrientation('modal-destination', 'btn-destination-select', 'val-destination', 'Urgences')">Urgences</div>
+          
+          <!-- Option pédiatrie dynamique -->
+          <div id="dest-pedia" class="modal-item-box" style="display: none;" onclick="selectOrientation('modal-destination', 'btn-destination-select', 'val-destination', 'Urgences pédiatriques')">Urgences pédiatriques</div>
+          
+          <!-- Options accouchement dynamiques -->
+          <div id="dest-mater" class="modal-item-box" style="display: none;" onclick="selectOrientation('modal-destination', 'btn-destination-select', 'val-destination', 'Maternité')">Maternité</div>
+          <div id="dest-gyneco" class="modal-item-box" style="display: none;" onclick="selectOrientation('modal-destination', 'btn-destination-select', 'val-destination', 'Urgences gynécologiques')">Urgences gynécologiques</div>
+          
+          <div class="modal-item-box" onclick="selectOrientation('modal-destination', 'btn-destination-select', 'val-destination', 'USC (Surveillance Continue)')">USC (Surveillance Continue)</div>
+          <div class="modal-item-box" onclick="selectOrientation('modal-destination', 'btn-destination-select', 'val-destination', 'Réanimation')">Réanimation</div>
         </div>
       </div>
     </div>
@@ -3626,9 +3624,14 @@
       document.getElementById('ttt-tags').innerHTML = '';
       document.getElementById('allergies-tags').innerHTML = '';
       document.getElementById('hospit-tags').innerHTML = '';
-      document.getElementById('transport-tags').innerHTML = '';
-      document.getElementById('destination-tags').innerHTML = '';
       document.getElementById('prescription-tags').innerHTML = '';
+      
+      const btnTrans = document.getElementById('btn-transport-select');
+      if (btnTrans) { btnTrans.textContent = '+ Sélectionner le transport'; btnTrans.classList.remove('active'); }
+      const btnDest = document.getElementById('btn-destination-select');
+      if (btnDest) { btnDest.textContent = '+ Sélectionner la destination'; btnDest.classList.remove('active'); }
+      if (document.getElementById('val-transport')) document.getElementById('val-transport').value = '';
+      if (document.getElementById('val-destination')) document.getElementById('val-destination').value = '';
       
       if(document.getElementById('c-pas')) document.getElementById('c-pas').value = '';
       if(document.getElementById('c-pad')) document.getElementById('c-pad').value = '';
@@ -4830,6 +4833,36 @@
         modal.style.display = show ? 'flex' : 'none';
       }
     }
+    // NOUVELLES FONCTIONS D'ORIENTATION DIRECTE
+    function selectOrientation(modalId, btnId, inputId, value) {
+      const btn = document.getElementById(btnId);
+      btn.textContent = value;
+      btn.classList.add('active'); // Colore le bouton en vert
+      document.getElementById(inputId).value = value;
+      toggleSelectionModal(modalId, false); // Ferme la modale automatiquement
+      autoUpdateResumes();
+    }
+
+    function openDestinationModal() {
+      // Vérification de l'âge (< 16 ans)
+      const ageStr = calculerAge(document.getElementById('ddn-jour').value, document.getElementById('ddn-mois').value, document.getElementById('ddn-annee').value);
+      let isPedia = false;
+      if (ageStr.includes('mois')) {
+        isPedia = true;
+      } else if (ageStr.includes('ans')) {
+        const ageNum = parseInt(ageStr, 10);
+        if (ageNum < 16) isPedia = true;
+      }
+      document.getElementById('dest-pedia').style.display = isPedia ? 'flex' : 'none';
+
+      // Vérification du motif (Accouchement)
+      const motif = document.getElementById('motif-select').value;
+      const isAccouchement = (motif === 'Accouchement');
+      document.getElementById('dest-mater').style.display = isAccouchement ? 'flex' : 'none';
+      document.getElementById('dest-gyneco').style.display = isAccouchement ? 'flex' : 'none';
+
+      toggleSelectionModal('modal-destination', true);
+    }
 
     // Validation générique (utilisée pour les ATCD)
     function validerSelection(modalId, containerId) {
@@ -5610,8 +5643,8 @@ ${demandeText}
       const demType = document.getElementById('demande-type').value;
       const demTxt = document.getElementById('saed-demande').value.trim();
 
-      const orientTrans = getTagsText('transport-tags') || 'Non renseigné';
-      const orientDest = getTagsText('destination-tags') || 'Non renseigné';
+      const orientTrans = document.getElementById('val-transport') ? document.getElementById('val-transport').value || 'Non renseigné' : 'Non renseigné';
+      const orientDest = document.getElementById('val-destination') ? document.getElementById('val-destination').value || 'Non renseigné' : 'Non renseigné';
 
       let atcd = getTagsText('atcd-tags') || "Pas d'antécédent connu";
       let allergies = getTagsText('allergies-tags');
