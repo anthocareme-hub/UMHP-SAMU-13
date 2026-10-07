@@ -5559,10 +5559,11 @@ function checkDrGravite() {
         const acr = getAcrAdulteData();
         evalMotif = 
 `- Rythme initial : ${acr.rythme}
-- Pose de VVP/DIO : ${acr.vvp}
+- Voie d'abord (VVP/DIO) : ${acr.vvp}
 - Retour à une Activité Cardiaque Spontanée (RACS) : ${acr.racs}
 - Détail des actions : ${acr.actions}`;
-      } else {
+      }
+      else {
         evalMotif = `- Bilan clinique spécifique : ${motif}`;
       }
 
@@ -5693,7 +5694,7 @@ ${demandeText}
         const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
         const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
 
-        const vvpPosee = document.getElementById('btn-vvp-mere').classList.contains('active') ? 'Oui' : 'Non';
+        const vvpPosee = document.getElementById('btn-vvp-mere').classList.contains('active') ? 'VVP posée' : 'VVP non posée';
         const pertes = document.getElementById('select-pertes').value === 'sup500' ? '> 500 ml (Hémorragie délivrance)' : '< 500 ml (Physiologique)';
 
         let mereDetails = [];
@@ -5731,13 +5732,13 @@ ${demandeText}
         const apgar3 = apgarScores['3m'] !== null ? `${apgarScores['3m']}/10` : '';
         const apgar5 = apgarScores['5m'] !== null ? `${apgarScores['5m']}/10` : '';
 
-        bilanSection = `- Terme : ${terme} | Grossesse gémellaire : ${gemellaire}\n- Début travail : ${debutTravail} | Perte des eaux : ${perteEaux}\n- Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}`;
-        theraSection = `- VVP : ${vvpPosee} | Pertes sanguines : ${pertes}\n${mereDetails.length > 0 ? mereDetails.map(l => '- ' + l).join('\n') : ''}`;
+        const vvpPosee = document.getElementById('btn-vvp-mere').classList.contains('active') ? 'VVP posée' : 'VVP non posée';
+        const pertes = document.getElementById('select-pertes').value === 'sup500' ? '> 500 ml (Hémorragie délivrance)' : '< 500 ml (Physiologique)';
         suiviSection = `[Nouveau-né]\n- Évolution clinique : ${statutNouveauNe}\n- Clampage (15 cm) & réchauffement Neohelp réalisés\n- Score d'APGAR : 1 min: ${apgar1} | 3 min: ${apgar3} | 5 min: ${apgar5}\n- Pose de SpO2 : Effectuée`;
 
       } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
         const dr = getDetresseRespiData();
-        const vvpThera = document.getElementById('btn-vvp-thera').classList.contains('active') ? 'Oui' : 'Non';
+        const vvpThera = document.getElementById('btn-vvp-thera').classList.contains('active') ? 'VVP posée' : 'VVP non posée';
         
         let theraList = [];
         if (oxygeneMode) {
@@ -5771,12 +5772,12 @@ ${demandeText}
         const t20Str = `PA: ${document.getElementById('dr-t20-pa').value || '-'}, Pouls: ${document.getElementById('dr-t20-pouls').value || '-'} bpm, SpO2: ${document.getElementById('dr-t20-spo2').value || '-'}%, FR: ${document.getElementById('dr-t20-fr').value || '-'}/min, AVPU: ${document.getElementById('dr-t20-avpu').value}`;
 
         bilanSection = `- Signes cliniques : ${dr.cliniques}\n- Auscultation : ${dr.auscult}\n- Signes de gravité : ${dr.gravites}\n- Gestes initiaux : ${dr.gestes}`;
-        theraSection = `- VVP : ${vvpThera}\n- Thérapeutiques appliquées : ${theraList.join(', ') || 'Aucune'}`;
+        theraSection = `- ${vvpThera}\n- Thérapeutiques appliquées : ${theraList.join(', ') || 'Aucune'}`;
         suiviSection = `- T+10 min : ${t10Str}\n- T+20 min : ${t20Str}`;
 
       } else if (motif === 'Allergie') {
         const alg = getAllergieData();
-        const vvpAll = document.getElementById('btn-vvp-allergie').classList.contains('active') ? 'Oui' : 'Non';
+        const vvpAll = document.getElementById('btn-vvp-allergie').classList.contains('active') ? 'VVP posée' : 'VVP non posée';
         const adren = document.getElementById('btn-adrenaline') && document.getElementById('btn-adrenaline').classList.contains('active') ? 'Adrénaline 0.5mg administrée' : '';
         
         const poidsAllergie = parseInt(document.getElementById('patient-poids').value, 10) || 70;
@@ -5800,7 +5801,7 @@ ${demandeText}
         if (alg.traitementPris) evalLines.push(`- Traitements pris : ${alg.traitementPris}`);
 
         let theraLines = [];
-        theraLines.push(`- VVP : ${vvpAll}`);
+        theraLines.push(`- ${vvpAll}`);
         if (adren) theraLines.push(`- Adrénaline IM : ${adren}`);
         if (salbu) theraLines.push(`- Salbutamol : ${salbu}`);
         if (trts) theraLines.push(`- Traitements associés : ${trts}`);
@@ -5885,7 +5886,8 @@ ${demandeText}
         let suiviTraumaStr = getSuiviTrauma();
         suiviSection = suiviTraumaStr ? suiviTraumaStr.replace('\n\n--- RÉÉVALUATION ET SURVEILLANCE ---\n', '') : '- Aucune réévaluation saisie';
 
-      } else if (motif === 'ACR adulte') {
+      } 
+      else if (motif === 'ACR adulte') {
         const acr = getAcrAdulteData();
         let racsDetails = "";
         if (acr.racs === 'OUI') {
@@ -5901,10 +5903,11 @@ ${demandeText}
         }
         
         bilanSection = `- Rythme initial : ${acr.rythme}\n- 4H/4T (Causes réversibles contrôlées) : ${acr.causesReversibles}`;
-        theraSection = `- Pose de voie d'abord (VVP/DIO) : ${acr.vvp}\n- Cycles MCE débutés : ${acr.cycles}\n- Chocs délivrés : ${acr.chocs}\n- Adrénaline totale : ${acr.adre} mg`;
+        // La modification est à la ligne juste en dessous (Pose de voie d'abord devient Voie d'abord)
+        theraSection = `- Voie d'abord (VVP/DIO) : ${acr.vvp}\n- Cycles MCE débutés : ${acr.cycles}\n- Chocs délivrés : ${acr.chocs}\n- Adrénaline totale : ${acr.adre} mg`;
         suiviSection = `- RACS (Retour d'Activité Cardiaque Spontanée) : ${acr.racs}${racsDetails}`;
-
-      } else if (motif === 'Antalgie') {
+      }
+      else if (motif === 'Antalgie') {
         let traumaStr = '';
         let gestesStr = '';
         if (antalgieTrauma !== null) {
@@ -6356,8 +6359,7 @@ ${suiviSection}
     function getAcrAdulteData() {
       const rythme = acrRythmeInitial ? (acrRythmeInitial === 'oui' ? 'CHOCABLE' : 'NON CHOCABLE') : 'Non défini';
       const racs = isRacs ? 'OUI' : 'NON';
-      const vvp = document.getElementById('btn-acr-voie') && document.getElementById('btn-acr-voie').classList.contains('active-green') ? 'OUI' : 'NON';
-      
+      const vvp = document.getElementById('btn-acr-voie') && document.getElementById('btn-acr-voie').classList.contains('active-green') ? 'posée' : 'non posée';
       let causes = [];
       document.querySelectorAll('.acr-cause:checked').forEach(cb => causes.push(cb.value));
       const causesStr = causes.length > 0 ? causes.join(', ') : 'Aucune identifiée';
