@@ -6868,6 +6868,7 @@ ${suiviSection}
 
         const draft = JSON.parse(draftStr);
 
+        // 1. Restaurer les variables globales
         if (draft.globals) {
           tsVoiesAeriennes = draft.globals.tsVoiesAeriennes || '';
           selectedAvpu = draft.globals.selectedAvpu || '';
@@ -6878,12 +6879,13 @@ ${suiviSection}
           fumeeInhalation = draft.globals.fumeeInhalation || false;
           brulureProfondeur = draft.globals.brulureProfondeur || '';
           totalScb = draft.globals.totalScb || 0;
-          antalgieTrauma = draft.globals.antalgieTrauma || null;
-          antalgiquesPrisStatut = draft.globals.antalgiquesPrisStatut || null;
+          antalgieTrauma = draft.globals.antalgieTrauma !== undefined ? draft.globals.antalgieTrauma : null;
+          antalgiquesPrisStatut = draft.globals.antalgiquesPrisStatut !== undefined ? draft.globals.antalgiquesPrisStatut : null;
           previousMotifPage = draft.globals.previousMotifPage || 'detresse-respi';
           totalMorphineDose = draft.globals.totalMorphineDose || 0;
         }
 
+        // 2. Restaurer les champs textes, selects, etc.
         if (draft.inputs) {
           for (const [id, value] of Object.entries(draft.inputs)) {
             const el = document.getElementById(id);
@@ -6891,6 +6893,7 @@ ${suiviSection}
           }
         }
 
+        // 3. Restaurer les cases à cocher
         if (draft.checkboxes) {
           for (const [id, checked] of Object.entries(draft.checkboxes)) {
             const el = document.getElementById(id);
@@ -6898,6 +6901,7 @@ ${suiviSection}
           }
         }
 
+        // 4. Restaurer les listes de tags
         if (draft.tags) {
           for (const [id, html] of Object.entries(draft.tags)) {
             const el = document.getElementById(id);
@@ -6905,6 +6909,63 @@ ${suiviSection}
           }
         }
 
+        // ==========================================
+        // 5. SYNCHRONISATION VISUELLE (CORRECTION DES BUGS)
+        // ==========================================
+
+        // A. Motif dans l'encart vert de l'anamnèse
+        const motifInput = document.getElementById('motif-select');
+        if (motifInput && motifInput.value) {
+          const display = document.getElementById('anamnese-motif-display');
+          if (display) display.textContent = `Motif : ${motifInput.value}`;
+        }
+
+        // B. Switch Urgence Vitale P0
+        const p0Switch = document.getElementById('toggle-p0');
+        if (p0Switch) onP0Change(); 
+
+        // C. Boutons de Sexe (Homme/Femme)
+        const sexeInput = document.getElementById('patient-sexe');
+        if (sexeInput && sexeInput.value) {
+          const container = document.getElementById('sexe-group');
+          if (container) {
+            container.querySelectorAll('button').forEach(b => {
+              if (b.dataset.val === sexeInput.value) b.classList.add('active');
+            });
+          }
+        }
+
+        // D. Boutons OUI/NON Antalgie
+        if (antalgieTrauma !== null) selectTrauma(antalgieTrauma);
+        if (antalgiquesPrisStatut !== null) selectAntalgiquesPris(antalgiquesPrisStatut);
+
+        // E. Variables visuelles complexes (Brûlure, O2, Pompe)
+        if (brulureType) selectTypeBrulure(brulureType);
+        selectFumeeInhalation(fumeeInhalation);
+        updateScbDisplay(); // Rafraîchit la surface corporelle et la thérapie
+        if (oxygeneMode) setOxygeneProfile(oxygeneMode);
+        if (pompeInsulineStatut) setPompeStatut(pompeInsulineStatut);
+
+        // F. Rafraîchir les encarts de gravité (fait réapparaître les alertes rouges)
+        if (typeof checkAllergieGravite === 'function') checkAllergieGravite();
+        if (typeof checkHypoGravite === 'function') checkHypoGravite();
+        if (typeof checkBrulureGravite === 'function') checkBrulureGravite();
+        if (typeof checkDrGravite === 'function') checkDrGravite();
+
+        // G. Mise à jour des doses selon le poids restauré
+        if (typeof updateTheraDoses === 'function') updateTheraDoses();
+
+        // H. Boutons AVPU
+        if (selectedAvpu) {
+           const pageConstantes = document.getElementById('page-constantes');
+           if (pageConstantes) {
+             pageConstantes.querySelectorAll('.avpu-btn').forEach(b => {
+               if (b.textContent.trim() === selectedAvpu) b.classList.add('active');
+             });
+           }
+        }
+
+        // 6. Restauration de la page active pour finir
         if (draft.activePageId) {
           const target = draft.activePageId.replace('page-', '');
           goToPage(isNaN(target) ? target : parseInt(target));
