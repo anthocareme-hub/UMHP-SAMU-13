@@ -5966,18 +5966,28 @@ ${demandeText}
       }
 
       // Construction du résumé final avec le NOUVEL ORDRE
-      const resumeTxt = 
+      let patientLignes = [
+        `Patient : ${affichageSexe} ${nom}`,
+        `Age : ${ageStr} | Poids : ${poids} kg`,
+        isP0 ? `- Statut : P0 (Urgence vitale)` : null,
+        `- Motif : ${motif}`,
+        getTagsText('atcd-tags') ? `- ATCD : ${getTagsText('atcd-tags')}` : null,
+        getTagsText('ttt-tags') ? `- Traitements : ${getTagsText('ttt-tags')}` : null,
+        getTagsText('allergies-tags') ? `- Allergies : ${getTagsText('allergies-tags')}` : null
+      ].filter(Boolean).join('\n');
+
+      let demandeLignes = [
+        `- Demande : ${demType}`,
+        demTxt ? `- Prescriptions / Consignes : ${demTxt}` : null
+      ].filter(Boolean).join('\n');
+
+      let resumeTxt = 
 `==============================================
 RAPPORT D'INTERVENTION SMUR / PSIS - SAMU 13
 ==============================================
 
 1. PATIENT ET SITUATION
-Patient : ${affichageSexe} ${nom}
-Age : ${ageStr} | Poids : ${poids} kg
-${isP0 ? "- Statut : P0 (Urgence vitale)\n" : ""}- Motif : ${motif}
-${getTagsText('atcd-tags') ? '- ATCD : ' + getTagsText('atcd-tags') : ''}
-${getTagsText('ttt-tags') ? '- Traitements : ' + getTagsText('ttt-tags') : ''}
-${getTagsText('allergies-tags') ? '- Allergies : ' + getTagsText('allergies-tags') : ''}
+${patientLignes}
 
 2. BILAN
 ${bilanSection}
@@ -5986,8 +5996,7 @@ ${bilanSection}
 ${cInit.length > 0 ? cInit.join(' | ') : 'Non renseignés'}
 
 4. RÉGULATION CENTRE 15
-- Demande : ${demType}
-${demTxt ? '- Prescriptions / Consignes : ' + demTxt : ''}
+${demandeLignes}
 
 5. THÉRAPEUTIQUES
 ${theraSection}
@@ -5999,6 +6008,9 @@ ${suiviSection}
 - Transport : ${orientTrans}
 - Destination : ${orientDest}
 ==============================================`;
+
+      // Nettoyage de sécurité : remplace les sauts de ligne multiples (3 ou plus) par un seul espace vide (2 sauts)
+      resumeTxt = resumeTxt.replace(/\n\s*\n\s*\n+/g, '\n\n');
 
       document.getElementById('resume-output').value = resumeTxt;
       return {
