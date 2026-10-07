@@ -3866,7 +3866,7 @@
     function goToPage(target) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
-      let pageElem = typeof target === 'number' ? document.getElementById(`page-${target}`) : document.getElementById(`page-${target}`);
+      let pageElem = document.getElementById(`page-${target}`);
       if (pageElem) pageElem.classList.add('active');
 
       const indicator = document.getElementById('page-indicator');
@@ -6821,9 +6821,8 @@ ${suiviSection}
       }
     }
 
-    // ================= SÉCURITÉ ANTI-PERTE DE DONNÉES =================
+   // ================= SÉCURITÉ ANTI-PERTE DE DONNÉES =================
     function saveDraft() {
-      // Pas de sauvegarde si on est juste sur l'accueil
       if (document.getElementById('page-home') && document.getElementById('page-home').classList.contains('active')) return;
 
       const draft = {
@@ -6851,14 +6850,18 @@ ${suiviSection}
         if (el) draft.tags[id] = el.innerHTML;
       });
 
-      localStorage.setItem('samu13_draft', JSON.stringify(draft));
+      try {
+        localStorage.setItem('samu13_draft', JSON.stringify(draft));
+      } catch (e) {
+        console.warn("Mode privé ou accès local : impossible de sauvegarder le brouillon.");
+      }
     }
 
     function restoreDraft() {
-      const draftStr = localStorage.getItem('samu13_draft');
-      if (!draftStr) return;
-
       try {
+        const draftStr = localStorage.getItem('samu13_draft');
+        if (!draftStr) return;
+
         const draft = JSON.parse(draftStr);
 
         if (draft.globals) {
@@ -6904,12 +6907,90 @@ ${suiviSection}
         }
 
       } catch (e) {
-        console.error("Erreur de restauration du brouillon", e);
+        console.warn("Erreur de restauration du brouillon", e);
       }
     }
 
     function clearDraft() {
-      localStorage.removeItem('samu13_draft');
+      try {
+        localStorage.removeItem('samu13_draft');
+      } catch (e) {}
+    }
+
+    function saveCurrentIntervention() {
+      clearDraft(); 
+      const data = generateResumeFinal();
+      
+      try {
+        let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+        const newEntry = {
+          id: Date.now(),
+          date: data.date,
+          nom: data.nom,
+          motif: data.motif,
+          texte: data.texte
+        };
+        savedList.unshift(newEntry);
+        localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
+        alert('✓ Intervention enregistrée avec succès dans « Mes UMHP » !');
+      } catch(e) {
+        alert("Impossible d'enregistrer : la mémoire locale est bloquée par votre navigateur.");
+      }
+    }
+
+    function renderUmhpList() {
+      const container = document.getElementById('umhp-list-container');
+      let savedList = [];
+      try {
+        savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+      } catch(e) {
+        console.warn("Accès mémoire bloqué");
+      }
+
+      if (savedList.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; color: var(--text-muted); padding: 30px 10px;">
+            Aucune intervention enregistrée pour le moment.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = '';
+      savedList.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'umhp-item';
+        div.innerHTML = `
+          <div class="umhp-item-title">${item.nom} — ${item.motif}</div>
+          <div class="umhp-item-meta">📅 ${item.date}</div>
+          <div style="margin-top: 8px; display: flex; gap: 8px;">
+            <button type="button" style="flex:1; padding: 6px; font-size: 0.85rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--primary); background: #f0f9ff; color: var(--primary); cursor: pointer;" onclick="event.stopPropagation(); viewUmhpDetail(${item.id})">Consulter</button>
+            <button type="button" style="padding: 6px 12px; font-size: 0.85rem; font-weight: 700; border-radius: 6px; border: 1px solid var(--danger); background: #fef2f2; color: var(--danger); cursor: pointer;" onclick="event.stopPropagation(); deleteUmhp(${item.id})">Supprimer</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function viewUmhpDetail(id) {
+      try {
+        const savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+        const entry = savedList.find(x => x.id === id);
+        if (!entry) return;
+
+        document.getElementById('resume-output').value = entry.texte;
+        goToPage('resume');
+      } catch(e) {}
+    }
+
+    function deleteUmhp(id) {
+      if (!confirm('Supprimer définitivement cette intervention ?')) return;
+      try {
+        let savedList = JSON.parse(localStorage.getItem('samu13_umhp_list') || '[]');
+        savedList = savedList.filter(x => x.id !== id);
+        localStorage.setItem('samu13_umhp_list', JSON.stringify(savedList));
+        renderUmhpList();
+      } catch(e) {}
     }
 
     // Alerte anti-fermeture / rafraichissement accidentel
