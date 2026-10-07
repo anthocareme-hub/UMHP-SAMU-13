@@ -5614,12 +5614,12 @@ ${demandeText}
       let suiviSection = '';
 
       if (motif === 'Accouchement') {
-        const terme = `${document.getElementById('acc-terme-mois').value}${document.getElementById('acc-terme-annee').value}`;
+        const terme = `${document.getElementById('acc-terme-mois').value} ${document.getElementById('acc-terme-annee').value}`;
         const gemellaire = document.getElementById('acc-gemellaire').checked ? 'Oui' : 'Non';
         const debutTravail = `${document.getElementById('acc-debut-hh').value}:${document.getElementById('acc-debut-mm').value}`;
         const perteEaux = document.getElementById('acc-perte-eaux').checked ? 'Oui' : 'Non';
-        const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value}${document.getElementById('acc-contractions-duree-unite').value}`;
-        const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value}${document.getElementById('acc-contractions-delai-unite').value}`;
+        const dureeContrac = `${document.getElementById('acc-contractions-duree-valeur').value} ${document.getElementById('acc-contractions-duree-unite').value}`;
+        const delaiContrac = `${document.getElementById('acc-contractions-delai-valeur').value} ${document.getElementById('acc-contractions-delai-unite').value}`;
 
         const vvpPosee = document.getElementById('btn-vvp-mere').classList.contains('active') ? 'Oui' : 'Non';
         const pertes = document.getElementById('select-pertes').value === 'sup500' ? '> 500 ml (Hémorragie délivrance)' : '< 500 ml (Physiologique)';
@@ -5659,9 +5659,9 @@ ${demandeText}
         const apgar3 = apgarScores['3m'] !== null ? `${apgarScores['3m']}/10` : '';
         const apgar5 = apgarScores['5m'] !== null ? `${apgarScores['5m']}/10` : '';
 
-        bilanSection = `- Terme : ${terme} | Grossesse gémellaire : ${gemellaire}\n- Début travail : ${debutTravail} \vert{} Perte des eaux :${perteEaux}\n- Contractions : durée ${dureeContrac} / toutes les${delaiContrac}`;
+        bilanSection = `- Terme : ${terme} | Grossesse gémellaire : ${gemellaire}\n- Début travail : ${debutTravail} | Perte des eaux : ${perteEaux}\n- Contractions : durée ${dureeContrac} / toutes les ${delaiContrac}`;
         theraSection = `- VVP : ${vvpPosee} | Pertes sanguines : ${pertes}\n${mereDetails.length > 0 ? mereDetails.map(l => '- ' + l).join('\n') : ''}`;
-        suiviSection = `[Nouveau-né]\n- Évolution clinique : ${statutNouveauNe}\n- Clampage (15 cm) & réchauffement Neohelp réalisés\n- Score d'APGAR : 1 min: ${apgar1} | 3 min: ${apgar3} \vert{} 5 min:${apgar5}\n- Pose de SpO2 : Effectuée`;
+        suiviSection = `[Nouveau-né]\n- Évolution clinique : ${statutNouveauNe}\n- Clampage (15 cm) & réchauffement Neohelp réalisés\n- Score d'APGAR : 1 min: ${apgar1} | 3 min: ${apgar3} | 5 min: ${apgar5}\n- Pose de SpO2 : Effectuée`;
 
       } else if (motif === 'Détresse respiratoire' || motif === 'Dyspnée') {
         const dr = getDetresseRespiData();
@@ -5695,12 +5695,12 @@ ${demandeText}
           theraList.push('Pose de SNG');
         }
 
-        const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls: ${document.getElementById('dr-t10-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('dr-t10-spo2').value || '-'}%, FR: ${document.getElementById('dr-t10-fr').value \vert{}\vert{} '-'}/min, AVPU:${document.getElementById('dr-t10-avpu').value}`;
-        const t20Str = `PA: ${document.getElementById('dr-t20-pa').value || '-'}, Pouls: ${document.getElementById('dr-t20-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('dr-t20-spo2').value || '-'}%, FR: ${document.getElementById('dr-t20-fr').value \vert{}\vert{} '-'}/min, AVPU:${document.getElementById('dr-t20-avpu').value}`;
+        const t10Str = `PA: ${document.getElementById('dr-t10-pa').value || '-'}, Pouls: ${document.getElementById('dr-t10-pouls').value || '-'} bpm, SpO2: ${document.getElementById('dr-t10-spo2').value || '-'}%, FR: ${document.getElementById('dr-t10-fr').value || '-'}/min, AVPU: ${document.getElementById('dr-t10-avpu').value}`;
+        const t20Str = `PA: ${document.getElementById('dr-t20-pa').value || '-'}, Pouls: ${document.getElementById('dr-t20-pouls').value || '-'} bpm, SpO2: ${document.getElementById('dr-t20-spo2').value || '-'}%, FR: ${document.getElementById('dr-t20-fr').value || '-'}/min, AVPU: ${document.getElementById('dr-t20-avpu').value}`;
 
-        bilanSection = `- Critères de gravité : ${dr.signes}\n- Auscultation : ${dr.auscult}\n- Gestes initiaux :${dr.gestes}`;
+        bilanSection = `- Critères de gravité : ${dr.signes}\n- Auscultation : ${dr.auscult}\n- Gestes initiaux : ${dr.gestes}`;
         theraSection = `- VVP : ${vvpThera}\n- Thérapeutiques appliquées : ${theraList.join(', ') || 'Aucune'}`;
-        suiviSection = `- T+10 min : ${t10Str}\n- T+20 min :${t20Str}`;
+        suiviSection = `- T+10 min : ${t10Str}\n- T+20 min : ${t20Str}`;
 
       } else if (motif === 'Allergie') {
         const alg = getAllergieData();
@@ -5715,9 +5715,9 @@ ${demandeText}
         const pred = document.getElementById('alg-trt-prednisolone').checked ? 'Prednisolone IVL' : '';
         let trts = [pol, pred].filter(Boolean).join(', ');
 
-        const t0Str = `PAS: ${document.getElementById('t0-pas').value \vert{}\vert{} '-'}, PAD:${document.getElementById('t0-pad').value || '-'}, Pouls: ${document.getElementById('t0-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('t0-spo2').value || '-'}`;
-        const t15Str = `PAS: ${document.getElementById('t15-pas').value \vert{}\vert{} '-'}, PAD:${document.getElementById('t15-pad').value || '-'}, Pouls: ${document.getElementById('t15-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('t15-spo2').value || '-'}`;
-        const t30Str = `PAS: ${document.getElementById('t30-pas').value \vert{}\vert{} '-'}, PAD:${document.getElementById('t30-pad').value || '-'}, Pouls: ${document.getElementById('t30-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('t30-spo2').value || '-'}`;
+        const t0Str = `PAS: ${document.getElementById('t0-pas').value || '-'}, PAD: ${document.getElementById('t0-pad').value || '-'}, Pouls: ${document.getElementById('t0-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t0-spo2').value || '-'}`;
+        const t15Str = `PAS: ${document.getElementById('t15-pas').value || '-'}, PAD: ${document.getElementById('t15-pad').value || '-'}, Pouls: ${document.getElementById('t15-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t15-spo2').value || '-'}`;
+        const t30Str = `PAS: ${document.getElementById('t30-pas').value || '-'}, PAD: ${document.getElementById('t30-pad').value || '-'}, Pouls: ${document.getElementById('t30-pouls').value || '-'} bpm, SpO2: ${document.getElementById('t30-spo2').value || '-'}`;
 
         let evalLines = [];
         if (alg.signes) evalLines.push(`- Signes cliniques : ${alg.signes}`);
@@ -5735,13 +5735,13 @@ ${demandeText}
 
         bilanSection = evalLines.join('\n');
         theraSection = theraLines.join('\n');
-        suiviSection = `- T0 : ${t0Str}\n- T+15 : ${t15Str}\n- T+30 :${t30Str}\n- Régression des symptômes : ${document.getElementById('alg-regression').checked ? 'OUI' : 'NON'}`;
+        suiviSection = `- T0 : ${t0Str}\n- T+15 : ${t15Str}\n- T+30 : ${t30Str}\n- Régression des symptômes : ${document.getElementById('alg-regression').checked ? 'OUI' : 'NON'}`;
 
       } else if (motif === 'Hypoglycémie') {
         const hypo = getHypoglycemieData();
-        const t0Str = `PA: ${document.getElementById('hypo-t0-pa').value}, Pouls: ${document.getElementById('hypo-t0-pouls').value}, HGT:${document.getElementById('hypo-t0-hgt').value}, SpO2: ${document.getElementById('hypo-t0-spo2').value}, AVPU:${document.getElementById('hypo-t0-avpu').value}`;
-        const t5Str = `PA: ${document.getElementById('hypo-t5-pa').value || '-'}, Pouls: ${document.getElementById('hypo-t5-pouls').value \vert{}\vert{} '-'} bpm, HGT:${document.getElementById('hypo-t5-hgt').value || '-'} g/L, SpO2: ${document.getElementById('hypo-t5-spo2').value \vert{}\vert{} '-'}\%, AVPU:${document.getElementById('hypo-t5-avpu').value}`;
-        const t10Str = `PA: ${document.getElementById('hypo-t10-pa').value || '-'}, Pouls: ${document.getElementById('hypo-t10-pouls').value \vert{}\vert{} '-'} bpm, HGT:${document.getElementById('hypo-t10-hgt').value || '-'} g/L, SpO2: ${document.getElementById('hypo-t10-spo2').value \vert{}\vert{} '-'}\%, AVPU:${document.getElementById('hypo-t10-avpu').value}`;
+        const t0Str = `PA: ${document.getElementById('hypo-t0-pa').value}, Pouls: ${document.getElementById('hypo-t0-pouls').value}, HGT: ${document.getElementById('hypo-t0-hgt').value}, SpO2: ${document.getElementById('hypo-t0-spo2').value}, AVPU: ${document.getElementById('hypo-t0-avpu').value}`;
+        const t5Str = `PA: ${document.getElementById('hypo-t5-pa').value || '-'}, Pouls: ${document.getElementById('hypo-t5-pouls').value || '-'} bpm, HGT: ${document.getElementById('hypo-t5-hgt').value || '-'} g/L, SpO2: ${document.getElementById('hypo-t5-spo2').value || '-'}%, AVPU: ${document.getElementById('hypo-t5-avpu').value}`;
+        const t10Str = `PA: ${document.getElementById('hypo-t10-pa').value || '-'}, Pouls: ${document.getElementById('hypo-t10-pouls').value || '-'} bpm, HGT: ${document.getElementById('hypo-t10-hgt').value || '-'} g/L, SpO2: ${document.getElementById('hypo-t10-spo2').value || '-'}%, AVPU: ${document.getElementById('hypo-t10-avpu').value}`;
 
         let hypoCliniqueLines = [
           `- ${hypo.pompe}`,
@@ -5754,7 +5754,7 @@ ${demandeText}
 
         bilanSection = hypoCliniqueLines.join('\n');
         theraSection = `- Conduite suivie : ${hypo.thera || 'Aucune'}`;
-        suiviSection = `- T0 : ${t0Str}\n- T+5 min : ${t5Str}\n- T+10 min :${t10Str}`;
+        suiviSection = `- T0 : ${t0Str}\n- T+5 min : ${t5Str}\n- T+10 min : ${t10Str}`;
 
       } else if (motif === 'Brûlure') {
         let grav = [];
@@ -5793,17 +5793,17 @@ ${demandeText}
         const btnBrulMorph = document.getElementById('btn-brul-morphine');
         if (btnBrulMorph && btnBrulMorph.classList.contains('active')) theraBrulure.push(btnBrulMorph.textContent.replace('💉', '').trim() + " administré");
 
-        const t0Str = `PA: ${document.getElementById('brul-t0-pa').value}, Pouls:${document.getElementById('brul-t0-pouls').value}, SpO2: ${document.getElementById('brul-t0-spo2').value}, HbCO:${document.getElementById('brul-t0-hbco').value}, EN: ${document.getElementById('brul-t0-en').value}, AVPU:${document.getElementById('brul-t0-avpu').value}`;
-        const t15Str = `PA: ${document.getElementById('brul-t15-pa').value \vert{}\vert{} '-'}, Pouls:${document.getElementById('brul-t15-pouls').value || '-'}, SpO2: ${document.getElementById('brul-t15-spo2').value \vert{}\vert{} '-'}\%, HbCO:${document.getElementById('brul-t15-hbco').value || '-'}%, EN: ${document.getElementById('brul-t15-en').value \vert{}\vert{} '-'}, AVPU:${document.getElementById('brul-t15-avpu').value}`;
-        const t30Str = `PA: ${document.getElementById('brul-t30-pa').value \vert{}\vert{} '-'}, Pouls:${document.getElementById('brul-t30-pouls').value || '-'}, SpO2: ${document.getElementById('brul-t30-spo2').value \vert{}\vert{} '-'}\%, HbCO:${document.getElementById('brul-t30-hbco').value || '-'}%, EN: ${document.getElementById('brul-t30-en').value \vert{}\vert{} '-'}, AVPU:${document.getElementById('brul-t30-avpu').value}`;
+        const t0Str = `PA: ${document.getElementById('brul-t0-pa').value}, Pouls: ${document.getElementById('brul-t0-pouls').value}, SpO2: ${document.getElementById('brul-t0-spo2').value}, HbCO: ${document.getElementById('brul-t0-hbco').value}, EN: ${document.getElementById('brul-t0-en').value}, AVPU: ${document.getElementById('brul-t0-avpu').value}`;
+        const t15Str = `PA: ${document.getElementById('brul-t15-pa').value || '-'}, Pouls: ${document.getElementById('brul-t15-pouls').value || '-'}, SpO2: ${document.getElementById('brul-t15-spo2').value || '-'}%, HbCO: ${document.getElementById('brul-t15-hbco').value || '-'}%, EN: ${document.getElementById('brul-t15-en').value || '-'}, AVPU: ${document.getElementById('brul-t15-avpu').value}`;
+        const t30Str = `PA: ${document.getElementById('brul-t30-pa').value || '-'}, Pouls: ${document.getElementById('brul-t30-pouls').value || '-'}, SpO2: ${document.getElementById('brul-t30-spo2').value || '-'}%, HbCO: ${document.getElementById('brul-t30-hbco').value || '-'}%, EN: ${document.getElementById('brul-t30-en').value || '-'}, AVPU: ${document.getElementById('brul-t30-avpu').value}`;
 
         bilanSection = bilanBrulureLines.join('\n');
         theraSection = `- Actions / Traitements post-appel : ${theraBrulure.length > 0 ? theraBrulure.join(', ') : 'Aucun'}`;
-        suiviSection = `- T0 : ${t0Str}\n- T+15 min : ${t15Str}\n- T+30 min :${t30Str}`;
+        suiviSection = `- T0 : ${t0Str}\n- T+15 min : ${t15Str}\n- T+30 min : ${t30Str}`;
 
       } else if (motif === 'Traumatisé sévère') {
         const tsData = getTraumaSevereData();
-        bilanSection = `- [X] ${tsData.x}\n- [A]${tsData.a}\n- [B] ${tsData.b}\n- [C]${tsData.c}\n- [D] ${tsData.d}\n- [E]${tsData.e}`;
+        bilanSection = `- [X] ${tsData.x}\n- [A] ${tsData.a}\n- [B] ${tsData.b}\n- [C] ${tsData.c}\n- [D] ${tsData.d}\n- [E] ${tsData.e}`;
         theraSection = `- Thérapeutiques incluses dans le bilan XABCDE ci-dessus`;
         let suiviTraumaStr = getSuiviTrauma();
         suiviSection = suiviTraumaStr ? suiviTraumaStr.replace('\n\n--- RÉÉVALUATION ET SURVEILLANCE ---\n', '') : '- Aucune réévaluation saisie';
@@ -5867,9 +5867,9 @@ ${demandeText}
         const btnMorph = document.getElementById('btn-ant-morphine');
         if (btnMorph && btnMorph.classList.contains('active')) theraAnt.push(btnMorph.textContent.replace('💉', '').trim() + " administré");
 
-        const t0Str = `PA: ${document.getElementById('ant-t0-pa').value}, Pouls: ${document.getElementById('ant-t0-pouls').value}, SpO2:${document.getElementById('ant-t0-spo2').value}, EN: ${document.getElementById('ant-t0-en').value}, AVPU:${document.getElementById('ant-t0-avpu').value}`;
-        const t10Str = `PA: ${document.getElementById('ant-t10-pa').value || '-'}, Pouls: ${document.getElementById('ant-t10-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('ant-t10-spo2').value || '-'}%, EN: ${document.getElementById('ant-t10-en').value \vert{}\vert{} '-'}, AVPU:${document.getElementById('ant-t10-avpu').value}`;
-        const t20Str = `PA: ${document.getElementById('ant-t20-pa').value || '-'}, Pouls: ${document.getElementById('ant-t20-pouls').value \vert{}\vert{} '-'} bpm, SpO2:${document.getElementById('ant-t20-spo2').value || '-'}%, EN: ${document.getElementById('ant-t20-en').value \vert{}\vert{} '-'}, AVPU:${document.getElementById('ant-t20-avpu').value}`;
+        const t0Str = `PA: ${document.getElementById('ant-t0-pa').value}, Pouls: ${document.getElementById('ant-t0-pouls').value}, SpO2: ${document.getElementById('ant-t0-spo2').value}, EN: ${document.getElementById('ant-t0-en').value}, AVPU: ${document.getElementById('ant-t0-avpu').value}`;
+        const t10Str = `PA: ${document.getElementById('ant-t10-pa').value || '-'}, Pouls: ${document.getElementById('ant-t10-pouls').value || '-'} bpm, SpO2: ${document.getElementById('ant-t10-spo2').value || '-'}%, EN: ${document.getElementById('ant-t10-en').value || '-'}, AVPU: ${document.getElementById('ant-t10-avpu').value}`;
+        const t20Str = `PA: ${document.getElementById('ant-t20-pa').value || '-'}, Pouls: ${document.getElementById('ant-t20-pouls').value || '-'} bpm, SpO2: ${document.getElementById('ant-t20-spo2').value || '-'}%, EN: ${document.getElementById('ant-t20-en').value || '-'}, AVPU: ${document.getElementById('ant-t20-avpu').value}`;
 
         bilanSection = [
           traumaStr,
@@ -5879,7 +5879,7 @@ ${demandeText}
         ].filter(Boolean).join('\n');
         
         theraSection = `- Actions / Traitements : ${theraAnt.length > 0 ? theraAnt.join(', ') : 'Aucun'}`;
-        suiviSection = `- T0 : ${t0Str}\n- T+10 min : ${t10Str}\n- T+20 min :${t20Str}`;
+        suiviSection = `- T0 : ${t0Str}\n- T+10 min : ${t10Str}\n- T+20 min : ${t20Str}`;
 
       } else {
         bilanSection = `- Motif clinique spécifique : ${motif}`;
