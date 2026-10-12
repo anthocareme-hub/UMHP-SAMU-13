@@ -3998,12 +3998,12 @@
     function startNewIntervention() {
       clearDraft(); // Vide le brouillon précédent en mémoire locale
       
-      // 1. Vider TOUS les champs de texte, de nombres, cachés et zones de texte (textareas)
+      // 1. Vider TOUS les champs de texte, de nombres, cachés et zones de texte
       document.querySelectorAll('input[type="text"], input[type="number"], input[type="hidden"], textarea').forEach(el => {
         el.value = '';
       });
 
-      // 2. Décocher TOUTES les cases à cocher (checkboxes)
+      // 2. Décocher TOUTES les cases à cocher
       document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
         cb.checked = false;
       });
@@ -4011,14 +4011,14 @@
       // 3. Remettre TOUS les menus déroulants à leur première option
       document.querySelectorAll('select').forEach(sel => {
         sel.selectedIndex = 0;
-        if(sel.dataset.touched) sel.dataset.touched = 'false'; // Reset spécifique pour le Glasgow
+        if(sel.dataset.touched) sel.dataset.touched = 'false';
       });
 
       // --- EXCEPTIONS (Valeurs par défaut à forcer) ---
       document.getElementById('ddn-annee').value = '1980';
       document.getElementById('patient-poids').value = '70';
       
-      // 4. Désactiver TOUS les boutons sélectionnables (boutons colorés)
+      // 4. Désactiver TOUS les boutons sélectionnables
       document.querySelectorAll('.btn-toggle-action, .scb-part, .algo-branch-btn, .algo-btn, .avpu-btn').forEach(b => {
         b.classList.remove('active', 'active-green', 'active-red');
       });
@@ -4036,10 +4036,20 @@
       antalgieTrauma = null;
       antalgiquesPrisStatut = null;
       totalMorphineDose = 0;
+      noyadeRespiState = null;
+      noyadeSzpilmanStage = null;
+      elecAcrState = null;
+      elecTypeCourant = null;
 
-      // 6. Nettoyer les encarts de Tags (ATCD, Traitements, etc.)
+      // 6. Nettoyer les encarts de Tags ET les conteneurs dynamiques (Correction du bug !)
       document.getElementById('anamnese-motif-display').textContent = 'Motif : -';
-      ['atcd-tags', 'ttt-tags', 'allergies-tags', 'hospit-tags', 'prescription-tags', 'antalgiques-pris-tags'].forEach(id => {
+      
+      const dynamicContainers = [
+        'atcd-tags', 'ttt-tags', 'allergies-tags', 'hospit-tags', 'prescription-tags', 'antalgiques-pris-tags',
+        'antalgie-douleur-container', 'brul-douleur-container', 'ts-e-antalgie-container', 'elec-antalgie-container',
+        'szpilman-actions-list'
+      ];
+      dynamicContainers.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = '';
       });
@@ -4055,15 +4065,17 @@
       const gcsScore = document.getElementById('ts-d-gcs-score');
       if (gcsScore) gcsScore.textContent = 'Score = -';
 
-      // 8. Stopper proprement le chrono ACR et ses constantes
+      // 8. Stopper proprement le chrono ACR
       if (typeof resetAcr === 'function') resetAcr();
 
-      // 9. Cacher tous les encarts conditionnels qui ont pu s'ouvrir
+      // 9. Cacher tous les encarts conditionnels (y compris les nouveaux protocoles !)
       const idsToHide = [
         'encart-trauma', 'encart-antalgiques-pris', 'brul-renfort-msg', 'dr-renfort-msg', 'alg-renfort-msg', 
         'bloc-ts-x-saign', 'bloc-ts-x-bassin', 'bloc-ts-x-garrot-time', 'bloc-ts-b-plaie', 'bloc-ts-b-o2', 
         'bloc-ts-c-alerte-si', 'bloc-ts-c-alerte-pam', 'bloc-ts-d-alerte-gcs', 'bloc-ts-e-augmentin', 
-        'hypo-bloc-pls', 'hypo-bloc-glucagon', 'hypo-sub-oui', 'hypo-sub-non', 'box-oap-hta', 'field-hbco-container', 'field-gcs-container'
+        'hypo-bloc-pls', 'hypo-bloc-glucagon', 'hypo-sub-oui', 'hypo-sub-non', 'box-oap-hta', 'field-hbco-container', 
+        'field-gcs-container', 'noyade-acr-bloc', 'noyade-suite-bloc', 'noyade-alerte-trauma', 'noyade-thera-dynamique',
+        'elec-acr-bloc', 'elec-suite-bloc', 'elec-alerte-trauma', 'elec-remplissage-bloc'
       ];
       idsToHide.forEach(id => {
         const el = document.getElementById(id);
