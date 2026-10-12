@@ -5622,8 +5622,7 @@ function checkDrGravite() {
           hypoLines.push(`- PLS : ${hypo.pls}`);
         }
         evalMotif = hypoLines.join('\n');
-      }
-        } else if (motif === 'Noyé') {
+      } else if (motif === 'Noyé') {
         const noy = getNoyadeData();
         if (noy.respire === false) {
            const acr = getAcrAdulteData();
@@ -5640,7 +5639,7 @@ function checkDrGravite() {
 - Lutte hypothermie : ${noy.hypo}
 - Thérapeutique respiratoire/hémo : ${noy.thera}`;
         }
-      else if (motif === 'Brûlure') {
+      } else if (motif === 'Brûlure') {
         let grav = [];
         if (document.getElementById('brul-grav-cervico') && document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
         if (document.getElementById('brul-grav-circulaire') && document.getElementById('brul-grav-circulaire').checked) grav.push('circulaire');
@@ -5985,8 +5984,7 @@ ${demandeText}
         theraSection = `- Conduite suivie : ${hypo.thera || 'Aucune'}`;
         suiviSection = `- T0 : ${t0Str}\n- T+5 min : ${t5Str}\n- T+10 min : ${t10Str}`;
 
-      }
-        } else if (motif === 'Noyé') {
+      } else if (motif === 'Noyé') {
         const noy = getNoyadeData();
         if (noy.respire === false) {
           const acr = getAcrAdulteData();
@@ -6006,7 +6004,7 @@ ${demandeText}
           theraSection = `- Lutte hypothermie : ${noy.hypo}\n- Thérapeutique appliquée : ${noy.thera}`;
           suiviSection = `- Surveillance continue (O2, monitoring de l'évolution du stade)`;
         }
-      else if (motif === 'Brûlure') {
+      } else if (motif === 'Brûlure') {
         let grav = [];
         if (document.getElementById('brul-grav-cervico') && document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
         if (document.getElementById('brul-grav-circulaire') && document.getElementById('brul-grav-circulaire').checked) grav.push('circulaire');
