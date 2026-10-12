@@ -2319,19 +2319,61 @@
       </div>
 
       <div class="card">
-        <div class="section-label">Surveillance Constantes</div>
-        <h3 style="color: var(--primary); margin-top: 10px; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Bilan T+15 min</h3>
-        <div class="row-3 field" style="margin-top: 10px;">
-          <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="elec-t15-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
-          <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="elec-t15-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
-          <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="elec-t15-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+        <div class="section-label">Surveillance Constantes (T0, T15, T30)</div>
+        
+        <!-- T0 -->
+        <div class="field" style="background: #f1f5f9; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 14px;">
+          <label style="color: var(--primary); margin-bottom: 6px;">T0 (Constantes Initiales)</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="elec-t0-pa" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="text" id="elec-t0-pouls" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="text" id="elec-t0-spo2" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">EN</label><input type="text" id="elec-t0-en" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label><input type="text" id="elec-t0-avpu" readonly style="background: #fff; padding: 6px; font-size: 0.9rem;"></div>
+            <div></div>
+          </div>
         </div>
-        <h3 style="color: var(--primary); margin-top: 20px; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Bilan T+30 min</h3>
-        <div class="row-3 field" style="margin-top: 10px;">
-          <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="elec-t30-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
-          <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="elec-t30-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
-          <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="elec-t30-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+
+        <!-- T+15 -->
+        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border); margin-bottom: 14px;">
+          <label style="color: var(--text); margin-bottom: 6px;">T+15 min</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="elec-t15-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="elec-t15-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="elec-t15-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">EN</label><input type="number" min="0" max="10" inputmode="numeric" id="elec-t15-en" placeholder="3" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label>
+              <select id="elec-t15-avpu" style="padding: 6px; font-size: 0.9rem;">
+                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
+              </select>
+            </div>
+            <div></div>
+          </div>
         </div>
+
+        <!-- T+30 -->
+        <div class="field" style="padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);">
+          <label style="color: var(--text); margin-bottom: 6px;">T+30 min</label>
+          <div class="row-3">
+            <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="elec-t30-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="elec-t30-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="elec-t30-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+          </div>
+          <div class="row-3" style="margin-top: 6px;">
+            <div><label style="font-size: 0.75rem;">EN</label><input type="number" min="0" max="10" inputmode="numeric" id="elec-t30-en" placeholder="1" style="padding: 6px; font-size: 0.9rem;"></div>
+            <div><label style="font-size: 0.75rem;">AVPU</label>
+              <select id="elec-t30-avpu" style="padding: 6px; font-size: 0.9rem;">
+                <option value="A">A</option><option value="V">V</option><option value="P">P</option><option value="U">U</option>
+              </select>
+            </div>
+            <div></div>
+          </div>
+        </div>
+
       </div>
 
       <div class="nav-actions">
@@ -4303,6 +4345,13 @@
       } else if (target === 'suivi-electrise') {
         indicator.textContent = 'Réévaluation & Suivi Électrisé';
         p0Container.style.display = 'none';
+        
+        // Copie automatique des constantes saisies au début vers le bloc T0
+        document.getElementById('elec-t0-pa').value = document.getElementById('c-pa').value.trim() || '-';
+        document.getElementById('elec-t0-pouls').value = (document.getElementById('c-fc').value.trim() ? document.getElementById('c-fc').value.trim() + ' bpm' : '-');
+        document.getElementById('elec-t0-spo2').value = (document.getElementById('c-spo2').value.trim() ? document.getElementById('c-spo2').value.trim() + '%' : '-');
+        document.getElementById('elec-t0-en').value = (document.getElementById('c-eva').value.trim() ? document.getElementById('c-eva').value.trim() + '/10' : '-');
+        document.getElementById('elec-t0-avpu').value = selectedAvpu || '-';
       } else if (target === 'motif-autre') {
         indicator.textContent = 'Motif spécifique';
       } else if (target === 'constantes') {
@@ -7786,16 +7835,20 @@ ${suiviSection}
       const t15Pa = document.getElementById('elec-t15-pa') ? document.getElementById('elec-t15-pa').value.trim() : '';
       const t15Fc = document.getElementById('elec-t15-pouls') ? document.getElementById('elec-t15-pouls').value.trim() : '';
       const t15Spo2 = document.getElementById('elec-t15-spo2') ? document.getElementById('elec-t15-spo2').value.trim() : '';
-      if (t15Pa || t15Fc || t15Spo2) {
-        suivi += `\nBilan T+15 : PA ${t15Pa||'?'} | FC ${t15Fc||'?'} | SpO2 ${t15Spo2?t15Spo2+'%':'?'}\n`;
+      const t15En = document.getElementById('elec-t15-en') ? document.getElementById('elec-t15-en').value.trim() : '';
+      const t15Avpu = document.getElementById('elec-t15-avpu') ? document.getElementById('elec-t15-avpu').value : '';
+      if (t15Pa || t15Fc || t15Spo2 || t15En) {
+        suivi += `\nBilan T+15 : PA ${t15Pa||'?'} | FC ${t15Fc||'?'} | SpO2 ${t15Spo2?t15Spo2+'%':'?'} | EN ${t15En||'?'} | AVPU ${t15Avpu}\n`;
         hasData = true;
       }
 
       const t30Pa = document.getElementById('elec-t30-pa') ? document.getElementById('elec-t30-pa').value.trim() : '';
       const t30Fc = document.getElementById('elec-t30-pouls') ? document.getElementById('elec-t30-pouls').value.trim() : '';
       const t30Spo2 = document.getElementById('elec-t30-spo2') ? document.getElementById('elec-t30-spo2').value.trim() : '';
-      if (t30Pa || t30Fc || t30Spo2) {
-        suivi += `Bilan T+30 : PA ${t30Pa||'?'} | FC ${t30Fc||'?'} | SpO2 ${t30Spo2?t30Spo2+'%':'?'}\n`;
+      const t30En = document.getElementById('elec-t30-en') ? document.getElementById('elec-t30-en').value.trim() : '';
+      const t30Avpu = document.getElementById('elec-t30-avpu') ? document.getElementById('elec-t30-avpu').value : '';
+      if (t30Pa || t30Fc || t30Spo2 || t30En) {
+        suivi += `Bilan T+30 : PA ${t30Pa||'?'} | FC ${t30Fc||'?'} | SpO2 ${t30Spo2?t30Spo2+'%':'?'} | EN ${t30En||'?'} | AVPU ${t30Avpu}\n`;
         hasData = true;
       }
 
