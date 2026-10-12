@@ -3764,8 +3764,12 @@
         
         if (!excludedPages.includes(page.id)) {
           const cancelDiv = document.createElement('div');
-          cancelDiv.style.cssText = "text-align: center; margin-top: 15px; margin-bottom: 25px;";
-          cancelDiv.innerHTML = `<span onclick="cancelIntervention()" style="color: var(--danger); font-size: 0.95rem; font-weight: 800; cursor: pointer; text-decoration: underline;">❌ Annuler l'intervention et retourner à l'accueil</span>`;
+          // On ajoute un grand espace (padding-top: 50px) pour le repousser loin vers le bas
+          cancelDiv.style.cssText = "text-align: center; margin-top: 20px; padding-top: 50px; padding-bottom: 10px;";
+          
+          // Texte plus petit (0.75rem), gris clair (#94a3b8), et on retire l'émoji pour plus de sobriété
+          cancelDiv.innerHTML = `<span onclick="cancelIntervention()" style="color: #94a3b8; font-size: 0.75rem; font-weight: 500; cursor: pointer; text-decoration: underline;">Annuler l'intervention et retourner à l'accueil</span>`;
+          
           page.appendChild(cancelDiv);
         }
       });
