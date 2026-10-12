@@ -1997,6 +1997,101 @@
         <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
       </div>
     </div>
+    <!-- ================= PAGE SPÉCIFIQUE : NOYADE (P0) ================= -->
+    <div id="page-noyade" class="page">
+      
+      <!-- 1. ÉVALUATION VITALE IMMÉDIATE -->
+      <div class="card" style="border: 2px solid var(--primary);">
+        <div class="section-label" style="text-align: center; font-size: 1.15rem; color: var(--primary);">1. État Vital Immédiat</div>
+        <div style="font-weight: 800; text-align: center; margin-bottom: 12px; font-size: 1.1rem;">
+          Le patient respire-t-il normalement ?
+        </div>
+        <div class="row-2 field" style="margin-bottom: 0;">
+          <button type="button" class="btn-toggle-action" id="btn-noy-respi-oui" style="padding: 16px; border-color: var(--success); color: var(--success);" onclick="selectNoyadeRespi(true)">OUI</button>
+          <button type="button" class="btn-toggle-action" id="btn-noy-respi-non" style="padding: 16px; border-color: var(--danger); color: var(--danger); font-weight: 900;" onclick="selectNoyadeRespi(false)">NON (Gasp / Apnée)</button>
+        </div>
+      </div>
+
+      <!-- BLOC SI ARRÊT RESPIRATOIRE / ACR -->
+      <div id="noyade-acr-bloc" style="display: none;">
+        <div class="alert-box alert-red" style="font-size: 1.1rem; padding: 20px;">
+          <div style="font-weight: 900; font-size: 1.3rem; margin-bottom: 8px;">🚨 URGENCE VITALE (Stade 5/6)</div>
+          <div style="margin-bottom: 12px;">Débuter par <strong>5 insufflations initiales</strong> au BAVU sous O2 pur.</div>
+          <button type="button" class="btn-toggle-action" style="background: #ffffff; color: var(--danger); border: 2px solid var(--danger); margin-bottom: 0;" onclick="goToPage('acr-adulte')">
+            Basculer vers Protocole ACR ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- BLOC SI PATIENT RESPIRE (SUITE DU PROTOCOLE) -->
+      <div id="noyade-suite-bloc" style="display: none;">
+        
+        <!-- 2. CIRCONSTANCES & TRAUMA -->
+        <div class="card">
+          <div class="section-label">2. Circonstances & Risque Traumatique</div>
+          <div class="field">
+            <label for="noyade-temps">Temps de submersion estimé (min)</label>
+            <input type="number" inputmode="numeric" id="noyade-temps" placeholder="ex: 3">
+          </div>
+          
+          <label style="font-weight: 800; margin-bottom: 6px;">Traumatisme suspecté (Plongeon, rochers...) ?</label>
+          <div class="row-2 field">
+            <button type="button" class="btn-toggle-action" id="btn-noy-trauma-oui" onclick="selectNoyadeTrauma(true)">OUI</button>
+            <button type="button" class="btn-toggle-action active" id="btn-noy-trauma-non" onclick="selectNoyadeTrauma(false)">NON</button>
+          </div>
+          <div id="noyade-alerte-trauma" class="alert-box alert-red" style="display: none; margin-top: 10px;">
+            ⚠️ Immobilisation stricte de l'axe Tête-Cou-Tronc (Collier cervical / MID)
+          </div>
+        </div>
+
+        <!-- 3. CLASSIFICATION DE SZPILMAN & THÉRAPEUTIQUE -->
+        <div class="card">
+          <div class="section-label">3. Clinique Respiratoire (Szpilman)</div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Sélectionnez le stade clinique actuel du patient :</p>
+          
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button type="button" class="algo-branch-btn" id="btn-szp-1" onclick="selectSzpilman(1)" style="text-align: left; padding: 12px;">
+              <strong>Stade 1 :</strong> Toux, auscultation pulmonaire normale
+            </button>
+            <button type="button" class="algo-branch-btn" id="btn-szp-2" onclick="selectSzpilman(2)" style="text-align: left; padding: 12px;">
+              <strong>Stade 2 :</strong> Râles crépitants localisés (OAP minime)
+            </button>
+            <button type="button" class="algo-branch-btn" id="btn-szp-3" onclick="selectSzpilman(3)" style="text-align: left; padding: 12px;">
+              <strong>Stade 3 :</strong> OAP franc sans signe de choc
+            </button>
+            <button type="button" class="algo-branch-btn" id="btn-szp-4" onclick="selectSzpilman(4)" style="text-align: left; padding: 12px; border-color: var(--danger); color: var(--danger);">
+              <strong>Stade 4 :</strong> OAP franc AVEC signes de choc (PAS < 90)
+            </button>
+          </div>
+
+          <!-- ENCART THÉRAPEUTIQUE DYNAMIQUE -->
+          <div id="noyade-thera-dynamique" style="display: none; margin-top: 14px;">
+            <div class="thera-box" style="border-left: 6px solid #0d9488;">
+              <div class="thera-title" style="color: #0f766e; margin-bottom: 10px;">THÉRAPEUTIQUE RECOMMANDÉE</div>
+              <div id="szpilman-actions-list">
+                <!-- Rempli en JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. HYPOTHERMIE -->
+        <div class="card">
+          <div class="section-label" style="color: #0284c7;">4. Lutte contre l'Hypothermie</div>
+          <div class="field">
+            <label class="checkbox-item"><input type="checkbox" id="noyade-hypo-vet"> Retrait des vêtements mouillés</label>
+            <label class="checkbox-item"><input type="checkbox" id="noyade-hypo-sec"> Séchage complet du patient</label>
+            <label class="checkbox-item"><input type="checkbox" id="noyade-hypo-couv"> Couverture de survie / Réchauffement actif</label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('motif')">⬅ Motif</button>
+        <button type="button" class="btn-nav" id="btn-noyade-next" style="display: none;" onclick="goToPage('constantes')">Constantes ➔</button>
+      </div>
+    </div>
     <!-- ================= PAGE GÉNÉRIQUE (AUTRES MOTIFS) ================= -->
     <div id="page-motif-autre" class="page">
       <div class="card" style="text-align: center; padding: 40px 16px;">
@@ -3811,6 +3906,9 @@
         previousMotifPage = 'acr-adulte';
         resetAcr();
         goToPage('acr-adulte');
+        } else if (motif === 'Noyé') { // <--- AJOUT ICI
+        previousMotifPage = 'noyade';
+        goToPage('noyade');
       } else {
         document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
         previousMotifPage = 'motif-autre';
@@ -3827,6 +3925,8 @@
         goToPage('suivi-allergie');
       } else if (motif === 'Hypoglycémie') {
         goToPage('suivi-hypo');
+        } else if (motif === 'Noyé') {
+        goToPage('regu');
       } else if (motif === 'Brûlure') {
         goToPage('suivi-brulure');
       } else if (motif === 'Antalgie') {
@@ -3850,6 +3950,8 @@
         goToPage('therapeutique-allergie');
       } else if (motif === 'Hypoglycémie') {
         goToPage('therapeutique-hypo');
+        } else if (motif === 'Noyé') {
+        goToPage('orientation');
       } else if (motif === 'Brûlure') {
         setupBrulureTherapeutiqueUI();
         goToPage('therapeutique-brulure');
@@ -3925,6 +4027,8 @@
         indicator.textContent = 'Protocole : Traumatisé Sévère';
       } else if (target === 'acr-adulte') {
         indicator.textContent = 'Protocole : ACR Adulte';
+        } else if (target === 'noyade') { // <--- AJOUT ICI
+        indicator.textContent = 'Protocole : Noyade';
         } else if (target === 'suivi-racs') {
         indicator.textContent = 'Constantes Post-RACS';
         p0Container.style.display = 'none';
@@ -5100,6 +5204,34 @@ function checkDrGravite() {
         thera: theraRes.length > 0 ? theraRes.join(' | ') : ''
       };
     }
+   // EXTRACTEUR DE DONNÉES NOYADE
+    function getNoyadeData() {
+      const temps = document.getElementById('noyade-temps') ? document.getElementById('noyade-temps').value.trim() : '';
+      const trauma = document.getElementById('btn-noy-trauma-oui') && document.getElementById('btn-noy-trauma-oui').classList.contains('active');
+
+      let hypoActions = [];
+      if (document.getElementById('noyade-hypo-vet') && document.getElementById('noyade-hypo-vet').checked) hypoActions.push('Retrait vêtements mouillés');
+      if (document.getElementById('noyade-hypo-sec') && document.getElementById('noyade-hypo-sec').checked) hypoActions.push('Séchage');
+      if (document.getElementById('noyade-hypo-couv') && document.getElementById('noyade-hypo-couv').checked) hypoActions.push('Couverture/Réchauffement actif');
+
+      let szpActions = [];
+      const theraBloc = document.getElementById('szpilman-actions-list');
+      if (theraBloc) {
+        const checkboxes = theraBloc.querySelectorAll('input[type="checkbox"]:checked');
+        checkboxes.forEach(cb => {
+          szpActions.push(cb.parentElement.textContent.trim());
+        });
+      }
+
+      return {
+        respire: noyadeRespiState,
+        temps: temps ? `${temps} min` : 'Non précisé',
+        trauma: trauma ? 'OUI (Axe maintenu)' : 'NON',
+        stade: noyadeSzpilmanStage || 'Non évalué',
+        hypo: hypoActions.length > 0 ? hypoActions.join(' + ') : 'Aucune action',
+        thera: szpActions.length > 0 ? szpActions.join(', ') : 'Aucune option cochée'
+      };
+    }
     // CLINIQUE TRAUMATISÉ SÉVÈRE (X et A)
     function getTraumaSevereData() {
       // ---- BLOC X ----
@@ -5491,6 +5623,23 @@ function checkDrGravite() {
         }
         evalMotif = hypoLines.join('\n');
       }
+        } else if (motif === 'Noyé') {
+        const noy = getNoyadeData();
+        if (noy.respire === false) {
+           const acr = getAcrAdulteData();
+           evalMotif = 
+`- URGENCE VITALE : Arrêt Respiratoire / ACR (Stades 5 ou 6)
+- Circonstances : Submersion ${noy.temps} | Trauma : ${noy.trauma}
+- 5 Insufflations initiales (BAVU) : Réalisées
+- Rythme initial : ${acr.rythme} | Voie d'abord : ${acr.vvp}
+- Adrénaline : ${acr.adre} mg | Chocs : ${acr.chocs} | RACS : ${acr.racs}`;
+        } else {
+           evalMotif = 
+`- Circonstances : Submersion ${noy.temps} | Suspicion Trauma : ${noy.trauma}
+- Évaluation respiratoire : Stade ${noy.stade} de Szpilman
+- Lutte hypothermie : ${noy.hypo}
+- Thérapeutique respiratoire/hémo : ${noy.thera}`;
+        }
       else if (motif === 'Brûlure') {
         let grav = [];
         if (document.getElementById('brul-grav-cervico') && document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
@@ -5837,6 +5986,26 @@ ${demandeText}
         suiviSection = `- T0 : ${t0Str}\n- T+5 min : ${t5Str}\n- T+10 min : ${t10Str}`;
 
       }
+        } else if (motif === 'Noyé') {
+        const noy = getNoyadeData();
+        if (noy.respire === false) {
+          const acr = getAcrAdulteData();
+          let racsDetails = "";
+          if (acr.racs === 'OUI') {
+            let racsConst = [];
+            if (document.getElementById('racs-pa').value) racsConst.push(`PA: ${document.getElementById('racs-pa').value}`);
+            if (document.getElementById('racs-fc').value) racsConst.push(`FC: ${document.getElementById('racs-fc').value} bpm`);
+            if (document.getElementById('racs-spo2').value) racsConst.push(`SpO2: ${document.getElementById('racs-spo2').value}%`);
+            racsDetails = racsConst.length > 0 ? `\n- Constantes Post-RACS : ${racsConst.join(' | ')}` : "";
+          }
+          bilanSection = `- Circonstances : Submersion ${noy.temps} | Trauma suspecté : ${noy.trauma}\n- URGENCE VITALE : Stade 5 ou 6 Szpilman (Arrêt)\n- Rythme initial ACR : ${acr.rythme}`;
+          theraSection = `- 5 Insufflations initiales de sauvetage au BAVU\n- Voie d'abord : ${acr.vvp}\n- Cycles MCE : ${acr.cycles} | Chocs : ${acr.chocs} | Adrénaline : ${acr.adre} mg\n- Hypothermie traitée : ${noy.hypo}`;
+          suiviSection = `- RACS (Retour d'Activité Cardiaque Spontanée) : ${acr.racs}${racsDetails}`;
+        } else {
+          bilanSection = `- Circonstances : Submersion ${noy.temps} | Trauma suspecté : ${noy.trauma}\n- Évaluation respiratoire : Stade ${noy.stade} de Szpilman`;
+          theraSection = `- Lutte hypothermie : ${noy.hypo}\n- Thérapeutique appliquée : ${noy.thera}`;
+          suiviSection = `- Surveillance continue (O2, monitoring de l'évolution du stade)`;
+        }
       else if (motif === 'Brûlure') {
         let grav = [];
         if (document.getElementById('brul-grav-cervico') && document.getElementById('brul-grav-cervico').checked) grav.push('cervico-faciale');
@@ -6987,6 +7156,106 @@ ${suiviSection}
         e.returnValue = ''; 
       }
     });
+   // ================= LOGIQUE NOYADE =================
+    let noyadeRespiState = null;
+    let noyadeSzpilmanStage = null;
+
+    function selectNoyadeRespi(respire) {
+      noyadeRespiState = respire;
+      const btnOui = document.getElementById('btn-noy-respi-oui');
+      const btnNon = document.getElementById('btn-noy-respi-non');
+      const blocAcr = document.getElementById('noyade-acr-bloc');
+      const blocSuite = document.getElementById('noyade-suite-bloc');
+      const btnNext = document.getElementById('btn-noyade-next');
+
+      if (respire) {
+        btnOui.classList.add('active-green');
+        btnNon.classList.remove('active-red');
+        btnNon.style.background = '#ffffff';
+        blocAcr.style.display = 'none';
+        blocSuite.style.display = 'block';
+        btnNext.style.display = 'block';
+      } else {
+        btnNon.classList.add('active-red');
+        btnOui.classList.remove('active-green');
+        btnOui.style.background = '#ffffff';
+        blocSuite.style.display = 'none';
+        blocAcr.style.display = 'block';
+        btnNext.style.display = 'none'; // Pas de "Constantes", on part en ACR
+      }
+    }
+
+    function selectNoyadeTrauma(hasTrauma) {
+      const btnOui = document.getElementById('btn-noy-trauma-oui');
+      const btnNon = document.getElementById('btn-noy-trauma-non');
+      const alerte = document.getElementById('noyade-alerte-trauma');
+
+      if (hasTrauma) {
+        btnOui.classList.add('active');
+        btnNon.classList.remove('active');
+        alerte.style.display = 'block';
+      } else {
+        btnNon.classList.add('active');
+        btnOui.classList.remove('active');
+        alerte.style.display = 'none';
+      }
+    }
+
+    function selectSzpilman(stade) {
+      noyadeSzpilmanStage = stade;
+      
+      // Reset des boutons
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`btn-szp-${i}`);
+        btn.classList.remove('active', 'active-red', 'active-green');
+        btn.style.background = '#ffffff';
+      }
+
+      // Appliquer la couleur au bouton sélectionné
+      const activeBtn = document.getElementById(`btn-szp-${stade}`);
+      if (stade === 4) {
+        activeBtn.classList.add('active-red');
+      } else {
+        activeBtn.classList.add('active-green');
+      }
+
+      // Afficher le bloc thérapeutique
+      const theraBloc = document.getElementById('noyade-thera-dynamique');
+      const actionsList = document.getElementById('szpilman-actions-list');
+      theraBloc.style.display = 'block';
+
+      // Remplir dynamiquement selon le stade
+      let actionsHtml = '';
+      
+      if (stade === 1 || stade === 2) {
+        actionsHtml = `
+          <label class="checkbox-item"><input type="checkbox" id="noy-trt-mhc"> Oxygénothérapie MHC (Objectif SpO2 > 94%)</label>
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">Surveillance rapprochée de la fonction respiratoire.</div>
+        `;
+      } else if (stade === 3) {
+        actionsHtml = `
+          <div class="alert-box" style="background: #e0f2fe; color: #0369a1; border-color: #7dd3fc; padding: 10px; margin-bottom: 10px; font-size: 0.95rem;">
+            OAP sans choc : Ventilation non invasive prioritaire
+          </div>
+          <label class="checkbox-item"><input type="checkbox" id="noy-trt-cpap"> CPAP / Boussignac (FiO2 100%)</label>
+          <label class="checkbox-item"><input type="checkbox" id="noy-trt-vvp"> 💉 Pose de VVP (Garde veine)</label>
+          <label class="checkbox-item"><input type="checkbox" id="noy-trt-sng"> Pose SNG en aspiration douce</label>
+        `;
+      } else if (stade === 4) {
+        actionsHtml = `
+          <div class="alert-box alert-red" style="padding: 10px; margin-bottom: 10px; font-size: 0.95rem;">
+            OAP AVEC choc : Alerte réanimation
+          </div>
+          <label class="checkbox-item"><input type="checkbox" id="noy-trt-vvp2"> 💉 Pose de VVP gros calibre</label>
+          <label class="checkbox-item"><input type="checkbox" id="noy-trt-rempl"> Remplissage vasculaire (NaCl 0.9%)</label>
+          <label class="checkbox-item"><input type="checkbox" id="noy-trt-amine"> Préparation Amines Vasopressives</label>
+          <label class="checkbox-item"><input type="checkbox" id="noy-trt-iot"> Intubation oro-trachéale (RSI) à anticiper</label>
+          <label class="checkbox-item"><input type="checkbox" id="noy-trt-sng"> Pose SNG</label>
+        `;
+      }
+
+      actionsList.innerHTML = actionsHtml;
+    }
 
   </script>
 </body>
