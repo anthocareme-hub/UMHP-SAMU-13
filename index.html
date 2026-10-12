@@ -2177,6 +2177,168 @@
         </div>
       </div>
     </div>
+                <!-- ================= PAGE SPÉCIFIQUE : ÉLECTRISÉ (P0) ================= -->
+    <div id="page-electrise" class="page">
+      
+      <!-- 1. SÉCURITÉ & URGENCE VITALE -->
+      <div class="card" style="border: 2px solid var(--primary);">
+        <div class="alert-box alert-red" style="cursor:pointer; font-size: 0.95rem;" onclick="toggleSourceElectrique(this)">
+          Attention, assurez vous que la source électrique ait bien été coupée
+        </div>
+        
+        <div class="section-label" style="text-align: center; font-size: 1.15rem; color: var(--primary);">État Vital Immédiat</div>
+        <div style="font-weight: 800; text-align: center; margin-bottom: 12px; font-size: 1.1rem;">
+          Le patient est-il en arrêt cardiaque ou respiratoire ?
+        </div>
+        <div class="row-2 field" style="margin-bottom: 0;">
+          <button type="button" class="btn-toggle-action" id="btn-elec-acr-oui" style="padding: 16px; border-color: var(--danger); color: var(--danger); font-weight: 900;" onclick="selectElecAcr(true)">OUI (Vers ACR)</button>
+          <button type="button" class="btn-toggle-action" id="btn-elec-acr-non" style="padding: 16px; border-color: var(--success); color: var(--success);" onclick="selectElecAcr(false)">NON</button>
+        </div>
+      </div>
+
+      <!-- BLOC SI ACR -->
+      <div id="elec-acr-bloc" style="display: none;">
+        <div class="alert-box alert-red" style="font-size: 1.1rem; padding: 20px;">
+          <button type="button" class="btn-toggle-action" style="background: #ffffff; color: var(--danger); border: 2px solid var(--danger); margin-bottom: 0; font-weight: 900;" onclick="goToPage('acr-adulte')">
+            Basculer vers Protocole ACR ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- BLOC SI NON ACR -->
+      <div id="elec-suite-bloc" style="display: none;">
+        
+        <!-- 2. CIRCONSTANCES & TRAUMA -->
+        <div class="card">
+          <div class="section-label">Circonstances & Risque Traumatique</div>
+          
+          <label style="font-weight: 800; margin-bottom: 6px;">Type de courant</label>
+          <div class="field" style="display: flex; flex-direction: column; gap: 8px;">
+            <button type="button" class="algo-branch-btn" id="btn-elec-basse" onclick="selectElecType('Basse tension (< 1000V)')" style="text-align: left; padding-left: 15px;">⚡ Basse tension (< 1000V)</button>
+            <button type="button" class="algo-branch-btn" id="btn-elec-haute" onclick="selectElecType('Haute tension (> 1000V)')" style="text-align: left; padding-left: 15px;">⚡ Haute tension (> 1000V)</button>
+            <button type="button" class="algo-branch-btn" id="btn-elec-foudre" onclick="selectElecType('Foudre')" style="text-align: left; padding-left: 15px;">🌩️ Foudre</button>
+          </div>
+          
+          <label style="font-weight: 800; margin-bottom: 6px; margin-top: 14px;">Traumatisme associé (Projection, chute de hauteur...) ?</label>
+          <div class="row-2 field">
+            <button type="button" class="btn-toggle-action" id="btn-elec-trauma-oui" onclick="selectElecTrauma(true)">OUI</button>
+            <button type="button" class="btn-toggle-action active" id="btn-elec-trauma-non" onclick="selectElecTrauma(false)">NON</button>
+          </div>
+          <div id="elec-alerte-trauma" class="alert-box alert-red" style="display: none; margin-top: 10px;">
+            ⚠️ Immobilisation stricte de l'axe Tête-Cou-Tronc
+          </div>
+        </div>
+
+        <!-- 3. BILAN CLINIQUE -->
+        <div class="card">
+          <div class="section-label">Bilan Clinique</div>
+          
+          <label style="font-weight: 800; color: var(--primary);">Cardiovasculaire (Risque de TV/FV)</label>
+          <div class="field">
+            <label class="checkbox-item"><input type="checkbox" id="elec-clin-douleur"> Douleur thoracique</label>
+            <label class="checkbox-item"><input type="checkbox" id="elec-clin-palp"> Palpitations / Arythmie ressentie</label>
+          </div>
+
+          <label style="font-weight: 800; color: var(--primary);">Neurologique</label>
+          <div class="field">
+            <label class="checkbox-item"><input type="checkbox" id="elec-clin-pc"> Perte de connaissance initiale</label>
+            <label class="checkbox-item"><input type="checkbox" id="elec-clin-amnesie"> Amnésie / Confusion</label>
+            <label class="checkbox-item"><input type="checkbox" id="elec-clin-deficit"> Déficit moteur/sensitif (Paresthésies)</label>
+          </div>
+
+          <label style="font-weight: 800; color: var(--primary);">Cutané / Lésionnel</label>
+          <div class="field">
+            <input type="text" id="elec-clin-points" placeholder="Recherche des points d'entrée et de sortie...">
+          </div>
+        </div>
+
+        <!-- 4. THÉRAPEUTIQUE & GESTES -->
+        <div class="card">
+          <div class="section-label">Thérapeutique & Gestes</div>
+          
+          <button type="button" class="btn-toggle-action orange" id="btn-elec-ecg" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ ECG 18 dérivations réalisé' : '❤️ Faire ECG 18 dérivations';">
+            ❤️ Faire ECG 18 dérivations
+          </button>
+          
+          <button type="button" class="btn-toggle-action" id="btn-elec-vvp" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ VVP posée' : '💉 Pose de VVP';">
+            💉 Pose de VVP
+          </button>
+
+          <div id="elec-remplissage-bloc" style="display: none; margin-bottom: 14px;">
+            <button type="button" class="btn-toggle-action orange" id="btn-elec-rempl" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Remplissage Isofundine en cours' : '💧 Remplissage vasculaire (Isofundine)';">
+              💧 Remplissage vasculaire (Isofundine)
+            </button>
+            <div style="font-size: 0.85rem; color: var(--danger); text-align: center; margin-top: -8px;">Indiqué pour Haute Tension / Foudre (risque rhabdomyolyse)</div>
+          </div>
+          
+          <div class="field" style="margin-top: 14px;">
+            <label class="checkbox-item"><input type="checkbox" id="elec-pansement"> Pansement sec stérile sur les brûlures</label>
+          </div>
+
+          <hr class="divider">
+          <label style="font-weight: 800; margin-bottom: 6px;">Antalgie : Douleur (EN)</label>
+          <input type="number" id="elec-en" inputmode="numeric" placeholder="0 à 10" oninput="syncElecEn()">
+          
+          <div id="elec-antalgie-container" style="margin-top: 10px;">
+            <!-- Rempli dynamiquement -->
+          </div>
+        </div>
+
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('motif')">⬅ Motif</button>
+        <button type="button" class="btn-nav" id="btn-elec-next" style="display: none;" onclick="goToPage('constantes')">Constantes ➔</button>
+      </div>
+    </div>
+
+    <!-- ================= PAGE : SUIVI CHRONOLOGIQUE (ÉLECTRISÉ) ================= -->
+    <div id="page-suivi-electrise" class="page">
+      <div class="card">
+        <div class="section-label">Réévaluation Clinique</div>
+        <p style="font-size: 0.85rem; color: #666; margin-bottom: 15px;">Évaluez l'évolution sous traitement post-appel régulation.</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+          <div class="field">
+            <label style="font-weight: 800;">Cardiovasculaire (ECG continu)</label>
+            <div class="row-2" style="margin-bottom: 5px;">
+              <button type="button" class="btn-toggle-action" onclick="toggleReeval(this)">Stable / Rythme sinusal</button>
+              <button type="button" class="btn-toggle-action orange" onclick="toggleReeval(this)">Aggravation / Arythmie</button>
+            </div>
+            <input type="text" id="reeval-elec-cardio-notes" placeholder="Notes (ex: ESV, FA...)">
+          </div>
+          <div class="field">
+            <label style="font-weight: 800;">Neurologique</label>
+            <div class="row-2" style="margin-bottom: 5px;">
+              <button type="button" class="btn-toggle-action" onclick="toggleReeval(this)">Stable / Conscient</button>
+              <button type="button" class="btn-toggle-action orange" onclick="toggleReeval(this)">Troubles / Déficit</button>
+            </div>
+            <input type="text" id="reeval-elec-neuro-notes" placeholder="Notes...">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Surveillance Constantes</div>
+        <h3 style="color: var(--primary); margin-top: 10px; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Bilan T+15 min</h3>
+        <div class="row-3 field" style="margin-top: 10px;">
+          <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="elec-t15-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+          <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="elec-t15-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+          <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="elec-t15-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+        </div>
+        <h3 style="color: var(--primary); margin-top: 20px; border-bottom: 2px solid var(--border); padding-bottom: 5px;">Bilan T+30 min</h3>
+        <div class="row-3 field" style="margin-top: 10px;">
+          <div><label style="font-size: 0.75rem;">PA</label><input type="text" id="elec-t30-pa" placeholder="120/80" style="padding: 6px; font-size: 0.9rem;"></div>
+          <div><label style="font-size: 0.75rem;">Pouls</label><input type="number" inputmode="numeric" id="elec-t30-pouls" placeholder="80" style="padding: 6px; font-size: 0.9rem;"></div>
+          <div><label style="font-size: 0.75rem;">SpO2</label><input type="number" inputmode="numeric" id="elec-t30-spo2" placeholder="98" style="padding: 6px; font-size: 0.9rem;"></div>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button type="button" class="btn-nav secondary" onclick="goToPage('regu')">⬅ Appel au 15</button>
+        <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
+      </div>
+    </div>
 
     <!-- ================= PAGE CONSTANTES ================= -->
     <div id="page-constantes" class="page">
@@ -3880,7 +4042,7 @@
     // SWITCH P0 & MOTIFS
     const motifsP0Non = ["Allergie", "Antalgie", "Brûlure", "Dyspnée", "Hypoglycémie"];
     const motifsP0Oui = ["ACR adulte", "ACR enfant", "Accouchement", "Détresse respiratoire", "Électrisé", "Noyé", "Traumatisé sévère"];
-    const motifsBypassAnamnese = ["Traumatisé sévère", "ACR adulte", "ACR enfant", "Noyé"];
+    const motifsBypassAnamnese = ["Traumatisé sévère", "ACR adulte", "ACR enfant", "Noyé", "Électrisé"];
     function onP0Change() {
       const isChecked = document.getElementById('toggle-p0').checked;
       const statusLabel = document.getElementById('p0-status');
@@ -3999,6 +4161,9 @@
         } else if (motif === 'Noyé') { // <--- AJOUT ICI
         previousMotifPage = 'noyade';
         goToPage('noyade');
+        } else if (motif === 'Électrisé') {
+        previousMotifPage = 'electrise';
+        goToPage('electrise');
       } else {
         document.getElementById('motif-autre-titre').textContent = `Bilan : ${motif}`;
         previousMotifPage = 'motif-autre';
@@ -4027,6 +4192,8 @@
         isRacs ? goToPage('suivi-racs') : goToPage('acr-adulte');
       } else if (motif === 'Traumatisé sévère') {
         goToPage('surveillance');
+        } else if (motif === 'Électrisé') {
+        goToPage('suivi-electrise');
       } else {
         goToPage('regu');
       }
@@ -4054,6 +4221,8 @@
         goToPage('therapeutique-antalgie');
         } else if (motif === 'Traumatisé sévère') {
       goToPage('reeval');
+        } else if (motif === 'Électrisé') {
+        goToPage('suivi-electrise');
       } else {
         goToPage('orientation');
       }
@@ -4128,6 +4297,11 @@
         p0Container.style.display = 'none';
         } else if (target === 'suivi-racs') {
         indicator.textContent = 'Constantes Post-RACS';
+        p0Container.style.display = 'none';
+        } else if (target === 'electrise') {
+        indicator.textContent = 'Protocole : Électrisé';
+      } else if (target === 'suivi-electrise') {
+        indicator.textContent = 'Réévaluation & Suivi Électrisé';
         p0Container.style.display = 'none';
       } else if (target === 'motif-autre') {
         indicator.textContent = 'Motif spécifique';
@@ -5846,6 +6020,23 @@ function checkDrGravite() {
           gestesStr,
           antPrisText
         ].filter(Boolean).join('\n');
+        } else if (motif === 'Électrisé') {
+        const elec = getElectriseData();
+        if (elec.isAcr === true) {
+           const acr = getAcrAdulteData();
+           evalMotif = 
+`- URGENCE VITALE : Arrêt Cardio-Respiratoire (ACR) suite électrisation
+- Type de courant : ${elec.type} | Trauma suspecté : ${elec.trauma}
+- Rythme initial : ${acr.rythme} | Voie d'abord : ${acr.vvp}
+- Adrénaline : ${acr.adre} mg | Chocs : ${acr.chocs} | RACS : ${acr.racs}`;
+        } else {
+           evalMotif = 
+`- Circonstances : ${elec.type} | Suspicion Trauma : ${elec.trauma}
+- Lésions / Points d'entrée et sortie : ${elec.points}
+- Bilan Clinique : ${elec.clinique}
+- Douleur : ${elec.douleur}
+- Thérapeutique et Gestes : ${elec.gestes}`;
+        }
       } else if (motif === 'ACR adulte') {
         const acr = getAcrAdulteData();
         evalMotif = 
@@ -6122,6 +6313,28 @@ ${demandeText}
         bilanSection = hypoCliniqueLines.join('\n');
         theraSection = `- Conduite suivie : ${hypo.thera || 'Aucune'}`;
         suiviSection = `- T0 : ${t0Str}\n- T+5 min : ${t5Str}\n- T+10 min : ${t10Str}`;
+
+        } else if (motif === 'Électrisé') {
+        const elec = getElectriseData();
+        if (elec.isAcr === true) {
+          const acr = getAcrAdulteData();
+          let racsDetails = "";
+          if (acr.racs === 'OUI') {
+            let racsConst = [];
+            if (document.getElementById('racs-pa').value) racsConst.push(`PA: ${document.getElementById('racs-pa').value}`);
+            if (document.getElementById('racs-fc').value) racsConst.push(`FC: ${document.getElementById('racs-fc').value} bpm`);
+            if (document.getElementById('racs-spo2').value) racsConst.push(`SpO2: ${document.getElementById('racs-spo2').value}%`);
+            racsDetails = racsConst.length > 0 ? `\n- Constantes Post-RACS : ${racsConst.join(' | ')}` : "";
+          }
+          bilanSection = `- Circonstances : ${elec.type} | Trauma suspecté : ${elec.trauma}\n- URGENCE VITALE : Arrêt Cardio-Respiratoire (ACR)\n- Rythme initial ACR : ${acr.rythme}`;
+          theraSection = `- Voie d'abord : ${acr.vvp}\n- Cycles MCE : ${acr.cycles} | Chocs : ${acr.chocs} | Adrénaline : ${acr.adre} mg\n- Gestes : ${elec.gestes}`;
+          suiviSection = `- RACS (Retour d'Activité Cardiaque Spontanée) : ${acr.racs}${racsDetails}`;
+        } else {
+          bilanSection = `- Circonstances : ${elec.type} | Suspicion Trauma : ${elec.trauma}\n- Lésions / Entrée-Sortie : ${elec.points}\n- Clinique : ${elec.clinique}\n- Douleur : ${elec.douleur}`;
+          theraSection = `- Thérapeutique appliquée : ${elec.gestes}`;
+          let suiviElecStr = getSuiviElectrise();
+          suiviSection = suiviElecStr.replace('\n\n--- RÉÉVALUATION ET SURVEILLANCE ---\n', '');
+        }
 
       } else if (motif === 'Noyé') {
         const noy = getNoyadeData();
@@ -7399,6 +7612,194 @@ ${suiviSection}
       }
 
       actionsList.innerHTML = actionsHtml;
+    }
+   // ================= LOGIQUE ÉLECTRISÉ =================
+    let elecAcrState = null;
+    let elecTypeCourant = null;
+
+    function selectElecAcr(isAcr) {
+      elecAcrState = isAcr;
+      const btnOui = document.getElementById('btn-elec-acr-oui');
+      const btnNon = document.getElementById('btn-elec-acr-non');
+      const blocAcr = document.getElementById('elec-acr-bloc');
+      const blocSuite = document.getElementById('elec-suite-bloc');
+      const btnNext = document.getElementById('btn-elec-next');
+
+      if (isAcr) {
+        btnOui.classList.add('active-red');
+        btnNon.classList.remove('active-green');
+        btnNon.style.background = '#ffffff';
+        blocSuite.style.display = 'none';
+        blocAcr.style.display = 'block';
+        btnNext.style.display = 'none';
+      } else {
+        btnNon.classList.add('active-green');
+        btnOui.classList.remove('active-red');
+        btnOui.style.background = '#ffffff';
+        blocAcr.style.display = 'none';
+        blocSuite.style.display = 'block';
+        btnNext.style.display = 'block';
+      }
+    }
+
+    function selectElecTrauma(hasTrauma) {
+      const btnOui = document.getElementById('btn-elec-trauma-oui');
+      const btnNon = document.getElementById('btn-elec-trauma-non');
+      const alerte = document.getElementById('elec-alerte-trauma');
+
+      if (hasTrauma) {
+        btnOui.classList.add('active');
+        btnNon.classList.remove('active');
+        alerte.style.display = 'block';
+      } else {
+        btnNon.classList.add('active');
+        btnOui.classList.remove('active');
+        alerte.style.display = 'none';
+      }
+    }
+
+    function selectElecType(type) {
+      elecTypeCourant = type;
+      const btnBasse = document.getElementById('btn-elec-basse');
+      const btnHaute = document.getElementById('btn-elec-haute');
+      const btnFoudre = document.getElementById('btn-elec-foudre');
+      
+      [btnBasse, btnHaute, btnFoudre].forEach(b => { b.classList.remove('active', 'active-green'); b.style.background = '#ffffff'; });
+      
+      let selectedBtn;
+      if (type.includes('Basse')) selectedBtn = btnBasse;
+      if (type.includes('Haute')) selectedBtn = btnHaute;
+      if (type.includes('Foudre')) selectedBtn = btnFoudre;
+      if (selectedBtn) selectedBtn.classList.add('active-green');
+
+      // Afficher le remplissage uniquement pour Haute tension ou Foudre
+      const blocRempl = document.getElementById('elec-remplissage-bloc');
+      if (type.includes('Haute') || type.includes('Foudre')) {
+        blocRempl.style.display = 'block';
+      } else {
+        blocRempl.style.display = 'none';
+      }
+    }
+
+    function syncElecEn() {
+      const enValStr = document.getElementById('elec-en').value;
+      const cEva = document.getElementById('c-eva');
+      if (cEva) cEva.value = enValStr;
+      
+      const container = document.getElementById('elec-antalgie-container');
+      if (!container) return;
+      
+      if (!enValStr || enValStr.trim() === '') {
+        container.innerHTML = '';
+        return;
+      }
+
+      const enVal = parseInt(enValStr, 10);
+      const poidsVal = parseInt(document.getElementById('patient-poids').value || '70', 10);
+
+      if (enVal >= 1 && enVal <= 5) {
+        container.innerHTML = `
+          <div class="thera-box" style="border-left: 6px solid var(--samu-yellow);">
+            <div class="thera-title" style="margin-bottom: 12px;">1 ≤ EN ≤ 5 : Protocole Antalgique Intermédiaire</div>
+            <button type="button" class="btn-toggle-action" id="btn-elec-meopa" onclick="this.classList.toggle('active')">MEOPA avec valve</button>
+            <button type="button" class="btn-toggle-action" id="btn-elec-para" onclick="this.classList.toggle('active')">Paracétamol 1g IVL</button>
+          </div>
+        `;
+      } else if (enVal >= 6) {
+        let doseInc = poidsVal <= 60 ? 2 : 3;
+        let btnText = totalMorphineDose > 0 
+          ? `✓ ${totalMorphineDose} mg administrés (cliquer pour +${doseInc}mg)`
+          : `💉 Morphine ${doseInc} mg IVD`;
+        let activeClass = totalMorphineDose > 0 ? 'active' : '';
+
+        container.innerHTML = `
+          <div class="thera-box" style="border-left: 6px solid var(--danger);">
+            <div class="thera-title" style="margin-bottom: 12px;">EN ≥ 6 : Douleur Sévère (Poids: ${poidsVal} kg)</div>
+            <button type="button" class="btn-toggle-action ${activeClass}" id="btn-elec-morphine" data-increment="${doseInc}" onclick="addMorphineDose(this)" style="border-color: #0284c7; color: #0369a1;">
+              ${btnText}
+            </button>
+            <p style="font-size:0.9rem; font-weight:700; margin-bottom:8px;">• Répéter même dose toutes les 5 min jusqu'à EN ≤ 3 (MAX 10mg)</p>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `<div class="alert-box alert-green">EN < 1 : Surveillance et antalgique palier 1 si besoin</div>`;
+      }
+    }
+
+    function getElectriseData() {
+      const trauma = document.getElementById('btn-elec-trauma-oui') && document.getElementById('btn-elec-trauma-oui').classList.contains('active');
+      
+      let cliniques = [];
+      if (document.getElementById('elec-clin-douleur') && document.getElementById('elec-clin-douleur').checked) cliniques.push('Douleur thoracique');
+      if (document.getElementById('elec-clin-palp') && document.getElementById('elec-clin-palp').checked) cliniques.push('Palpitations/Arythmie');
+      if (document.getElementById('elec-clin-pc') && document.getElementById('elec-clin-pc').checked) cliniques.push('Perte de connaissance initiale');
+      if (document.getElementById('elec-clin-amnesie') && document.getElementById('elec-clin-amnesie').checked) cliniques.push('Amnésie/Confusion');
+      if (document.getElementById('elec-clin-deficit') && document.getElementById('elec-clin-deficit').checked) cliniques.push('Déficit moteur/sensitif');
+      
+      const points = document.getElementById('elec-clin-points') ? document.getElementById('elec-clin-points').value.trim() : '';
+
+      let gestes = [];
+      if (document.getElementById('btn-elec-ecg') && document.getElementById('btn-elec-ecg').classList.contains('active')) gestes.push('ECG 18 dérivations');
+      if (document.getElementById('btn-elec-vvp') && document.getElementById('btn-elec-vvp').classList.contains('active')) gestes.push('VVP posée');
+      if (document.getElementById('btn-elec-rempl') && document.getElementById('btn-elec-rempl').classList.contains('active')) gestes.push('Remplissage Isofundine');
+      if (document.getElementById('elec-pansement') && document.getElementById('elec-pansement').checked) gestes.push('Pansement sec');
+      
+      if (document.getElementById('btn-elec-meopa') && document.getElementById('btn-elec-meopa').classList.contains('active')) gestes.push("MEOPA");
+      if (document.getElementById('btn-elec-para') && document.getElementById('btn-elec-para').classList.contains('active')) gestes.push("Paracétamol 1g");
+      if (document.getElementById('btn-elec-morphine') && document.getElementById('btn-elec-morphine').classList.contains('active')) gestes.push(`Morphine (${totalMorphineDose} mg)`);
+
+      const enVal = document.getElementById('elec-en') ? document.getElementById('elec-en').value : '';
+
+      return {
+        isAcr: elecAcrState,
+        type: elecTypeCourant || 'Non précisé',
+        trauma: trauma ? 'OUI (Axe maintenu)' : 'NON',
+        clinique: cliniques.length > 0 ? cliniques.join(', ') : 'Aucun signe spécifique',
+        points: points || 'Non précisés',
+        gestes: gestes.length > 0 ? gestes.join(', ') : 'Aucun geste spécifique',
+        douleur: enVal ? `EN = ${enVal}/10` : 'Non évaluée'
+      };
+    }
+
+    function getSuiviElectrise() {
+      let suivi = "\n\n--- RÉÉVALUATION ET SURVEILLANCE ---\n";
+      let hasData = false;
+
+      const items = [
+        { id: 'elec-cardio', label: 'Cardiovasculaire' },
+        { id: 'elec-neuro', label: 'Neurologique' }
+      ];
+
+      items.forEach(item => {
+        const input = document.getElementById(`reeval-${item.id}-notes`);
+        if (input) {
+          const btnActive = input.parentElement.querySelector('button.active');
+          const etat = btnActive ? btnActive.textContent : '';
+          const note = input.value.trim();
+          if (etat || note) {
+            suivi += `[${item.label}] ${etat} ${note ? '- ' + note : ''}\n`;
+            hasData = true;
+          }
+        }
+      });
+
+      const t15Pa = document.getElementById('elec-t15-pa') ? document.getElementById('elec-t15-pa').value.trim() : '';
+      const t15Fc = document.getElementById('elec-t15-pouls') ? document.getElementById('elec-t15-pouls').value.trim() : '';
+      const t15Spo2 = document.getElementById('elec-t15-spo2') ? document.getElementById('elec-t15-spo2').value.trim() : '';
+      if (t15Pa || t15Fc || t15Spo2) {
+        suivi += `\nBilan T+15 : PA ${t15Pa||'?'} | FC ${t15Fc||'?'} | SpO2 ${t15Spo2?t15Spo2+'%':'?'}\n`;
+        hasData = true;
+      }
+
+      const t30Pa = document.getElementById('elec-t30-pa') ? document.getElementById('elec-t30-pa').value.trim() : '';
+      const t30Fc = document.getElementById('elec-t30-pouls') ? document.getElementById('elec-t30-pouls').value.trim() : '';
+      const t30Spo2 = document.getElementById('elec-t30-spo2') ? document.getElementById('elec-t30-spo2').value.trim() : '';
+      if (t30Pa || t30Fc || t30Spo2) {
+        suivi += `Bilan T+30 : PA ${t30Pa||'?'} | FC ${t30Fc||'?'} | SpO2 ${t30Spo2?t30Spo2+'%':'?'}\n`;
+        hasData = true;
+      }
+
+      return hasData ? suivi : '- Surveillance continue (ECG, paramètres vitaux)';
     }
 
   </script>
