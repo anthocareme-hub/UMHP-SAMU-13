@@ -3756,6 +3756,19 @@
       updateTheraDoses();
       updateMotifsGrid(false);
       restoreDraft(); // Charge le brouillon s'il existe
+      
+      // --- AJOUT AUTOMATIQUE DU BOUTON ANNULER EN BAS DE CHAQUE PAGE ---
+      document.querySelectorAll('.page').forEach(page => {
+        // On exclut les pages où le bouton annuler n'a pas de sens
+        const excludedPages = ['page-home', 'page-mes-umhp', 'page-resume'];
+        
+        if (!excludedPages.includes(page.id)) {
+          const cancelDiv = document.createElement('div');
+          cancelDiv.style.cssText = "text-align: center; margin-top: 15px; margin-bottom: 25px;";
+          cancelDiv.innerHTML = `<span onclick="cancelIntervention()" style="color: var(--danger); font-size: 0.95rem; font-weight: 800; cursor: pointer; text-decoration: underline;">❌ Annuler l'intervention et retourner à l'accueil</span>`;
+          page.appendChild(cancelDiv);
+        }
+      });
     });
 
     // NAVIGATION ACCUEIL & ÉCRANS
@@ -7268,6 +7281,13 @@ ${suiviSection}
       try {
         localStorage.removeItem('samu13_draft');
       } catch (e) {}
+    }
+   // --- FONCTION D'ANNULATION GLOBALE ---
+    function cancelIntervention() {
+      if (confirm("⚠️ Êtes-vous sûr de vouloir annuler l'intervention en cours ? Toutes les données saisies seront définitivement perdues.")) {
+        clearDraft(); // Vide la mémoire
+        goToHome();   // Retour à l'accueil
+      }
     }
 
     // Alerte anti-fermeture / rafraichissement accidentel
