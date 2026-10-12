@@ -6269,12 +6269,16 @@ function checkDrGravite() {
         }
       } else if (motif === 'ACR adulte' || motif === 'ACR enfant') {
         const acr = getAcrData();
+        let evolSaed = `- Retour à une Activité Cardiaque Spontanée (RACS) : NON`;
+        if (acr.isRacs) evolSaed = `- Retour à une Activité Cardiaque Spontanée (RACS) : OUI`;
+        if (acr.isDeces) evolSaed = `- Arrêt de la réanimation spécialisée à ${acr.heureDeces || '--h--'}. Décès constaté sur place par le médecin.`;
+
         evalMotif = 
-`- Contexte initial : No-flow ${acr.noflow} | Low-flow ${acr.lowflow} | Chocs DSA : ${acr.chocsInitiaux}${acr.pedsStr}
-- Rythme initial : ${acr.rythme}
+`- Contexte initial : No-flow ${acr.noflow} | Low-flow ${acr.lowflow}
+- ${acr.chocsInitTxt}${acr.pedsStr}
 - Voie d'abord (VVP/DIO) : ${acr.vvp}
 - 4H/4T (Causes réversibles contrôlées) : ${acr.causesReversibles}
-- Retour à une Activité Cardiaque Spontanée (RACS) : ${acr.racs}`;
+${evolSaed}`;
       }
       else {
         evalMotif = `- Bilan clinique spécifique : ${motif}`;
@@ -6306,7 +6310,8 @@ function checkDrGravite() {
       if (glasgow) constList.push(`Glasgow: ${glasgow}`);
       const constText = constList.length > 0 ? `- Constantes : ${constList.join(' | ')}` : ``;
 
-      const demandeType = document.getElementById('demande-type').value;
+      const isAcrMotif = (motif === 'ACR adulte' || motif === 'ACR enfant');
+      const demandeType = isAcrMotif ? 'Renfort SMUR' : document.getElementById('demande-type').value;
       const demandeDetails = document.getElementById('saed-demande').value.trim();
       let demandeText = `Type : ${demandeType}`;
       if (demandeDetails) {
@@ -6376,7 +6381,8 @@ ${demandeText}
       if (document.getElementById('c-hb') && document.getElementById('c-hb').value) cInit.push(`Hb: ${document.getElementById('c-hb').value} g/L`);
       if (document.getElementById('c-glasgow') && document.getElementById('c-glasgow').value) cInit.push(`Glasgow: ${document.getElementById('c-glasgow').value}`);
 
-      const demType = document.getElementById('demande-type').value;
+      const isAcrMotif = (motif === 'ACR adulte' || motif === 'ACR enfant' || (motif === 'Noyé' && noyadeRespiState === false) || (motif === 'Électrisé' && elecAcrState === true));
+      const demType = isAcrMotif ? 'Renfort SMUR' : document.getElementById('demande-type').value;
       const demTxt = document.getElementById('saed-demande').value.trim();
 
       const orientTrans = document.getElementById('val-transport') ? document.getElementById('val-transport').value || 'Non renseigné' : 'Non renseigné';
@@ -6642,8 +6648,13 @@ ${demandeText}
 
       } else if (motif === 'ACR adulte' || motif === 'ACR enfant') {
         const acr = getAcrData();
-        let racsDetails = "";
-        if (acr.racs === 'OUI') {
+        
+        bilanSection = `- Contexte : No-flow ${acr.noflow} | Low-flow ${acr.lowflow}\n- ${acr.chocsInitTxt}\n- 4H/4T (Causes réversibles) : ${acr.causesReversibles}`;
+        theraSection = `- Voie d'abord (VVP/DIO) : ${acr.vvp}${acr.pedsStr}\n- Cycles MCE débutés : ${acr.cycles}\n- Chocs délivrés par le SMUR : ${acr.chocs}\n- Injections d'adrénaline : ${acr.adre}`;
+        
+        if (acr.isDeces) {
+          suiviSection = `- Arrêt de la réanimation spécialisée à ${acr.heureDeces || '--h--'}. Décès constaté sur place par le médecin.`;
+        } else if (acr.isRacs) {
           let racsConst = [];
           if (document.getElementById('racs-pa').value) racsConst.push(`PA: ${document.getElementById('racs-pa').value}`);
           if (document.getElementById('racs-fc').value) racsConst.push(`FC: ${document.getElementById('racs-fc').value} bpm`);
@@ -6652,12 +6663,11 @@ ${demandeText}
           if (document.getElementById('racs-temp').value) racsConst.push(`T°: ${document.getElementById('racs-temp').value}°C`);
           if (document.getElementById('racs-glasgow').value) racsConst.push(`Glasgow: ${document.getElementById('racs-glasgow').value}`);
           if (document.getElementById('racs-pupilles').value) racsConst.push(`Pupilles: ${document.getElementById('racs-pupilles').value}`);
-          racsDetails = racsConst.length > 0 ? `\n- Constantes Post-RACS : ${racsConst.join(' | ')}` : "";
+          const racsDetails = racsConst.length > 0 ? `\n- Constantes Post-RACS : ${racsConst.join(' | ')}` : "";
+          suiviSection = `- RACS (Retour d'Activité Cardiaque Spontanée) : OUI${racsDetails}`;
+        } else {
+          suiviSection = `- Réanimation cardio-pulmonaire en cours (Pas de RACS)`;
         }
-        
-        bilanSection = `- Contexte : No-flow ${acr.noflow} | Low-flow ${acr.lowflow} | Chocs DSA (avant SMUR) : ${acr.chocsInitiaux}\n- Rythme initial : ${acr.rythme}\n- 4H/4T (Causes réversibles) : ${acr.causesReversibles}`;
-        theraSection = `- Voie d'abord (VVP/DIO) : ${acr.vvp}${acr.pedsStr}\n- Cycles MCE débutés : ${acr.cycles}\n- Chocs délivrés par le SMUR : ${acr.chocs}\n- Injections d'adrénaline : ${acr.adre}`;
-        suiviSection = `- RACS (Retour d'Activité Cardiaque Spontanée) : ${acr.racs}${racsDetails}`;
       }
       else if (motif === 'Antalgie') {
         let traumaStr = '';
@@ -6922,6 +6932,7 @@ ${suiviSection}
     let adreGivenThisCycle = false;
     let amioGivenThisCycle = false;
     let acrDeces = false;
+    let acrHeureDeces = '';
 
     function adjustInitChocs(val) {
       chocInitiaux = Math.max(0, chocInitiaux + val);
@@ -7151,6 +7162,8 @@ ${suiviSection}
     function declarerDeces() {
       if(!confirm("Confirmer le décès / arrêt de la réanimation ?")) return;
       acrDeces = true;
+      const now = new Date();
+      acrHeureDeces = `${String(now.getHours()).padStart(2, '0')}h${String(now.getMinutes()).padStart(2, '0')}`;
       if (acrTimerInterval) clearInterval(acrTimerInterval);
       const prefix = currentAcrType === 'enfant' ? 'acr-peds' : 'acr';
       document.getElementById(`${prefix}-chrono-container`).style.background = '#000000';
@@ -7158,6 +7171,7 @@ ${suiviSection}
       document.getElementById(`${prefix}-action-box`).innerHTML = `<div class="alert-box" style="background:#000000; color:#ffffff; font-size:1.2rem; padding: 20px;">RÉANIMATION ARRÊTÉE - DÉCÈS CONSTATÉ</div>`;
       document.getElementById(`btn-${currentAcrType === 'enfant' ? 'peds-' : ''}racs-declare`).style.display = 'none';
       document.getElementById(`btn-${currentAcrType === 'enfant' ? 'peds-' : ''}deces-declare`).style.display = 'none';
+      autoUpdateResumes();
     }
 
     function reprendreAcr() {
@@ -7187,7 +7201,7 @@ ${suiviSection}
       acrSeconds = 0; cycleCount = 0; adreCount = 0; chocSmurCount = 0; chocInitiaux = 0; 
       isRacs = false; firstAdreGiven = false; acrRythmeInitial = null;
       acrChronoStarted = false; acrVvpPosee = false; currentAcrRythme = null;
-      chocGivenThisCycle = false; adreGivenThisCycle = false; amioGivenThisCycle = false; acrDeces = false;
+      chocGivenThisCycle = false; adreGivenThisCycle = false; amioGivenThisCycle = false; acrDeces = false; acrHeureDeces = '';
 
       ['racs-pa', 'racs-fc', 'racs-spo2', 'racs-etco2', 'racs-temp', 'racs-glasgow', 'racs-pupilles', 'adulte-noflow', 'adulte-lowflow', 'enfant-noflow', 'enfant-lowflow', 'acr-init-chocs-adulte', 'acr-init-chocs-enfant'].forEach(id => {
         const el = document.getElementById(id);
@@ -7254,10 +7268,15 @@ ${suiviSection}
         insuff = `\n- 5 Insufflations initiales : ${fait} | Guedel : ${guedel}`;
       }
 
+      const chocsInitTxt = chocInitiaux > 0 
+        ? `Chocs délivrés avant arrivée : ${chocInitiaux}` 
+        : `Pas de chocs délivrés avant l'arrivée`;
+
       return { 
-        rythme, racs, vvp, causesReversibles: causesStr,
+        rythme, racs, isRacs, isDeces: acrDeces, heureDeces: acrHeureDeces,
+        vvp, causesReversibles: causesStr,
         cycles: cycleCount, chocs: chocSmurCount, chocsInitiaux: chocInitiaux,
-        adre: adreCount,
+        chocsInitTxt, adre: adreCount,
         noflow: nf ? `${nf} min` : 'Non précisé',
         lowflow: lf ? `${lf} min` : 'Non précisé',
         pedsStr: insuff
@@ -7734,7 +7753,8 @@ ${suiviSection}
         globals: {
           tsVoiesAeriennes, selectedAvpu, statutNouveauNe, oxygeneMode,
           pompeInsulineStatut, brulureType, fumeeInhalation, brulureProfondeur,
-          totalScb, antalgieTrauma, antalgiquesPrisStatut, previousMotifPage, totalMorphineDose
+          totalScb, antalgieTrauma, antalgiquesPrisStatut, previousMotifPage, totalMorphineDose,
+          acrDeces, acrHeureDeces, isRacs, cycleCount, adreCount, chocSmurCount, chocInitiaux, acrVvpPosee, currentAcrType, currentAcrRythme
         },
         activePageId: document.querySelector('.page.active') ? document.querySelector('.page.active').id : 'page-1'
       };
@@ -7779,6 +7799,16 @@ ${suiviSection}
           antalgiquesPrisStatut = draft.globals.antalgiquesPrisStatut !== undefined ? draft.globals.antalgiquesPrisStatut : null;
           previousMotifPage = draft.globals.previousMotifPage || 'detresse-respi';
           totalMorphineDose = draft.globals.totalMorphineDose || 0;
+          acrDeces = draft.globals.acrDeces || false;
+          acrHeureDeces = draft.globals.acrHeureDeces || '';
+          isRacs = draft.globals.isRacs || false;
+          cycleCount = draft.globals.cycleCount || 0;
+          adreCount = draft.globals.adreCount || 0;
+          chocSmurCount = draft.globals.chocSmurCount || 0;
+          chocInitiaux = draft.globals.chocInitiaux || 0;
+          acrVvpPosee = draft.globals.acrVvpPosee || false;
+          currentAcrType = draft.globals.currentAcrType || 'adulte';
+          currentAcrRythme = draft.globals.currentAcrRythme || null;
         }
 
         // 2. Restaurer les champs textes, selects, etc.
@@ -7859,6 +7889,31 @@ ${suiviSection}
                if (b.textContent.trim() === selectedAvpu) b.classList.add('active');
              });
            }
+        }
+        // I. Restauration visuelle de l'Orientation (Transport & Destination)
+        const valTrans = document.getElementById('val-transport') ? document.getElementById('val-transport').value : '';
+        if (valTrans) {
+          const btnT = document.getElementById('btn-transport-select');
+          if (btnT) { btnT.textContent = valTrans; btnT.classList.add('active'); }
+        }
+        const valDest = document.getElementById('val-destination') ? document.getElementById('val-destination').value : '';
+        if (valDest) {
+          const btnD = document.getElementById('btn-destination-select');
+          if (btnD) { btnD.textContent = valDest; btnD.classList.add('active'); }
+        }
+
+        // J. Restauration visuelle de l'ACR (Compteurs, Décès ou RACS)
+        updateAcrCounters();
+        const prefixAcr = currentAcrType === 'enfant' ? 'acr-peds' : 'acr';
+        if (acrDeces) {
+          document.getElementById(`${prefixAcr}-chrono-container`).style.background = '#000000';
+          document.getElementById(`${prefixAcr}-action-box`).innerHTML = `<div class="alert-box" style="background:#000000; color:#ffffff; font-size:1.2rem; padding: 20px;">RÉANIMATION ARRÊTÉE - DÉCÈS CONSTATÉ (${acrHeureDeces})</div>`;
+          document.getElementById(`btn-${currentAcrType === 'enfant' ? 'peds-' : ''}racs-declare`).style.display = 'none';
+          document.getElementById(`btn-${currentAcrType === 'enfant' ? 'peds-' : ''}deces-declare`).style.display = 'none';
+        } else if (isRacs) {
+          declarerRacs();
+        } else if (currentAcrRythme || acrVvpPosee) {
+          renderAcrActionBox(currentAcrRythme);
         }
 
         // 6. Restauration de la page active pour finir
