@@ -1874,7 +1874,6 @@
         <div id="acr-chrono-display" style="color: #ffffff; font-family: monospace; font-size: 3.5rem; font-weight: 900; line-height: 1; padding-bottom: 16px;">
           00:00
         </div>
-        <!-- Bandeau compteurs -->
         <div style="background: rgba(255, 255, 255, 0.1); padding: 10px; color: #f8fafc; font-weight: 800; font-size: 0.95rem; display: flex; justify-content: space-around; border-top: 1px solid rgba(255,255,255,0.2);">
           <span id="acr-count-cycles">Cycles : 0</span>
           <span id="acr-count-chocs">Chocs : 0</span>
@@ -1882,7 +1881,30 @@
         </div>
       </div>
 
-      <!-- 2. VVP OU 4H/4T -->
+      <!-- 2. CONTEXTE ARRÊT (No-flow / Low-flow) -->
+      <div class="card" style="background: #f8fafc; border: 1.5px solid var(--border);">
+        <div class="section-label" style="font-size: 0.95rem; margin-bottom: 8px;">Contexte de l'arrêt avant SMUR</div>
+        <div class="row-2 field" style="margin-bottom: 10px;">
+          <div>
+            <label style="font-size: 0.8rem;">No-flow (min)</label>
+            <input type="number" id="adulte-noflow" placeholder="0" inputmode="numeric" style="font-size: 0.95rem; padding: 8px;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem;">Low-flow secouristes</label>
+            <input type="number" id="adulte-lowflow" placeholder="ex: 15" inputmode="numeric" style="font-size: 0.95rem; padding: 8px;">
+          </div>
+        </div>
+        <div class="field" style="margin-bottom: 0;">
+          <label style="font-size: 0.8rem;">Chocs DSA délivrés avant arrivée SMUR</label>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button type="button" class="btn-nav secondary" style="padding: 8px; flex: 1;" onclick="adjustInitChocs(-1)">-</button>
+            <input type="number" id="acr-init-chocs-adulte" value="0" readonly style="flex: 2; text-align: center; font-weight: 900; background: transparent; border: none; color: var(--text);">
+            <button type="button" class="btn-nav secondary" style="padding: 8px; flex: 1;" onclick="adjustInitChocs(1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. VVP OU 4H/4T -->
       <div class="card" id="acr-vvp-card">
         <button type="button" class="btn-toggle-action" id="btn-acr-voie" style="font-size: 1.2rem; padding: 18px; margin-bottom: 0;" onclick="toggleAcrVvp(this)">
           💉 Pose de VVP / DIO
@@ -1907,7 +1929,7 @@
         </div>
       </div>
 
-      <!-- 3. ACTION BOX (Dynamique) -->
+      <!-- 4. ACTION BOX (Dynamique) -->
       <div class="card" id="acr-action-box" style="min-height: 180px;">
         <div class="section-label" style="text-align: center; color: var(--danger); font-size: 1.2rem;">Rythme initial chocable ?</div>
         <div class="row-2 field" style="margin-top: 14px;">
@@ -1916,16 +1938,14 @@
         </div>
       </div>
 
-      <!-- BOUTON DÉCLARER RACS (Il manquait dans ton code !) -->
       <button type="button" id="btn-racs-declare" class="btn-toggle-action" style="border-color: var(--success); color: var(--success); padding: 16px; margin-bottom: 16px; font-weight: 900;" onclick="declarerRacs()">
         ❤️ DÉCLARER RACS
       </button>
 
-      <!-- 4. RACS SUCCESS BOX -->
+      <!-- 5. RACS SUCCESS BOX -->
       <div class="card" id="acr-racs-success" style="display: none; border-left: 6px solid var(--success); text-align: center;">
         <div style="font-size: 1.4rem; font-weight: 900; color: var(--success); margin-bottom: 10px;">❤️ RACS CONFIRMÉ</div>
         <p style="font-weight: 700; margin-bottom: 14px; color: var(--text);">Maintien de la surveillance. Prendre les constantes complètes. Sécuriser les voies aériennes.</p>
-        
         <div style="display: flex; flex-direction: column; gap: 10px;">
           <button type="button" class="btn-toggle-action" style="border-color: var(--success); color: var(--success); padding: 16px; font-size: 1.05rem;" onclick="goToPage('suivi-racs')">
             📊 SAISIR CONSTANTES POST-RACS ➔
@@ -1936,12 +1956,129 @@
         </div>
       </div>
 
-      <!-- Boutons de navigation (ils manquaient dans ton premier bloc) -->
       <div class="nav-actions" style="margin-top: 24px;">
         <button type="button" class="btn-nav secondary" onclick="resetAcr(); goToPage('motif')">⬅ Quitter</button>
         <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
       </div>
+    </div>
+    <!-- ================= PAGE SPÉCIFIQUE : ACR ENFANT ================= -->
+    <div id="page-acr-enfant" class="page">
+      
+      <!-- CALCULATEUR DE DOSES PÉDIATRIQUES -->
+      <div style="background: var(--danger); color: white; padding: 12px; border-radius: 8px; margin-bottom: 14px; box-shadow: 0 4px 6px rgba(220, 38, 38, 0.3);">
+        <div style="font-weight: 900; font-size: 1.1rem; text-align: center; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 6px;">DOSES PÉDIATRIQUES</div>
+        <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 0.95rem;">
+          <span id="peds-dose-choc">⚡ 0 J</span>
+          <span id="peds-dose-adre">💉 Adré: 0 mg</span>
+          <span id="peds-dose-amio">💉 Amio: 0 mg</span>
+        </div>
+      </div>
 
+      <!-- 1. CHRONO & COMPTEURS -->
+      <div class="card" id="acr-peds-chrono-container" style="background: #0f172a; text-align: center; border-radius: 12px; transition: 0.3s; position: relative; padding-bottom: 0; overflow: hidden;">
+        <div style="color: #94a3b8; font-weight: 800; font-size: 1rem; margin-bottom: 4px; padding-top: 10px;">CHRONO ACR PÉDIATRIQUE (15:2)</div>
+        <div id="acr-peds-chrono-display" style="color: #ffffff; font-family: monospace; font-size: 3.5rem; font-weight: 900; line-height: 1; padding-bottom: 16px;">
+          00:00
+        </div>
+        <div style="background: rgba(255, 255, 255, 0.1); padding: 10px; color: #f8fafc; font-weight: 800; font-size: 0.95rem; display: flex; justify-content: space-around; border-top: 1px solid rgba(255,255,255,0.2);">
+          <span id="acr-peds-count-cycles">Cycles : 0</span>
+          <span id="acr-peds-count-chocs">Chocs : 0</span>
+          <span id="acr-peds-count-adre">Adré : 0 mg</span>
+        </div>
+      </div>
+
+      <!-- 2. CONTEXTE ARRÊT & POIDS -->
+      <div class="card" style="background: #f8fafc; border: 1.5px solid var(--border);">
+        <div class="row-3 field" style="margin-bottom: 10px; gap: 6px;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--danger); font-weight: 900;">Poids (kg)</label>
+            <input type="number" id="enfant-acr-poids" placeholder="ex: 15" inputmode="numeric" style="font-size: 0.95rem; padding: 6px; border-color: var(--danger);" oninput="updateAcrEnfantDoses()">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem;">No-flow (min)</label>
+            <input type="number" id="enfant-noflow" placeholder="0" inputmode="numeric" style="font-size: 0.95rem; padding: 6px;">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem;">Low-flow secour.</label>
+            <input type="number" id="enfant-lowflow" placeholder="15" inputmode="numeric" style="font-size: 0.95rem; padding: 6px;">
+          </div>
+        </div>
+        <div class="field" style="margin-bottom: 0;">
+          <label style="font-size: 0.8rem;">Chocs DSA avant arrivée SMUR</label>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button type="button" class="btn-nav secondary" style="padding: 8px; flex: 1;" onclick="adjustInitChocs(-1)">-</button>
+            <input type="number" id="acr-init-chocs-enfant" value="0" readonly style="flex: 2; text-align: center; font-weight: 900; background: transparent; border: none; color: var(--text);">
+            <button type="button" class="btn-nav secondary" style="padding: 8px; flex: 1;" onclick="adjustInitChocs(1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. ACTIONS INITIALES PÉDIATRIQUES -->
+      <div class="card" id="acr-peds-init-card">
+        <button type="button" class="btn-toggle-action orange" id="btn-peds-insuff" style="font-size: 1.05rem; padding: 14px; border-width: 2px;" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ 5 Insufflations faites' : '💨 Faire les 5 insufflations initiales';">
+          💨 Faire les 5 insufflations initiales
+        </button>
+        <button type="button" class="btn-toggle-action" id="btn-peds-guedel" style="margin-bottom: 0;" onclick="this.classList.toggle('active'); this.textContent = this.classList.contains('active') ? '✓ Canule de Guedel posée' : 'Pose de canule de Guedel';">
+          Pose de canule de Guedel
+        </button>
+      </div>
+
+      <!-- 4. VVP OU 4H/4T -->
+      <div class="card" id="acr-peds-vvp-card">
+        <button type="button" class="btn-toggle-action" id="btn-acr-peds-voie" style="font-size: 1.2rem; padding: 18px; margin-bottom: 0;" onclick="toggleAcrVvp(this)">
+          💉 Pose de VVP / DIO
+        </button>
+      </div>
+
+      <div class="card" id="acr-peds-4h4t-card" style="display: none; border: 2px solid var(--primary);">
+        <div class="section-label" style="text-align: center; color: var(--primary);">Causes Réversibles (4H / 4T)</div>
+        <div class="row-2 field" style="margin-bottom: 0;">
+          <div>
+            <label class="checkbox-item"><input type="checkbox" class="acr-cause" value="Hypoxie"> Hypoxie</label>
+            <label class="checkbox-item"><input type="checkbox" class="acr-cause" value="Hypovolémie"> Hypovolémie</label>
+            <label class="checkbox-item"><input type="checkbox" class="acr-cause" value="Hypothermie"> Hypothermie</label>
+            <label class="checkbox-item"><input type="checkbox" class="acr-cause" value="Hypo/HyperK+"> Hypo/HyperK+</label>
+          </div>
+          <div>
+            <label class="checkbox-item"><input type="checkbox" class="acr-cause" value="Thrombose"> Thrombose</label>
+            <label class="checkbox-item"><input type="checkbox" class="acr-cause" value="Pneumothorax"> Tension (PNO)</label>
+            <label class="checkbox-item"><input type="checkbox" class="acr-cause" value="Tamponnade"> Tamponnade</label>
+            <label class="checkbox-item"><input type="checkbox" class="acr-cause" value="Toxiques"> Toxiques</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. ACTION BOX (Dynamique) -->
+      <div class="card" id="acr-peds-action-box" style="min-height: 180px;">
+        <div class="section-label" style="text-align: center; color: var(--danger); font-size: 1.2rem;">Rythme initial chocable ?</div>
+        <div class="row-2 field" style="margin-top: 14px;">
+          <button type="button" class="btn-toggle-action" style="border-color: var(--danger); color: var(--danger); padding: 16px;" onclick="startAcr('oui')">OUI (FV/TV)</button>
+          <button type="button" class="btn-toggle-action" style="border-color: var(--primary); color: var(--primary); padding: 16px;" onclick="startAcr('non')">NON (Asystolie/AESP)</button>
+        </div>
+      </div>
+
+      <button type="button" id="btn-peds-racs-declare" class="btn-toggle-action" style="border-color: var(--success); color: var(--success); padding: 16px; margin-bottom: 16px; font-weight: 900;" onclick="declarerRacs()">
+        ❤️ DÉCLARER RACS
+      </button>
+
+      <!-- 6. RACS SUCCESS BOX -->
+      <div class="card" id="acr-peds-racs-success" style="display: none; border-left: 6px solid var(--success); text-align: center;">
+        <div style="font-size: 1.4rem; font-weight: 900; color: var(--success); margin-bottom: 10px;">❤️ RACS CONFIRMÉ</div>
+        <p style="font-weight: 700; margin-bottom: 14px; color: var(--text);">Maintien de la surveillance. Prendre les constantes complètes. Sécuriser les voies aériennes.</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <button type="button" class="btn-toggle-action" style="border-color: var(--success); color: var(--success); padding: 16px; font-size: 1.05rem;" onclick="goToPage('suivi-racs')">
+            📊 SAISIR CONSTANTES POST-RACS ➔
+          </button>
+          <button type="button" class="btn-toggle-action orange" onclick="reprendreAcr()" style="padding: 16px; font-size: 1.05rem;">
+            🚨 ARRÊT RÉCIDIVANT (Reprendre ACR)
+          </button>
+        </div>
+      </div>
+
+      <div class="nav-actions" style="margin-top: 24px;">
+        <button type="button" class="btn-nav secondary" onclick="resetAcr(); goToPage('motif')">⬅ Quitter</button>
+        <button type="button" class="btn-nav" onclick="goToPage('orientation')">Orientation ➔</button>
+      </div>
     </div>
     <!-- ================= PAGE SPÉCIFIQUE : SUIVI POST-RACS ================= -->
     <div id="page-suivi-racs" class="page">
@@ -4208,8 +4345,19 @@
         } else if (motif === 'Traumatisé sévère') {
         previousMotifPage = 'trauma-severe';
         goToPage('trauma-severe');
+        } else if (motif === 'ACR enfant') {
+        previousMotifPage = 'acr-enfant';
+        currentAcrType = 'enfant';
+        resetAcr();
+        goToPage('acr-enfant');
+        const p = document.getElementById('patient-poids').value;
+        if (p) {
+          document.getElementById('enfant-acr-poids').value = p;
+          updateAcrEnfantDoses();
+        }
       } else if (motif === 'ACR adulte') {
         previousMotifPage = 'acr-adulte';
+        currentAcrType = 'adulte'; // <--- LA LIGNE À AJOUTER EST ICI
         resetAcr();
         goToPage('acr-adulte');
         } else if (motif === 'Noyé') { // <--- AJOUT ICI
@@ -4244,6 +4392,8 @@
         goToPage('suivi-antalgie');
       } else if (motif === 'ACR adulte') {
         isRacs ? goToPage('suivi-racs') : goToPage('acr-adulte');
+        } else if (motif === 'ACR enfant') {
+        isRacs ? goToPage('suivi-racs') : goToPage('acr-enfant');
       } else if (motif === 'Traumatisé sévère') {
         goToPage('surveillance');
         } else if (motif === 'Électrisé') {
@@ -4344,6 +4494,8 @@
         indicator.textContent = 'Protocole : Traumatisé Sévère';
       } else if (target === 'acr-adulte') {
         indicator.textContent = 'Protocole : ACR Adulte';
+        } else if (target === 'acr-enfant') {
+        indicator.textContent = 'Protocole : ACR Enfant';
         } else if (target === 'noyade') { // <--- AJOUT ICI
         indicator.textContent = 'Protocole : Noyade';
         } else if (target === 'suivi-noyade') {
@@ -6098,13 +6250,14 @@ function checkDrGravite() {
 - Douleur : ${elec.douleur}
 - Thérapeutique et Gestes : ${elec.gestes}`;
         }
-      } else if (motif === 'ACR adulte') {
-        const acr = getAcrAdulteData();
+      } else if (motif === 'ACR adulte' || motif === 'ACR enfant') {
+        const acr = getAcrData();
         evalMotif = 
-`- Rythme initial : ${acr.rythme}
+`- Contexte initial : No-flow ${acr.noflow} | Low-flow ${acr.lowflow} | Chocs DSA : ${acr.chocsInitiaux}${acr.pedsStr}
+- Rythme initial : ${acr.rythme}
 - Voie d'abord (VVP/DIO) : ${acr.vvp}
-- Retour à une Activité Cardiaque Spontanée (RACS) : ${acr.racs}
-- Détail des actions : ${acr.actions}`;
+- 4H/4T (Causes réversibles contrôlées) : ${acr.causesReversibles}
+- Retour à une Activité Cardiaque Spontanée (RACS) : ${acr.racs}`;
       }
       else {
         evalMotif = `- Bilan clinique spécifique : ${motif}`;
@@ -6470,9 +6623,8 @@ ${demandeText}
         let suiviTraumaStr = getSuiviTrauma();
         suiviSection = suiviTraumaStr ? suiviTraumaStr.replace('\n\n--- RÉÉVALUATION ET SURVEILLANCE ---\n', '') : '- Aucune réévaluation saisie';
 
-      } 
-      else if (motif === 'ACR adulte') {
-        const acr = getAcrAdulteData();
+      } else if (motif === 'ACR adulte' || motif === 'ACR enfant') {
+        const acr = getAcrData();
         let racsDetails = "";
         if (acr.racs === 'OUI') {
           let racsConst = [];
@@ -6486,8 +6638,8 @@ ${demandeText}
           racsDetails = racsConst.length > 0 ? `\n- Constantes Post-RACS : ${racsConst.join(' | ')}` : "";
         }
         
-        bilanSection = `- Rythme initial : ${acr.rythme}\n- 4H/4T (Causes réversibles contrôlées) : ${acr.causesReversibles}`;
-        theraSection = `- Voie d'abord (VVP/DIO) : ${acr.vvp}\n- Cycles MCE débutés : ${acr.cycles}\n- Chocs délivrés : ${acr.chocs}\n- Adrénaline totale : ${acr.adre} mg`;
+        bilanSection = `- Contexte : No-flow ${acr.noflow} | Low-flow ${acr.lowflow} | Chocs DSA (avant SMUR) : ${acr.chocsInitiaux}\n- Rythme initial : ${acr.rythme}\n- 4H/4T (Causes réversibles) : ${acr.causesReversibles}`;
+        theraSection = `- Voie d'abord (VVP/DIO) : ${acr.vvp}${acr.pedsStr}\n- Cycles MCE débutés : ${acr.cycles}\n- Chocs délivrés par le SMUR : ${acr.chocs}\n- Injections d'adrénaline : ${acr.adre}`;
         suiviSection = `- RACS (Retour d'Activité Cardiaque Spontanée) : ${acr.racs}${racsDetails}`;
       }
       else if (motif === 'Antalgie') {
@@ -6733,29 +6885,52 @@ ${suiviSection}
       } catch(e) {}
     }
 
-    // --- MOTEUR ACR ADULTE REVISITÉ ---
+    // --- MOTEUR ACR UNIVERSEL (ADULTE & ENFANT) ---
     let acrTimerInterval = null;
     let acrSeconds = 0;
     let acrRythmeInitial = null;
     let cycleCount = 0; 
     let adreCount = 0;
-    let chocCount = 0;
+    let chocSmurCount = 0;
+    let chocInitiaux = 0;
     let isRacs = false;
     let firstAdreGiven = false;
+    let currentAcrType = 'adulte'; // 'adulte' ou 'enfant'
+    let doseChoc = 0, doseAdre = 0, doseAmio = 0;
 
-    function toggleAcrVvp(btn) {
-      btn.classList.toggle('active-green');
-      if (btn.classList.contains('active-green')) {
-        btn.textContent = '✓ Voies posées';
+    function adjustInitChocs(val) {
+      chocInitiaux = Math.max(0, chocInitiaux + val);
+      document.getElementById('acr-init-chocs-adulte').value = chocInitiaux;
+      document.getElementById('acr-init-chocs-enfant').value = chocInitiaux;
+      updateAcrCounters();
+    }
+
+    function updateAcrEnfantDoses() {
+      const p = parseFloat(document.getElementById('enfant-acr-poids').value) || 0;
+      if (p > 0) {
+        doseChoc = p * 4;
+        doseAdre = (p * 0.01).toFixed(2); // 10 µg/kg
+        doseAmio = p * 5;
+        document.getElementById('peds-dose-choc').textContent = `⚡ ${doseChoc} J`;
+        document.getElementById('peds-dose-adre').textContent = `💉 Adré: ${doseAdre} mg`;
+        document.getElementById('peds-dose-amio').textContent = `💉 Amio: ${doseAmio} mg`;
       } else {
-        btn.textContent = '💉 Pose de VVP / DIO';
+        document.getElementById('peds-dose-choc').textContent = `⚡ 0 J`;
+        document.getElementById('peds-dose-adre').textContent = `💉 Adré: 0 mg`;
+        document.getElementById('peds-dose-amio').textContent = `💉 Amio: 0 mg`;
       }
     }
 
+    function toggleAcrVvp(btn) {
+      btn.classList.toggle('active-green');
+      btn.textContent = btn.classList.contains('active-green') ? '✓ Voies posées' : '💉 Pose de VVP / DIO';
+    }
+
     function updateAcrCounters() {
-      document.getElementById('acr-count-cycles').textContent = `Cycles : ${cycleCount}`;
-      document.getElementById('acr-count-chocs').textContent = `Chocs : ${chocCount}`;
-      document.getElementById('acr-count-adre').textContent = `Adré : ${adreCount} mg`;
+      const prefix = currentAcrType === 'enfant' ? 'acr-peds' : 'acr';
+      document.getElementById(`${prefix}-count-cycles`).textContent = `Cycles : ${cycleCount}`;
+      document.getElementById(`${prefix}-count-chocs`).textContent = `Chocs : ${chocSmurCount} (+${chocInitiaux} DSA)`;
+      document.getElementById(`${prefix}-count-adre`).textContent = `Adré : ${adreCount} inj.`;
     }
 
     function startAcr(choixInitial) {
@@ -6768,8 +6943,9 @@ ${suiviSection}
 
     function startAcrChrono() {
       if (acrTimerInterval) clearInterval(acrTimerInterval);
-      const display = document.getElementById('acr-chrono-display');
-      const container = document.getElementById('acr-chrono-container');
+      const prefix = currentAcrType === 'enfant' ? 'acr-peds' : 'acr';
+      const display = document.getElementById(`${prefix}-chrono-display`);
+      const container = document.getElementById(`${prefix}-chrono-container`);
       
       container.style.background = 'var(--danger)'; 
       
@@ -6781,7 +6957,6 @@ ${suiviSection}
         const s = (acrSeconds % 60).toString().padStart(2, '0');
         display.textContent = `${m}:${s}`;
 
-        // Alerte BOUCLE 2 MINUTES
         if (acrSeconds > 0 && acrSeconds % 120 === 0) {
           demanderRythme(Math.floor(acrSeconds / 60));
         }
@@ -6790,8 +6965,9 @@ ${suiviSection}
 
     function demanderRythme(minutes) {
       playBeep();
-      cycleCount++; // Un nouveau cycle débute
+      cycleCount++; 
       updateAcrCounters();
+      const prefix = currentAcrType === 'enfant' ? 'acr-peds' : 'acr';
       
       const html = `
         <div class="alert-box" style="background: #fef3c7; color: #b45309; border: 2px solid #f59e0b; font-size: 1.1rem; padding: 16px;">
@@ -6802,54 +6978,65 @@ ${suiviSection}
           <button type="button" class="btn-toggle-action" style="border-color: var(--primary); color: var(--primary); padding: 16px;" onclick="gererCycleAcr('non')">NON</button>
         </div>
       `;
-      document.getElementById('acr-action-box').innerHTML = html;
+      document.getElementById(`${prefix}-action-box`).innerHTML = html;
     }
 
     function gererCycleAcr(rythme) {
       let html = '';
+      const totalChocs = chocSmurCount + chocInitiaux;
+      const jText = currentAcrType === 'enfant' ? ` (${doseChoc} J)` : '';
       
       if (rythme === 'oui') {
-        html += `<button type="button" class="btn-toggle-action orange" id="btn-choc" style="padding: 16px; font-size: 1.15rem; font-weight: 900; background: #fee2e2; color: #991b1b; border: 2px solid #ef4444;" onclick="delivrerChoc(this)">⚡ DÉLIVRER LE CHOC</button>`;
+        html += `<button type="button" class="btn-toggle-action orange" id="btn-choc" style="padding: 16px; font-size: 1.15rem; font-weight: 900; background: #fee2e2; color: #991b1b; border: 2px solid #ef4444;" onclick="delivrerChoc(this)">⚡ DÉLIVRER LE CHOC${jText}</button>`;
       } else {
         html += `<div class="alert-box alert-red" style="font-size: 1.1rem; padding: 16px;">RYTHME NON CHOCABLE</div>`;
       }
 
       html += `<div id="acr-mce-instructions" style="${rythme === 'oui' ? 'display:none;' : 'display:block;'}">`;
 
-      // Logique d'apparition de l'adrénaline calculée avant l'affichage
+      // Logique Adrénaline et Amiodarone
       let showAdre = false;
+      let showAmio = false;
+      
       if (rythme === 'non' && (cycleCount === 1 || cycleCount % 2 === 1)) {
         showAdre = true; 
-      } else if (rythme === 'oui' && chocCount >= 2 && cycleCount % 2 === 1) {
+      } else if (rythme === 'oui' && totalChocs >= 2 && cycleCount % 2 === 1) {
         showAdre = true;
       }
+      
+      if (rythme === 'oui' && (totalChocs === 2 || totalChocs === 4)) {
+        showAmio = true; // Amiodarone au 3ème et 5ème choc (donc affiché après le 2ème et 4ème)
+      }
 
-      // Le bouton Adrénaline est maintenant placé AU-DESSUS de la reprise MCE
+      const adreTxt = currentAcrType === 'enfant' ? `${doseAdre} mg` : `1 mg`;
       if (showAdre) {
-        html += `<button type="button" class="btn-toggle-action" style="border-color: #0284c7; color: #0369a1; margin-top: 10px; margin-bottom: 10px; padding: 16px; font-size: 1.1rem;" onclick="donnerAdre(this)">
-          💉 FAIRE adrénaline 1mg IVD
+        html += `<button type="button" class="btn-toggle-action" style="border-color: #0284c7; color: #0369a1; margin-top: 10px; margin-bottom: 0; padding: 16px; font-size: 1.1rem;" onclick="donnerAdre(this)">
+          💉 FAIRE adrénaline ${adreTxt} IVD
+        </button>`;
+      }
+      
+      if (showAmio) {
+        const amioTxt = currentAcrType === 'enfant' ? `${doseAmio} mg` : `300 mg (150mg si 5ème choc)`;
+        html += `<button type="button" class="btn-toggle-action" style="border-color: #6d28d9; color: #5b21b6; margin-top: 10px; margin-bottom: 0; padding: 16px; font-size: 1.1rem;" onclick="this.classList.add('active-green'); this.textContent = '✓ Amiodarone administrée'; this.disabled=true;">
+          💊 FAIRE Amiodarone ${amioTxt} IVD
         </button>`;
       }
 
-      html += `  <div class="alert-box" style="background: #f3f4f6; color: #374151; margin-top: 10px; font-size: 1.05rem;">
-          🔄 REPRISE MCE IMMÉDIATE (30:2)
-        </div>
+      const mceTxt = currentAcrType === 'enfant' ? '🔄 REPRISE MCE (15:2)' : '🔄 REPRISE MCE (30:2)';
+      html += `  <div class="alert-box" style="background: #f3f4f6; color: #374151; margin-top: 10px; font-size: 1.05rem;">${mceTxt}</div>
       </div>`;
       
-      document.getElementById('acr-action-box').innerHTML = html;
-      
-      // Vérifie si on doit afficher les 4H/4T (sans cacher l'action box)
+      const prefix = currentAcrType === 'enfant' ? 'acr-peds' : 'acr';
+      document.getElementById(`${prefix}-action-box`).innerHTML = html;
       check4H4TTrigger(rythme);
     }
 
     function delivrerChoc(btn) {
-      chocCount++;
+      chocSmurCount++;
       updateAcrCounters();
       btn.classList.add('active-green');
-      btn.textContent = `✓ Choc n°${chocCount} délivré`;
+      btn.textContent = `✓ Choc SMUR n°${chocSmurCount} délivré`;
       btn.disabled = true;
-      
-      // Affiche la reprise du MCE et l'adrénaline éventuelle
       document.getElementById('acr-mce-instructions').style.display = 'block';
       check4H4TTrigger('oui'); 
     }
@@ -6859,93 +7046,107 @@ ${suiviSection}
       firstAdreGiven = true;
       updateAcrCounters();
       btn.classList.add('active-green');
-      btn.textContent = `✓ Adrénaline 1mg faite (Total: ${adreCount}mg)`;
+      btn.textContent = `✓ Adrénaline faite (Total: ${adreCount} inj.)`;
       btn.disabled = true;
-      
       check4H4TTrigger('non');
     }
 
     function check4H4TTrigger(rythme) {
-      const vvpCard = document.getElementById('acr-vvp-card');
-      const card4h4t = document.getElementById('acr-4h4t-card');
+      const prefix = currentAcrType === 'enfant' ? 'acr-peds' : 'acr';
+      const vvpCard = document.getElementById(`${prefix}-vvp-card`);
+      const card4h4t = document.getElementById(`${prefix}-4h4t-card`);
 
-      if (rythme === 'oui' && chocCount > 0) {
-        // Encart 4H/4T au moment du massage dans le chocable
-        vvpCard.style.display = 'none';
-        card4h4t.style.display = 'block';
-      } else if (rythme === 'non' && firstAdreGiven) {
-        // Encart 4H/4T après la 1ère adré dans le non chocable
-        vvpCard.style.display = 'none';
-        card4h4t.style.display = 'block';
+      if ((rythme === 'oui' && chocSmurCount > 0) || (rythme === 'non' && firstAdreGiven)) {
+        if (vvpCard) vvpCard.style.display = 'none';
+        if (card4h4t) card4h4t.style.display = 'block';
       }
     }
 
     function declarerRacs() {
       isRacs = true;
-      document.getElementById('acr-chrono-container').style.background = 'var(--success)';
-      document.getElementById('acr-action-box').style.display = 'none';
-      document.getElementById('btn-racs-declare').style.display = 'none';
-      document.getElementById('acr-racs-success').style.display = 'block';
+      const prefix = currentAcrType === 'enfant' ? 'acr-peds' : 'acr';
+      document.getElementById(`${prefix}-chrono-container`).style.background = 'var(--success)';
+      document.getElementById(`${prefix}-action-box`).style.display = 'none';
+      document.getElementById(`btn-${currentAcrType === 'enfant' ? 'peds-' : ''}racs-declare`).style.display = 'none';
+      document.getElementById(`${prefix}-racs-success`).style.display = 'block';
     }
 
     function reprendreAcr() {
       isRacs = false;
-      document.getElementById('acr-chrono-container').style.background = 'var(--danger)';
-      document.getElementById('acr-racs-success').style.display = 'none';
-      document.getElementById('btn-racs-declare').style.display = 'block';
-      document.getElementById('acr-action-box').style.display = 'block';
-      
-      // Relance directement sur une évaluation du rythme
+      const prefix = currentAcrType === 'enfant' ? 'acr-peds' : 'acr';
+      document.getElementById(`${prefix}-chrono-container`).style.background = 'var(--danger)';
+      document.getElementById(`${prefix}-racs-success`).style.display = 'none';
+      document.getElementById(`btn-${currentAcrType === 'enfant' ? 'peds-' : ''}racs-declare`).style.display = 'block';
+      document.getElementById(`${prefix}-action-box`).style.display = 'block';
       demanderRythme(Math.floor(acrSeconds / 60));
     }
 
     function resetAcr() {
       if (acrTimerInterval) clearInterval(acrTimerInterval);
-      acrSeconds = 0; cycleCount = 0; adreCount = 0; chocCount = 0; isRacs = false; firstAdreGiven = false; acrRythmeInitial = null;
+      acrSeconds = 0; cycleCount = 0; adreCount = 0; chocSmurCount = 0; chocInitiaux = 0; isRacs = false; firstAdreGiven = false; acrRythmeInitial = null;
 
-      ['racs-pa', 'racs-fc', 'racs-spo2', 'racs-etco2', 'racs-temp', 'racs-glasgow', 'racs-pupilles'].forEach(id => {
+      ['racs-pa', 'racs-fc', 'racs-spo2', 'racs-etco2', 'racs-temp', 'racs-glasgow', 'racs-pupilles', 'adulte-noflow', 'adulte-lowflow', 'enfant-noflow', 'enfant-lowflow', 'acr-init-chocs-adulte', 'acr-init-chocs-enfant'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.value = '';
+        if (el) el.value = (id.includes('chocs') ? '0' : '');
       });
       
-      document.getElementById('acr-chrono-display').textContent = '00:00';
-      document.getElementById('acr-chrono-container').style.background = '#0f172a';
-      document.getElementById('acr-vvp-card').style.display = 'block';
-      document.getElementById('acr-4h4t-card').style.display = 'none';
-      document.getElementById('acr-racs-success').style.display = 'none';
+      const prefixes = ['acr', 'acr-peds'];
+      prefixes.forEach(prefix => {
+        const d = document.getElementById(`${prefix}-chrono-display`); if(d) d.textContent = '00:00';
+        const c = document.getElementById(`${prefix}-chrono-container`); if(c) c.style.background = '#0f172a';
+        const v = document.getElementById(`${prefix}-vvp-card`); if(v) v.style.display = 'block';
+        const h = document.getElementById(`${prefix}-4h4t-card`); if(h) h.style.display = 'none';
+        const r = document.getElementById(`${prefix}-racs-success`); if(r) r.style.display = 'none';
+        const a = document.getElementById(`${prefix}-action-box`);
+        if(a) a.innerHTML = `
+          <div class="section-label" style="text-align: center; color: var(--danger); font-size: 1.2rem;">Rythme initial chocable ?</div>
+          <div class="row-2 field" style="margin-top: 14px;">
+            <button type="button" class="btn-toggle-action" style="border-color: var(--danger); color: var(--danger); padding: 16px;" onclick="startAcr('oui')">OUI (FV/TV)</button>
+            <button type="button" class="btn-toggle-action" style="border-color: var(--primary); color: var(--primary); padding: 16px;" onclick="startAcr('non')">NON (Asystolie/AESP)</button>
+          </div>
+        `;
+      });
+
       document.getElementById('btn-racs-declare').style.display = 'block';
+      document.getElementById('btn-peds-racs-declare').style.display = 'block';
       
-      const btnVoie = document.getElementById('btn-acr-voie');
-      if (btnVoie) { btnVoie.classList.remove('active-green'); btnVoie.textContent = '💉 Pose de VVP / DIO'; }
+      const btnVoie = document.getElementById('btn-acr-voie'); if (btnVoie) { btnVoie.classList.remove('active-green'); btnVoie.textContent = '💉 Pose de VVP / DIO'; }
+      const btnVoiePeds = document.getElementById('btn-acr-peds-voie'); if (btnVoiePeds) { btnVoiePeds.classList.remove('active-green'); btnVoiePeds.textContent = '💉 Pose de VVP / DIO'; }
+      const btnInsuff = document.getElementById('btn-peds-insuff'); if (btnInsuff) { btnInsuff.classList.remove('active'); btnInsuff.textContent = '💨 Faire les 5 insufflations initiales'; }
+      const btnGuedel = document.getElementById('btn-peds-guedel'); if (btnGuedel) { btnGuedel.classList.remove('active'); btnGuedel.textContent = 'Pose de canule de Guedel'; }
       
       document.querySelectorAll('.acr-cause').forEach(cb => cb.checked = false);
-      
-      document.getElementById('acr-action-box').innerHTML = `
-        <div class="section-label" style="text-align: center; color: var(--danger); font-size: 1.2rem;">Rythme initial chocable ?</div>
-        <div class="row-2 field" style="margin-top: 14px;">
-          <button type="button" class="btn-toggle-action" style="border-color: var(--danger); color: var(--danger); padding: 16px;" onclick="startAcr('oui')">OUI (FV/TV)</button>
-          <button type="button" class="btn-toggle-action" style="border-color: var(--primary); color: var(--primary); padding: 16px;" onclick="startAcr('non')">NON (Asystolie/AESP)</button>
-        </div>
-      `;
       updateAcrCounters();
     }
 
-    function getAcrAdulteData() {
+    function getAcrData() {
       const rythme = acrRythmeInitial ? (acrRythmeInitial === 'oui' ? 'CHOCABLE' : 'NON CHOCABLE') : 'Non défini';
       const racs = isRacs ? 'OUI' : 'NON';
-      const vvp = document.getElementById('btn-acr-voie') && document.getElementById('btn-acr-voie').classList.contains('active-green') ? 'posée' : 'non posée';
+      const btnVoieId = currentAcrType === 'enfant' ? 'btn-acr-peds-voie' : 'btn-acr-voie';
+      const vvp = document.getElementById(btnVoieId) && document.getElementById(btnVoieId).classList.contains('active-green') ? 'posée' : 'non posée';
+      
       let causes = [];
-      document.querySelectorAll('.acr-cause:checked').forEach(cb => causes.push(cb.value));
+      const prefix = currentAcrType === 'enfant' ? 'acr-peds' : 'acr';
+      document.querySelectorAll(`#${prefix}-4h4t-card .acr-cause:checked`).forEach(cb => causes.push(cb.value));
       const causesStr = causes.length > 0 ? causes.join(', ') : 'Aucune identifiée';
 
+      const nf = document.getElementById(`${currentAcrType === 'enfant' ? 'enfant' : 'adulte'}-noflow`).value;
+      const lf = document.getElementById(`${currentAcrType === 'enfant' ? 'enfant' : 'adulte'}-lowflow`).value;
+
+      let insuff = '';
+      if (currentAcrType === 'enfant') {
+        const fait = document.getElementById('btn-peds-insuff').classList.contains('active') ? 'Réalisées' : 'Non';
+        const guedel = document.getElementById('btn-peds-guedel').classList.contains('active') ? 'Posée' : 'Non';
+        insuff = `\n- 5 Insufflations initiales : ${fait} | Guedel : ${guedel}`;
+      }
+
       return { 
-        rythme, 
-        racs, 
-        vvp, 
-        cycles: cycleCount,
-        chocs: chocCount,
+        rythme, racs, vvp, causesReversibles: causesStr,
+        cycles: cycleCount, chocs: chocSmurCount, chocsInitiaux: chocInitiaux,
         adre: adreCount,
-        causesReversibles: causesStr
+        noflow: nf ? `${nf} min` : 'Non précisé',
+        lowflow: lf ? `${lf} min` : 'Non précisé',
+        pedsStr: insuff
       };
     }
     // --- LOGIQUE TRAUMA SEVERE (XABCDE) ---
